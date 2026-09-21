@@ -10,3 +10,4 @@
 .brand small{display:none}.edit-actions{display:flex;gap:8px;padding:8px 10px;background:#0c1728;border-bottom:1px solid var(--line)}.edit-action{padding:7px 12px;border:1px solid #294565;border-radius:7px;background:#192b45;color:var(--text);font-size:13px}.edit-action:hover{border-color:var(--mint);color:var(--mint)}.edit-action:disabled{opacity:.45;cursor:not-allowed}
 .editor-wrap{overflow:hidden}.gutter{height:100%;overflow:hidden;flex:0 0 48px}.editor{overflow:auto}
 @media(max-width:560px){.mobile-symbols.is-floating{position:fixed;top:52px;left:0;right:0;z-index:1000;box-shadow:0 5px 16px #0008}}
+.version{color:var(--muted);font-size:.65em;font-weight:600;letter-spacing:0}
