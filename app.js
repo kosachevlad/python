@@ -36,3 +36,4 @@ window.MutationObserver=class{constructor(){}observe(){}disconnect(){}};setTimeo
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.1)</span>'},0);
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.3)</span>'},0);
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.5)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.6)</span>'},0);
