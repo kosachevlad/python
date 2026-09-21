@@ -37,3 +37,6 @@ setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='К
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.3)</span>'},0);
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.5)</span>'},0);
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.6)</span>'},0);
+setTimeout(()=>{document.querySelectorAll('.tab').forEach(t=>t.scrollIntoView({inline:'nearest'}))},0);
+setInterval(()=>{if(typeof tabs==='undefined')return;let changed=false;tabs.forEach(t=>{if(t.code.trim()==='# Напиши свій код тут'){t.code='# Напиши свій код\n';changed=true}});if(changed){localStorage.setItem('kodik-tabs',JSON.stringify(tabs));if(typeof active!=='undefined'&&$('editor')){$('editor').value=tabs[active].code;updateLines()}}},500);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.7)</span>'},0);
