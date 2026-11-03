@@ -87,6 +87,8 @@ const native=await page.evaluate(()=>window.nativeExport);assert.equal(native.mi
 await page.reload();await page.waitForFunction(()=>window.kodikIDE.active);
 assert((await state()).nodes.some(n=>n.path.endsWith('extra.py')));
 await page.locator('#modeSimple').click();assert.equal(await page.locator('#editor').inputValue(),'print("legacy edited")');
+await page.locator('.tab[data-i="1"]').click();await page.locator('.tab-close[data-close="1"]').click();
+assert.equal(await page.locator('#editor').inputValue(),'print("legacy edited")');
 await page.locator('#editor').fill('print("simple change")');
 await page.locator('#modeIDE').click();assert.equal((await state()).nodes.find(n=>n.path==='main.py').content,graphical);
 // Built-in project demonstrates imports and relative files without setup.

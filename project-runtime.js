@@ -26,7 +26,7 @@ let stat;try{stat=fs.lstat(absolute)}catch{return}
 if(fs.isLink(stat.mode))return;
 if(fs.isDir(stat.mode)){
 if(relative)nodes.push({path:relative,type:'dir'});
-for(const name of fs.readdir(absolute)){if(name==='.'||name==='..'||name==='__pycache__'||name.endsWith('.pyc'))continue;visit(absolute+'/'+name,relative?relative+'/'+name:name)}
+for(const name of fs.readdir(absolute)){if(name==='.'||name==='..')continue;const p=relative?relative+'/'+name:name;if((name==='__pycache__'||name.endsWith('.pyc'))&&!this.baseline.has(p))continue;visit(absolute+'/'+name,p)}
 }else if(relative&&fs.isFile(stat.mode))nodes.push({path:relative,type:'file',...encode(fs.readFile(absolute))});
 };
 visit(this.root,'');return nodes;

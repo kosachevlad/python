@@ -106,7 +106,7 @@ if(kind==='Tk')box.querySelector('.tk-title').dataset.tkTitle=id;
 configure(w,o);
 control.addEventListener(kind==='Scale'?'input':'change',()=>{valueChanged(w);if(['Scale','Checkbutton','Radiobutton'].includes(kind)&&w.command&&!control.disabled)invoke(w.command)});
 if(kind==='Entry'||kind==='Text')control.addEventListener('input',()=>valueChanged(w));
-if(kind==='Button')control.addEventListener('click',()=>{if(w.command&&!control.disabled)w.command()});
+if(kind==='Button')control.addEventListener('click',()=>{if(w.command&&!control.disabled)invoke(w.command)});
 }
 function layout(id,manager,json){
 const w=get(id),o=JSON.parse(json),box=w.box,parent=box.parentElement;
