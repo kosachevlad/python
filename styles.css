@@ -21,3 +21,21 @@
 #turtleCanvas{display:block;width:100%;height:auto;max-height:65vh;object-fit:contain;background:white}
 .run:disabled{opacity:.65;cursor:wait}
 @media(min-width:561px){.side .terminal:has(~.turtle-panel:not([hidden])){height:280px;min-height:180px;flex:0 0 auto}}
+
+.tk-panel{display:flex;flex-direction:column;gap:12px;min-width:0;flex:none}
+.tk-panel[hidden],.tk-widget[hidden]{display:none!important}
+.tk-window{overflow:hidden;border:1px solid #294565;border-radius:12px;background:#f0f0f0;color:#111}
+.tk-title{padding:10px 14px;background:#13243b;color:#eef6ff;font:14px system-ui,sans-serif}
+.tk-surface{position:relative;padding:16px;max-width:100%;min-height:140px;overflow:auto;color:#111;background:#f0f0f0;font:14px Arial,sans-serif}
+.tk-widget{min-width:0;max-width:100%;box-sizing:border-box}
+.tk-surface input,.tk-surface textarea,.tk-surface button{font:inherit;color:#111;border:1px solid #9aa4b0;border-radius:5px;background:#fff;padding:6px 8px;max-width:100%;box-sizing:border-box}
+.tk-surface button{background:#e5e9ef;cursor:pointer;min-height:34px}
+.tk-surface button:hover{background:#d4dce7}
+.tk-surface button:disabled,.tk-surface input:disabled{opacity:.5;cursor:default}
+.tk-label{text-align:center;white-space:pre-wrap;line-height:1.4;max-width:100%}
+.tk-frame{position:relative;max-width:100%;min-width:0}
+.tk-labelframe{position:relative;border:1px solid #9aa4b0;border-radius:5px;padding:10px}
+.tk-choice{display:flex;align-items:center;gap:6px;min-height:30px;white-space:pre-wrap}
+.tk-choice input{width:18px;height:18px}
+.tk-canvas{display:block;max-width:100%;background:white;touch-action:none}
+@media(min-width:561px){.side .terminal:has(~.tk-panel:not([hidden])){height:260px;min-height:180px;flex:0 0 auto}}
