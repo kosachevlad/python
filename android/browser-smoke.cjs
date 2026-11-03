@@ -30,6 +30,35 @@ const png=await page.evaluate(()=>window.sharedPng);
 fs.mkdirSync(path.join(__dirname,'artifacts'),{recursive:true});
 fs.writeFileSync(path.join(__dirname,'artifacts/shared-code.png'),Buffer.from(png,'base64'));
 await page.screenshot({path:path.join(__dirname,'artifacts/android-preview.png'),fullPage:true});
+
+const square=fs.readFileSync(path.resolve(__dirname,'../examples/turtle-square.py'),'utf8');
+await page.locator('#editor').fill(square);
+await page.locator('#run').click();
+await page.waitForFunction(()=>window.kodikTurtle.visible);
+await page.waitForFunction(()=>!document.getElementById('run').disabled,{},{timeout:15000});
+const pixels=await page.evaluate(()=>{
+const c=document.getElementById('turtleCanvas'),ctx=c.getContext('2d');
+return [[370,240],[420,290],[370,340],[320,290],[370,290]].map(([x,y])=>Array.from(ctx.getImageData(x,y,1,1).data));
+});
+for(const pixel of pixels.slice(0,4))assert(pixel[2]>pixel[0]+50&&pixel[2]>pixel[1]+50,JSON.stringify(pixels));
+assert(pixels[4].slice(0,3).every(value=>value===255),'Square interior stays white');
+await page.locator('.share-code').click();
+await page.waitForFunction(()=>!document.querySelector('.share-code').disabled);
+const turtlePng=await page.evaluate(()=>window.sharedPng);
+fs.writeFileSync(path.join(__dirname,'artifacts/turtle-shared.png'),Buffer.from(turtlePng,'base64'));
+await page.locator('.turtle-panel').screenshot({path:path.join(__dirname,'artifacts/turtle-square.png')});
+await page.screenshot({path:path.join(__dirname,'artifacts/turtle-mobile.png'),fullPage:true});
+// A later run must not keep the old drawing or the old turtle position.
+await page.locator('#editor').fill('import turtle\nturtle.speed(0)\nturtle.forward(30)\nprint("новий запуск")');
+await page.locator('#run').click();
+await page.waitForFunction(()=>document.getElementById('output').textContent.includes('новий запуск'));
+assert.deepEqual(await page.evaluate(()=>Array.from(document.getElementById('turtleCanvas').getContext('2d').getImageData(420,290,1,1).data)),[255,255,255,255]);
+await page.locator('#editor').fill('print("без малювання")');
+await page.locator('#run').click();
+await page.waitForFunction(()=>document.getElementById('output').textContent.includes('без малювання'));
+assert(await page.locator('.turtle-panel').isHidden());
+console.log('PASS: exact user turtle example draws four blue edges, exports PNG, resets on rerun, hides on ordinary programs.');
+
 assert.deepEqual(errors,[]);
 console.log('PASS: mobile UI, offline Python, Ukrainian input, f-string, loop, native PNG share adapter.');
 }finally{await browser.close();server.close()}

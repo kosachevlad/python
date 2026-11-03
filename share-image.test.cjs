@@ -17,7 +17,7 @@ const draws=[],ctx={font:'',fillStyle:'',scale(){},fillRect(){},measureText(text
 const blob={type:'image/png'};
 const canvas={getContext:()=>ctx,toBlob:callback=>callback(blob)};
 const document={fonts:{ready:Promise.resolve()},querySelector:()=>({children:rows}),createElement:()=>canvas};
-const env={document,$:id=>id==='editor'?{value:code}:{textContent:output},getComputedStyle:node=>({color:node.color}),updateLines:()=>repaints++};
+const env={window:{},document,$:id=>id==='editor'?{value:code}:{textContent:output},getComputedStyle:node=>({color:node.color}),updateLines:()=>repaints++};
 const start=source.indexOf('const makeImage='),end=source.indexOf(';share.onclick=',start);
 const makeImage=vm.runInNewContext(source.slice(start,end)+';makeImage',env);
 (async()=>{
