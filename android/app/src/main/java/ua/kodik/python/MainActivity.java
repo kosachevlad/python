@@ -15,6 +15,8 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.ValueCallback;
+import java.io.OutputStream;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 import androidx.core.content.FileProvider;
@@ -28,6 +30,9 @@ public final class MainActivity extends Activity {
     private static final String HOST = "appassets.androidplatform.net";
     private static final String START = "https://" + HOST + "/assets/web/index.html";
     private WebView webView;
+    private static final int OPEN_FILES = 501, SAVE_FILE = 502;
+    private ValueCallback<Uri[]> fileCallback;
+    private volatile byte[] pendingExport;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -64,7 +69,20 @@ public final class MainActivity extends Activity {
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setSupportMultipleWindows(false);
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (fileCallback != null) fileCallback.onReceiveValue(null);
+                fileCallback = callback;
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE);
+                try { startActivityForResult(intent, OPEN_FILES); }
+                catch (RuntimeException error) {
+                    fileCallback.onReceiveValue(null); fileCallback = null;
+                    Toast.makeText(MainActivity.this, "Не вдалося відкрити вибір файлів", Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
+        });
         webView.addJavascriptInterface(new ShareBridge(), "KodikAndroid");
         WebViewAssetLoader.AssetsPathHandler assets = new WebViewAssetLoader.AssetsPathHandler(this);
         WebViewAssetLoader loader = new WebViewAssetLoader.Builder().addPathHandler("/assets/", path -> {
@@ -96,6 +114,27 @@ public final class MainActivity extends Activity {
     }
 
     private final class ShareBridge {
+
+        @JavascriptInterface public synchronized boolean saveFile(String filename, String encoded, String mime) {
+            if (pendingExport != null || filename == null || encoded == null || encoded.length() > 28 * 1024 * 1024) return false;
+            try {
+                String name = new File(filename).getName().replaceAll("[\\\\/:*?\"<>|\\p{Cntrl}]", "_");
+                if (name.isEmpty() || name.equals(".") || name.equals("..")) return false;
+                byte[] data = Base64.decode(encoded, Base64.DEFAULT);
+                pendingExport = data;
+                String type = "application/json".equals(mime) ? "application/json" : "text/plain".equals(mime) ? "text/plain" : "application/octet-stream";
+                runOnUiThread(() -> {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(type);
+                        intent.putExtra(Intent.EXTRA_TITLE, name);
+                        startActivityForResult(intent, SAVE_FILE);
+                    } catch (RuntimeException error) {
+                        pendingExport = null; notifySave(false, false);
+                    }
+                });
+                return true;
+            } catch (RuntimeException error) { pendingExport = null; return false; }
+        }
         @JavascriptInterface public boolean sharePng(String encoded) {
             if (encoded == null || encoded.length() > 28 * 1024 * 1024) return false;
             try {
@@ -125,12 +164,52 @@ public final class MainActivity extends Activity {
         }
     }
 
+
+    private void notifySave(boolean ok, boolean cancelled) {
+        runOnUiThread(() -> {
+            if (webView == null || isDestroyed()) return;
+            webView.evaluateJavascript("window.dispatchEvent(new CustomEvent('kodik-native-save',{detail:{ok:" + ok + ",cancelled:" + cancelled + "}}))", null);
+        });
+    }
+
+    @Override protected void onActivityResult(int request, int result, Intent data) {
+        super.onActivityResult(request, result, data);
+        if (request == OPEN_FILES) {
+            if (fileCallback == null) return;
+            java.util.ArrayList<Uri> uris = new java.util.ArrayList<>();
+            if (result == RESULT_OK && data != null) {
+                if (data.getClipData() != null) {
+                    for (int i=0;i<data.getClipData().getItemCount();i++) {
+                        Uri uri = data.getClipData().getItemAt(i).getUri();
+                        if ("content".equals(uri.getScheme())) uris.add(uri);
+                    }
+                } else if (data.getData() != null && "content".equals(data.getData().getScheme())) uris.add(data.getData());
+            }
+            fileCallback.onReceiveValue(uris.isEmpty() ? null : uris.toArray(new Uri[0]));
+            fileCallback = null;
+        }
+        if (request == SAVE_FILE) {
+            byte[] bytes = pendingExport; pendingExport = null;
+            if (result != RESULT_OK || data == null || data.getData() == null) { notifySave(false, true); return; }
+            if (bytes == null) { notifySave(false, false); return; }
+            Uri uri = data.getData();
+            new Thread(() -> {
+                try (OutputStream output = getContentResolver().openOutputStream(uri)) {
+                    if (output == null) throw new java.io.IOException("No stream");
+                    output.write(bytes); notifySave(true, false);
+                } catch (Exception error) { notifySave(false, false); }
+            }, "kodik-export").start();
+        }
+    }
+
     @Override public void onBackPressed() {
         if (webView != null && webView.canGoBack()) webView.goBack();
         else super.onBackPressed();
     }
 
     @Override protected void onDestroy() {
+        if (fileCallback != null) { fileCallback.onReceiveValue(null); fileCallback = null; }
+        pendingExport = null;
         if (webView != null) {
             webView.removeJavascriptInterface("KodikAndroid");
             webView.destroy();
