@@ -145,7 +145,8 @@ class CatMazeUI:
         self.cat_drawn = None
         self.friend_drawn = None
         root.title("Кіт і лабіринт")
-        root.geometry("400x700")
+        available = root.winfo_width()
+        root.geometry("%dx700" % (available if available > 200 else 400))
         root.configure(bg=BG)
         self.label("КІТ І ЛАБІРИНТ", 19, GOLD, True).pack(pady=6)
         self.label("Знайди мишку й виведи її на волю", 11, MUTED).pack(pady=3)

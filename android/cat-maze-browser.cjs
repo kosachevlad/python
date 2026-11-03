@@ -9,12 +9,13 @@ const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm
 fs.readFile(file,(error,data)=>{if(error){res.writeHead(404);return res.end()}res.setHeader('Content-Type',mime[path.extname(file)]||'text/plain');res.end(data)});
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
-const browser=await chromium.launch({headless:true}),page=await browser.newPage({viewport:{width:412,height:915}});
+const browser=await chromium.launch({headless:true}),page=await browser.newPage({viewport:{width:320,height:915}});
 const errors=[];page.on('pageerror',error=>errors.push(error.message));
 fs.mkdirSync(path.join(__dirname,'artifacts'),{recursive:true});
 const state=()=>page.evaluate(()=>JSON.parse(window.pyodide.runPython("import json\njson.dumps({'cat':app.game.cat,'mouse':app.game.mouse,'exit':app.game.exit,'size':app.game.size,'caught':app.game.caught,'won':app.game.won,'level':app.game.level,'steps':app.game.steps,'cell':app.cell,'board':app.board_size,'grid':app.game.grid})")));
 async function clickCell(point){
 const s=await state(),canvas=page.locator('.tk-panel svg');
+await canvas.scrollIntoViewIfNeeded();
 const box=await canvas.boundingBox(),scale=Math.min(box.width/s.board,box.height/s.board);
 const x=box.x+(box.width-s.board*scale)/2+(point[0]+0.5)*s.cell*scale;
 const y=box.y+(box.height-s.board*scale)/2+(point[1]+0.5)*s.cell*scale;
@@ -65,7 +66,9 @@ await page.keyboard.press(move[2]);
 const interrupted=(await state()).cat;
 await page.waitForTimeout(1150);assert.deepEqual((await state()).cat,interrupted);
 await page.setViewportSize({width:412,height:915});
-await page.getByRole('button',{name:'Нова гра',exact:true}).click();
+await page.locator('#run').click();
+await page.getByRole('button',{name:'Нова гра',exact:true}).waitFor();
+await page.waitForFunction(()=>!document.getElementById('run').disabled);
 await page.locator('.tk-panel').screenshot({path:path.join(__dirname,'artifacts/cat-maze-preview.png')});
 assert.deepEqual(errors,[]);
 assert(!(await page.locator('#output').innerText()).includes('❌'));
