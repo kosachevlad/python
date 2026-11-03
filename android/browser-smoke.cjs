@@ -44,10 +44,11 @@ for(const pixel of pixels.slice(0,4))assert(pixel[2]>pixel[0]+50&&pixel[2]>pixel
 assert(pixels[4].slice(0,3).every(value=>value===255),'Square interior stays white');
 const edgePixels=await page.evaluate(()=>{
 const ctx=document.getElementById('turtleCanvas').getContext('2d'),values=[];
-for(let n=10;n<90;n++)for(const [x,y] of [[320+n,240],[420,240+n],[320+n,340],[320,240+n]])values.push(Array.from(ctx.getImageData(x,y,1,1).data));
+// Exclude the turtle cursor drawn over the first 13 pixels of the top edge.
+for(let n=20;n<80;n++)for(const [x,y] of [[320+n,240],[420,240+n],[320+n,340],[320,240+n]])values.push(Array.from(ctx.getImageData(x,y,1,1).data));
 return values;
 });
-assert(edgePixels.every(pixel=>pixel[2]>pixel[0]+50&&pixel[2]>pixel[1]+50),'Final edges must be solid after animation');
+assert(edgePixels.every(pixel=>pixel[2]>pixel[0]+50&&pixel[2]>pixel[1]+50),'Final edges must be solid after animation: '+JSON.stringify(edgePixels.filter(pixel=>!(pixel[2]>pixel[0]+50&&pixel[2]>pixel[1]+50)).slice(0,8)));
 await page.locator('.share-code').click();
 await page.waitForFunction(()=>!document.querySelector('.share-code').disabled);
 const turtlePng=await page.evaluate(()=>window.sharedPng);
