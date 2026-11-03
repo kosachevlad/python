@@ -6,6 +6,7 @@ panel.setAttribute('aria-label','Графічний застосунок tkinter
 document.querySelector('.share-code').insertAdjacentElement('beforebegin',panel);
 const widgets=new Map(),variables=new Map(),watchers=new Map(),notifying=new Set(),timers=new Map();
 let timerCounter=0,itemCounter=0;
+function invoke(callback,payload){try{return callback(payload)}finally{window.dispatchEvent(new Event('kodik-python-change'))}}
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const get=id=>{const w=widgets.get(id);if(!w)throw new Error('Елемент tkinter уже закрито');return w};
 const px=value=>number(value)+'px';
@@ -14,7 +15,7 @@ variables.set(id,value);
 for(const w of widgets.values())if(w.options.textvariable===id||w.options.variable===id)refreshValue(w);
 if(!notifying.has(id)){
 notifying.add(id);
-try{for(const callback of watchers.get(id)||[])callback()}finally{notifying.delete(id)}
+try{for(const callback of watchers.get(id)||[])invoke(callback)}finally{notifying.delete(id)}
 }
 }
 function valueChanged(w){
@@ -103,9 +104,9 @@ const w={id,kind,box,control,label,legend,surface,options:{},command:null,bindin
 widgets.set(id,w);box.dataset.tkId=id;control.dataset.tkControl=id;
 if(kind==='Tk')box.querySelector('.tk-title').dataset.tkTitle=id;
 configure(w,o);
-control.addEventListener(kind==='Scale'?'input':'change',()=>{valueChanged(w);if(['Scale','Checkbutton','Radiobutton'].includes(kind)&&w.command&&!control.disabled)w.command()});
+control.addEventListener(kind==='Scale'?'input':'change',()=>{valueChanged(w);if(['Scale','Checkbutton','Radiobutton'].includes(kind)&&w.command&&!control.disabled)invoke(w.command)});
 if(kind==='Entry'||kind==='Text')control.addEventListener('input',()=>valueChanged(w));
-if(kind==='Button')control.addEventListener('click',()=>{if(w.command&&!control.disabled)w.command()});
+if(kind==='Button')control.addEventListener('click',()=>{if(w.command&&!control.disabled)invoke(w.command)});
 }
 function layout(id,manager,json){
 const w=get(id),o=JSON.parse(json),box=w.box,parent=box.parentElement;
@@ -163,7 +164,7 @@ if(!add&&w.bindings.has(sequence))w.control.removeEventListener(type,w.bindings.
 const handler=e=>{
 if(requiredKey&&e.key!==requiredKey)return;
 const rect=w.control.getBoundingClientRect();
-const result=callback(JSON.stringify({x:Math.round((e.clientX||rect.left)-rect.left),y:Math.round((e.clientY||rect.top)-rect.top),char:e.key?.length===1?e.key:'',keysym:e.key||'',keycode:e.keyCode||0}));
+const result=invoke(callback,JSON.stringify({x:Math.round((e.clientX||rect.left)-rect.left),y:Math.round((e.clientY||rect.top)-rect.top),char:e.key?.length===1?e.key:'',keysym:e.key||'',keycode:e.keyCode||0}));
 if(result==='break')e.preventDefault();
 };
 w.bindings.set(sequence,handler);w.control.addEventListener(type,handler);
@@ -214,7 +215,7 @@ setVar:setVariable,
 watchVar(id,callback){const group=watchers.get(id)||[];group.push(callback);watchers.set(id,group)},
 selected:id=>get(id).control.checked,
 setSelection(id,selected){const w=get(id);w.control.checked=selected;valueChanged(w)},
-after(ms,callback){const id=++timerCounter;timers.set(id,setTimeout(()=>{timers.delete(id);callback()},Math.max(0,ms)));return id},
+after(ms,callback){const id=++timerCounter;timers.set(id,setTimeout(()=>{timers.delete(id);invoke(callback)},Math.max(0,ms)));return id},
 cancelAfter(id){clearTimeout(timers.get(id));timers.delete(id)},
 appendOutput(text){
 const output=document.getElementById('output');
