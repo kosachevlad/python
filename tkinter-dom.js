@@ -6,7 +6,7 @@ panel.setAttribute('aria-label','Графічний застосунок tkinter
 document.querySelector('.share-code').insertAdjacentElement('beforebegin',panel);
 const widgets=new Map(),variables=new Map(),watchers=new Map(),notifying=new Set(),timers=new Map();
 let timerCounter=0,itemCounter=0;
-function invoke(callback,payload){try{return callback(payload)}finally{document.dispatchEvent(new Event('kodik-python-change'))}}
+function invoke(callback,payload){try{return callback(payload)}finally{window.dispatchEvent(new Event('kodik-python-change'))}}
 const number=(value,fallback=0)=>Number.isFinite(Number(value))?Number(value):fallback;
 const get=id=>{const w=widgets.get(id);if(!w)throw new Error('Елемент tkinter уже закрито');return w};
 const px=value=>number(value)+'px';

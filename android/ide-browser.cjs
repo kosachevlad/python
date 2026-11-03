@@ -25,12 +25,13 @@ await page.waitForFunction(()=>!document.getElementById('run').disabled,{},{time
 try{
 await page.addInitScript(()=>{
 if(!localStorage.getItem('ide-test-seeded')){
-localStorage.setItem('ide-test-seeded','1');localStorage.setItem('kodik-tabs',JSON.stringify([{name:'main.py',code:'print("legacy")'},{name:'old.py',code:'# old'}]));
+localStorage.setItem('ide-test-seeded','1');localStorage.setItem('kodik-tabs',JSON.stringify([{name:'main.py',code:'print("legacy edited")'},{name:'old.py',code:'# old'}]));
 }});
 await page.route('**/*',route=>route.request().url().startsWith('http://127.0.0.1:')?route.continue():route.abort());
 await page.goto('http://127.0.0.1:'+server.address().port);
+await page.locator('#editor').fill('print("legacy edited")');
 await page.locator('#modeIDE').click();await openTree();
-assert.equal((await state()).nodes.find(n=>n.path==='main.py').content,'print("legacy")');
+assert.equal((await state()).nodes.find(n=>n.path==='main.py').content,'print("legacy edited")');
 await page.locator('#ideNewFolder').click();await submit('data');
 await page.locator('#ideNewFile').click();await submit('data/notes.txt');
 await page.locator('#editor').fill('Привіт');
@@ -85,7 +86,7 @@ const native=await page.evaluate(()=>window.nativeExport);assert.equal(native.mi
 // Reload and mode switching preserve both workspaces independently.
 await page.reload();await page.waitForFunction(()=>window.kodikIDE.active);
 assert((await state()).nodes.some(n=>n.path.endsWith('extra.py')));
-await page.locator('#modeSimple').click();assert.equal(await page.locator('#editor').inputValue(),'print("legacy")');
+await page.locator('#modeSimple').click();assert.equal(await page.locator('#editor').inputValue(),'print("legacy edited")');
 await page.locator('#editor').fill('print("simple change")');
 await page.locator('#modeIDE').click();assert.equal((await state()).nodes.find(n=>n.path==='main.py').content,graphical);
 // Built-in project demonstrates imports and relative files without setup.

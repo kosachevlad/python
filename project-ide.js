@@ -5,7 +5,7 @@ const {Runtime,encode,bytesToBase64,base64ToBytes}=KodikProjectRuntime;
 const KEY='kodik-project-v1',BACKUP='kodik-project-backup-v1',MODE='kodik-mode-v1';
 const original={save,renderAll,renderTabs,run,executeCode,insert};
 let project,enabled=false,busy=false,execution=null,runtime=null,setupPromise=null,enginePromise=null,backupState=null;
-let simpleState=null,captureScheduled=false;
+let simpleState=null,captureScheduled=false,needsMigration=false,storageBlocked=false;
 const byId=id=>document.getElementById(id);
 const toolbar=document.createElement('div');toolbar.className='ide-toolbar';
 toolbar.innerHTML='<div class="ide-modes" role="group" aria-label="Режим Кодика"><button type="button" id="modeSimple">Навчання</button><button type="button" id="modeIDE">Міні-IDE</button></div><button type="button" id="ideFilesToggle" hidden>📁 Файли</button><div class="ide-tools" hidden><button type="button" id="projectName" title="Перейменувати проєкт"></button><button type="button" id="projectDemo">Приклад</button><button type="button" id="projectImport">Відкрити проєкт</button><button type="button" id="projectExport">Зберегти проєкт</button><button type="button" id="projectRestore" title="Відновити попередній стан">↶ Відновити</button></div>';
@@ -27,11 +27,12 @@ dialog.innerHTML='<form><h2 id="ideDialogTitle"></h2><p id="ideDialogText"></p><
 document.body.append(dialog);
 function showNotice(text,error=false){notice.hidden=!text;notice.textContent=text;notice.classList.toggle('is-error',error)}
 function safeJSON(key){try{const value=localStorage.getItem(key);return value?JSON.parse(value):null}catch{return null}}
-const stored=safeJSON(KEY);
-try{project=stored?new Project(stored):Project.fromTabs(tabs)}catch{project=Project.fromTabs(tabs);showNotice('Збережений проєкт має помилку. Початкові дані залишено в сховищі; експортуй поточний проєкт перед змінами.',true)}
+let rawStored=null;try{rawStored=localStorage.getItem(KEY)}catch{}
+try{project=rawStored?new Project(JSON.parse(rawStored)):Project.fromTabs(tabs);needsMigration=!rawStored}
+catch{project=Project.fromTabs(tabs);needsMigration=true;try{localStorage.setItem(KEY+'-recovery',rawStored)}catch{storageBlocked=true}showNotice('Збережений проєкт має помилку. Його початкові дані збережено для відновлення; експортуй поточний проєкт перед змінами.',true)}
 backupState=safeJSON(BACKUP);
 function persist(){
-try{localStorage.setItem(KEY,JSON.stringify(project.snapshot()));byId('saved').textContent='● Збережено локально';return true}
+try{if(storageBlocked)throw new Error('Recovery storage unavailable');localStorage.setItem(KEY,JSON.stringify(project.snapshot()));byId('saved').textContent='● Збережено локально';return true}
 catch{byId('saved').textContent='● Потрібен експорт';showNotice('У сховищі бракує місця. Збережи проєкт у файл, щоб не втратити зміни.',true);return false}
 }
 function backup(){backupState=project.snapshot();try{localStorage.setItem(BACKUP,JSON.stringify(backupState))}catch{}refreshControls()}
@@ -136,7 +137,7 @@ byId('ideSummary').textContent=project.state.nodes.filter(n=>n.type==='file').le
 function setBusy(value){busy=value;refreshControls();window.kodikHistory?.sync()}
 function mode(value){
 if(busy||waiting||enabled===value)return;
-if(value){original.save();simpleState={tabs,active};enabled=true}
+if(value){original.save();simpleState={tabs,active};if(needsMigration){project=Project.fromTabs(tabs);project.state.activeId=project.state.selectedId=project.state.openIds[active]||project.state.openIds[0]||null;needsMigration=false}enabled=true}
 else{saveEditor();capture();enabled=false;tabs=simpleState.tabs;active=simpleState.active;byId('editor').readOnly=false}
 card.classList.toggle('ide-active',enabled);explorer.hidden=!enabled;breadcrumb.hidden=!enabled;notice.hidden=!enabled||!notice.textContent;
 localStorage.setItem(MODE,enabled?'ide':'simple');
