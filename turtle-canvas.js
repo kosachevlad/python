@@ -63,7 +63,7 @@ const x=c.x0+(c.x-c.x0)*f,y=c.y0+(c.y-c.y0)*f;
 segment(ink,c,current.x,current.y,x,y);
 Object.assign(turtles.get(c.id),{x,y});current.x=x;current.y=y;
 if(f<1)break;
-history.push(c);current=null;
+history.push(c);current=null;redrawArt();
 }
 const c=queue.shift();if(!c)break;
 if(c.op==='pose')turtles.set(c.id,c);
