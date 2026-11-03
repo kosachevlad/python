@@ -1,0 +1,29 @@
+name: Test cat maze keyboard and mouse
+on:
+  push:
+    branches: [examples/cat-maze]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  game:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare offline environment
+        run: node android/prepare-web.cjs
+      - name: Test keyboard, mouse and touch buttons
+        run: |
+          npm install --no-save --package-lock=false playwright@1.51.1
+          npx playwright install --with-deps chromium
+          node android/cat-maze-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Cat-maze-preview
+          path: android/artifacts/
+          retention-days: 30
