@@ -66,6 +66,62 @@ await page.waitForFunction(()=>document.getElementById('output').textContent.inc
 assert(await page.locator('.turtle-panel').isHidden());
 console.log('PASS: exact user turtle example draws four blue edges, exports PNG, resets on rerun, hides on ordinary programs.');
 
+
+// Real DOM callbacks after Python has returned from mainloop().
+const calculator=fs.readFileSync(path.resolve(__dirname,'../examples/tkinter-calculator.py'),'utf8');
+await page.locator('#editor').fill(calculator);
+await page.locator('#run').click();
+await page.locator('.tk-panel input').first().waitFor();
+await page.waitForFunction(()=>!document.getElementById('run').disabled);
+const tkInputs=page.locator('.tk-panel input');
+await tkInputs.nth(0).fill('7');await tkInputs.nth(1).fill('5');
+await page.getByRole('button',{name:'Додати',exact:true}).click();
+await page.waitForFunction(()=>document.querySelector('.tk-panel').textContent.includes('Сума: 12'));
+assert.equal(await page.locator('.tk-label').filter({hasText:'Сума: 12'}).evaluate(e=>getComputedStyle(e).color),'rgb(0, 0, 255)');
+await page.locator('.tk-panel').screenshot({path:path.join(__dirname,'artifacts/tkinter-calculator.png')});
+await page.screenshot({path:path.join(__dirname,'artifacts/tkinter-mobile.png'),fullPage:true});
+await tkInputs.nth(0).fill('abc');await page.getByRole('button',{name:'Додати',exact:true}).click();
+await page.waitForFunction(()=>document.querySelector('.tk-panel').textContent.includes('Введи саме числа'));
+assert.equal(await page.locator('.tk-label').filter({hasText:'Введи саме числа'}).evaluate(e=>getComputedStyle(e).color),'rgb(255, 0, 0)');
+await page.locator('#editor').fill([
+'from tkinter import *','root=Tk()', 'value=StringVar(value="Старт")',
+'entry=Entry(root,textvariable=value)','entry.grid(row=0,column=0)',
+'Label(root,textvariable=value).grid(row=1,column=0)',
+'root.bind("<Return>",lambda event:value.set("Enter працює"))',
+'root.after(100,lambda:value.set("Таймер працює"))','root.mainloop()'
+].join('\n'));
+await page.locator('#run').click();
+await page.waitForFunction(()=>document.querySelector('.tk-panel').textContent.includes('Таймер працює'));
+assert.equal(await page.locator('.tk-panel input').count(),1,'Prior calculator widgets are gone');
+await page.locator('.tk-panel input').fill('Привіт');
+await page.waitForFunction(()=>document.querySelector('.tk-panel').textContent.includes('Привіт'));
+await page.locator('.tk-panel input').press('Enter');
+await page.waitForFunction(()=>document.querySelector('.tk-panel').textContent.includes('Enter працює'));
+await page.locator('#editor').fill([
+'from tkinter import *','from tkinter import ttk','root=Tk()',
+'c=Canvas(root,width=200,height=120)','c.pack()',
+'r=c.create_rectangle(10,10,70,60,fill="blue")','c.move(r,5,7)',
+'def broken():','    print("натиснуто")','    1/0',
+'ttk.Button(root,text="Помилка",command=broken).pack()',
+'ttk.Button(root,text="Закрити",command=root.destroy).pack()',
+'root.after(1000,lambda:print("СТАРИЙ ТАЙМЕР"))','root.mainloop()'
+].join('\n'));
+await page.locator('#run').click();
+await page.getByRole('button',{name:'Помилка',exact:true}).waitFor();
+assert.equal(await page.locator('.tk-panel svg rect').getAttribute('transform'),'translate(5 7)');
+await page.getByRole('button',{name:'Помилка',exact:true}).click();
+await page.waitForFunction(()=>document.getElementById('output').textContent.includes('ZeroDivisionError'));
+assert((await page.locator('#output').innerText()).includes('натиснуто'));
+await page.getByRole('button',{name:'Закрити',exact:true}).click();
+assert(await page.locator('.tk-panel').isHidden());
+await page.locator('#editor').fill('print("чистий запуск")');
+await page.locator('#run').click();
+await page.waitForFunction(()=>document.getElementById('output').textContent.includes('чистий запуск'));
+await page.waitForTimeout(1100);
+assert(!(await page.locator('#output').innerText()).includes('СТАРИЙ ТАЙМЕР'));
+assert(await page.locator('.tk-panel').isHidden());
+console.log('PASS: Tkinter calculator 7+5=12, invalid input, variables, grid, keyboard binding, timers, ttk, Canvas, event stdout/errors, destroy and reset.');
+
 assert.deepEqual(errors,[]);
 console.log('PASS: mobile UI, offline Python, Ukrainian input, f-string, loop, native PNG share adapter.');
 }finally{await browser.close();server.close()}
