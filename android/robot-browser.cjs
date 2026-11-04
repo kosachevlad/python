@@ -15,10 +15,10 @@ await run(fs.readFileSync(path.join(__dirname,'../examples/robot-start.py'),'utf
 assert((await page.locator('#output').innerText()).includes('Зібрано кристалів: 1'));
 assert.equal((await state()).cursor,0);assert.equal((await state()).frame.collected,0);
 await page.locator('#robotStep').click();assert.equal((await state()).cursor,1);assert.equal((await state()).frame.robot.y,2);
-await page.locator('#robotSpeed').fill('0');await page.locator('#robotPlay').click();await page.locator('#robotStop').click();assert.equal((await state()).playing,false);
+await page.locator('#robotSpeed').evaluate(e=>{e.value='0';e.dispatchEvent(new Event('input',{bubbles:true}))});await page.locator('#robotPlay').click();await page.locator('#robotStop').click();assert.equal((await state()).playing,false);
 const paused=(await state()).cursor;await page.waitForTimeout(600);assert.equal((await state()).cursor,paused);
 await page.locator('#robotReset').click();assert.equal((await state()).cursor,0);
-await page.locator('#robotSpeed').fill('10');await page.locator('#robotPlay').click();await page.waitForFunction(()=>KodikRobot.state.cursor===KodikRobot.state.count-1);
+await page.locator('#robotSpeed').evaluate(e=>{e.value='10';e.dispatchEvent(new Event('input',{bubbles:true}))});await page.locator('#robotPlay').click();await page.waitForFunction(()=>KodikRobot.state.cursor===KodikRobot.state.count-1);
 assert.equal((await state()).frame.collected,1);assert((await page.locator('#robotStatus').innerText()).includes('Усі кристали'));
 await page.locator('#robotReset').click();
 await page.locator('#robotSkin').selectOption('grass');
@@ -28,7 +28,7 @@ await page.setViewportSize({width:320,height:850});assert(await page.evaluate(()
 await page.locator('#robotMap').selectOption('map3.map');assert.equal((await state()).prepared,false);
 await run('from robot import *\nprint(position())\nforward(2)\nright()\nforward(8)\nright()\nforward()\n');
 assert((await page.locator('#output').innerText()).includes('CollisionError'));
-await page.locator('#robotSpeed').fill('10');await page.locator('#robotPlay').click();await page.waitForFunction(()=>KodikRobot.state.cursor===KodikRobot.state.count-1);assert((await state()).frame.robot.bumped);
+await page.locator('#robotSpeed').evaluate(e=>{e.value='10';e.dispatchEvent(new Event('input',{bubbles:true}))});await page.locator('#robotPlay').click();await page.waitForFunction(()=>KodikRobot.state.cursor===KodikRobot.state.count-1);assert((await state()).frame.robot.bumped);
 await run(fs.readFileSync(path.join(__dirname,'../examples/robot-zigzag.py'),'utf8'));
 assert((await page.locator('#output').innerText()).includes('Зібрано: 1 із 1'));
 await page.setViewportSize({width:1000,height:900});await page.locator('.robot-panel').screenshot({path:path.join(__dirname,'artifacts/robot-map3.png')});
