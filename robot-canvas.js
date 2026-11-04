@@ -48,7 +48,7 @@ function invalidate(){pause();frames=[];cursor=0;prepared=false;ctx.clearRect(0,
 $('robotLoad').onclick=()=>$('robotFile').click();
 $('robotFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>1024*1024)throw Error('Максимум 1 МБ');custom=await file.text();if(!/^map:/m.test(custom))throw Error('Немає секції map:');let option=$('robotMap').querySelector('[value="custom"]');if(!option){option=new Option('Власна карта','custom');$('robotMap').add(option)}selected='custom';$('robotMap').value=selected;invalidate()}catch(error){status(error.message)}finally{e.target.value=''}};
 window.KodikRobot={
- enqueue(text){bytes+=text.length;if(frames.length>=10000||bytes>16000000)throw Error('Завелика програма robot; скороти кількість кроків');panel.hidden=false;frames.push(JSON.parse(text));if(frames.length===1)draw()},
+ enqueue(text){const frame=JSON.parse(text);if(frame.label==='Старт'&&frames.length===1&&frames[0].label==='Старт'){frames=[];bytes=0}bytes+=text.length;if(frames.length>=10000||bytes>16000000)throw Error('Завелика програма robot; скороти кількість кроків');panel.hidden=false;frames.push(frame);if(frames.length===1)draw()},
  mapText(){return selected==='custom'?custom:data.maps[selected]||data.maps['map1.map']},
  beginRun(){pause();frames=[];bytes=0;cursor=0;prepared=false;failure='';speedOverride=skinOverride=null;panel.hidden=true},
  finish(){if(!frames.length)return;prepared=true;cursor=0;failure=frames.at(-1).robot.bumped?'Зіткнення! Перевір повідомлення у виводі.':'';draw();$('robotSpeed').value=frames.at(-1).speed;$('robotSkin').value=frames.at(-1).skin},
