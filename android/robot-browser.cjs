@@ -39,7 +39,7 @@ await page.locator('#modeIDE').click();
 await run('from pathlib import Path\nPath("level.map").write_text("direction:\\neast\\n\\nmap:\\nAAAAA\\nA@* A\\nAAAAA\\n")\nfrom robot import *\nload_map("level.map")\npickUp()\nprint("IDE", collected())');
 assert((await page.locator('#output').innerText()).includes('IDE 1'));
 await run('from robot import *\nload_map("map3.map")\nprint("fresh", collected(), position())');assert((await page.locator('#output').innerText()).includes('fresh 0 (3, 3)'));
-await run('print("без робота")');assert(await page.locator('.robot-panel').isHidden());
+await page.locator('#editor').fill('print("без робота")');await page.locator('#run').click();await page.waitForFunction(()=>document.getElementById('output').textContent.includes('без робота'));assert(await page.locator('.robot-panel').isHidden());
 assert.deepEqual(errors,[]);console.log('PASS: offline Python in both modes, playback/step/pause/reset, collisions, mobile 320px, all controls, custom and project maps, rerun cleanup');
 }finally{await browser.close();server.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});
