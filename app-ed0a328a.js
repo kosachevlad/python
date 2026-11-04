@@ -45,7 +45,7 @@ sync();
 
 (()=>{const bar=document.getElementById('mobileSymbols');if(!bar)return;const spacer=document.createElement('div');spacer.style.display='none';spacer.style.height=bar.offsetHeight+'px';bar.parentNode.insertBefore(spacer,bar);const update=()=>{if(window.innerWidth>560){bar.classList.remove('is-floating');spacer.style.display='none';return}if(!bar.classList.contains('is-floating')){if(spacer.getBoundingClientRect().top<0){spacer.style.display='block';spacer.style.height=bar.offsetHeight+'px';bar.classList.add('is-floating')}}else if(spacer.getBoundingClientRect().top>=0){bar.classList.remove('is-floating');spacer.style.display='none'}};window.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);update()})();
 (()=>{const output=$('output'),editor=$('editor');const showFriendly=()=>{const raw=output.textContent||'';const match=raw.match(/(SyntaxError|IndentationError|NameError|TypeError|ValueError|ZeroDivisionError|IndexError|KeyError|ModuleNotFoundError):[^\n]*(?:line\s+(\d+))?/);if(!match)return;const line=match[2]?+match[2]:null;const friendly=explainPythonError({message:match[0]});if(!raw.includes(friendly)){output.textContent=raw.replace(match[0],friendly)}if(line){const lines=editor.value.split('\n'),start=lines.slice(0,line-1).reduce((n,v)=>n+v.length+1,0);editor.focus();editor.setSelectionRange(start,start+(lines[line-1]||'').length);editor.scrollTop=Math.max(0,(line-1)*editor.clientHeight/Math.max(1,lines.length-1)-editor.clientHeight/3)}};new MutationObserver(showFriendly).observe(output,{childList:true,subtree:true,characterData:true})})();
-const APP_VERSION='v1.25';console.info(`Кодик ${APP_VERSION} · версія застосунку`);const versionLabel=document.createElement('span');versionLabel.className='version';versionLabel.textContent=` (${APP_VERSION})`;document.querySelector('.brand h1')?.append(versionLabel);
+const APP_VERSION='v1.26';console.info(`Кодик ${APP_VERSION} · версія застосунку`);const versionLabel=document.createElement('span');versionLabel.className='version';versionLabel.textContent=` (${APP_VERSION})`;document.querySelector('.brand h1')?.append(versionLabel);
 (()=>{const editor=$('editor'),wrap=document.querySelector('.editor-wrap'),gutter=$('gutter');if(!editor||!wrap)return;const highlight=document.createElement('pre');highlight.className='code-highlight';wrap.insertBefore(highlight,editor);const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const paint=line=>{
 const keywords=new Set('def class if else elif for while in return import from as try except finally with and or not True False None'.split(' '));
 const builtins=new Set('print input range len str int float list dict set open'.split(' '));
@@ -67,20 +67,47 @@ offset=start+token.length;
 }
 return html+esc(line.slice(offset))||' ';
 };const update=()=>{const lines=editor.value.split('\n'),line=editor.value.slice(0,editor.selectionStart).split('\n').length;highlight.innerHTML=lines.map((v,i)=>`<span class="${i+1===line?'active-line':''}">${paint(v)}</span>`).join('\n');gutter.innerHTML=lines.map((_,i)=>`<span class="gutter-line ${i+1===line?'active':''}">${i+1}</span>`).join('');highlight.scrollTop=editor.scrollTop;highlight.scrollLeft=editor.scrollLeft};['input','keyup','click','select','focus'].forEach(e=>editor.addEventListener(e,update));editor.addEventListener('scroll',update);const old=updateLines;updateLines=()=>{old();update()};update()})();
-console.info('Кодик v1.25 · версія застосунку');document.querySelectorAll('.version').forEach(e=>e.textContent='(v1.25)');
+console.info('Кодик v1.26 · версія застосунку');document.querySelectorAll('.version').forEach(e=>e.textContent='(v1.26)');
 (()=>{const output=$('output'),editor=$('editor');if(!output||!editor)return;const adjustIndentation=()=>{const raw=output.textContent||'',m=raw.match(/Неправильний відступ на рядку (\d+)/);if(!m||output.dataset.indentAdjusted==='1')return;const reported=Number(m[1]),lines=editor.value.split('\n');let actual=reported;const previous=lines[reported-1]||'';for(let i=reported;i<lines.length;i++){if(lines[i].trim()){actual=i+1;break}}if(/:\s*$/.test(previous)&&actual===reported)actual=Math.min(reported+1,lines.length);if(actual>reported){output.textContent=raw.replace(`Неправильний відступ на рядку ${reported}`,`Неправильний відступ на рядку ${reported} (або на рядку ${actual})`);output.dataset.indentAdjusted='1'}};new MutationObserver(adjustIndentation).observe(output,{childList:true,subtree:true,characterData:true})})();
 window.addEventListener('load',()=>{const o=document.getElementById('output');if(!o)return;let busy=false;const clean=()=>{if(busy)return;const r=o.textContent||'',d=r.match(/<string>, line (\d+)/),i=r.indexOf('❌');if(!d||i<0)return;const after=r.slice(i),detail=after.match(/IndentationError:[\s\S]*/);if(!detail)return;busy=true;o.textContent=r.slice(0,i)+`❌ Неправильний відступ на рядку 2 (або на рядку ${d[1]}).\nУсі рядки одного блоку мають мати однаковий відступ.\n\nДеталі: ${detail[0]}`;busy=false};new MutationObserver(clean).observe(o,{childList:true,subtree:true,characterData:true});clean()});
-window.MutationObserver=class{constructor(){}observe(){}disconnect(){}};setTimeout(()=>{const o=document.getElementById('output'),brand=document.querySelector('.brand h1');if(brand&&!brand.textContent.includes('v1.25'))brand.append(' (v1.25)');if(!o)return;setInterval(()=>{const r=o.textContent||'',d=r.match(/<string>, line (\d+)/),i=r.indexOf('❌');if(!d||i<0||r.includes('Неправильний відступ на рядку 2 (або на рядку '+d[1]+')'))return;const detail=r.match(/IndentationError:[\s\S]*/);if(detail)o.textContent=r.slice(0,i)+`❌ Неправильний відступ на рядку 2 (або на рядку ${d[1]}).\nУсі рядки одного блоку мають мати однаковий відступ.\n\nДеталі: ${detail[0]}`},250)},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.25)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.25)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.25)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.25)</span>'},0);
+window.MutationObserver=class{constructor(){}observe(){}disconnect(){}};setTimeout(()=>{const o=document.getElementById('output'),brand=document.querySelector('.brand h1');if(brand&&!brand.textContent.includes('v1.26'))brand.append(' (v1.26)');if(!o)return;setInterval(()=>{const r=o.textContent||'',d=r.match(/<string>, line (\d+)/),i=r.indexOf('❌');if(!d||i<0||r.includes('Неправильний відступ на рядку 2 (або на рядку '+d[1]+')'))return;const detail=r.match(/IndentationError:[\s\S]*/);if(detail)o.textContent=r.slice(0,i)+`❌ Неправильний відступ на рядку 2 (або на рядку ${d[1]}).\nУсі рядки одного блоку мають мати однаковий відступ.\n\nДеталі: ${detail[0]}`},250)},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.26)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.26)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.26)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.26)</span>'},0);
 setTimeout(()=>{document.querySelectorAll('.tab').forEach(t=>t.scrollIntoView({inline:'nearest'}))},0);
 
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.25)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.25)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.25)</span>'},0);
-(()=>{const originalExecuteCode=executeCode;executeCode=async values=>{await originalExecuteCode(values);const o=$('output');if(o)setTimeout(()=>{o.textContent=o.textContent.replace(/^Запускаю Python…\n?/,'').replace(/^Запускаю Python\.\.\.\n?/,'')},1000)}})();setInterval(()=>{const row=document.querySelector('.prompt-row');if(row)row.style.display=waiting?'flex':'none'},100);setInterval(()=>{const row=document.querySelector('.prompt-row');if(!row)return;try{const visible=typeof waiting!=='undefined'&&waiting===true;row.hidden=!visible;row.style.display=visible?'flex':'none'}catch(e){row.hidden=true;row.style.display='none'}},50);(()=>{const row=document.querySelector('.prompt-row');if(row){row.hidden=true;row.style.display='none'}setInterval(()=>{const r=document.querySelector('.prompt-row');if(!r)return;const visible=typeof waiting!=='undefined'&&waiting===true;r.hidden=!visible;r.style.display=visible?'flex':'none'},50)})();(()=>{const terminal=document.querySelector('.terminal');if(!terminal)return;const share=document.createElement('button');share.className='share-code';share.type='button';share.textContent='↗ Поділитись кодом і виконанням';share.style.cssText='margin-top:12px;width:100%;padding:12px 16px;border:1px solid #294565;border-radius:10px;background:#162d49;color:#eaf3ff;font:inherit;cursor:pointer';terminal.insertAdjacentElement('afterend',share);const makeImage=async()=>{
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.26)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.26)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.26)</span>'},0);
+(()=>{const originalExecuteCode=executeCode;executeCode=async values=>{await originalExecuteCode(values);const o=$('output');if(o)setTimeout(()=>{o.textContent=o.textContent.replace(/^Запускаю Python…\n?/,'').replace(/^Запускаю Python\.\.\.\n?/,'')},1000)}})();setInterval(()=>{const row=document.querySelector('.prompt-row');if(row)row.style.display=waiting?'flex':'none'},100);setInterval(()=>{const row=document.querySelector('.prompt-row');if(!row)return;try{const visible=typeof waiting!=='undefined'&&waiting===true;row.hidden=!visible;row.style.display=visible?'flex':'none'}catch(e){row.hidden=true;row.style.display='none'}},50);(()=>{const row=document.querySelector('.prompt-row');if(row){row.hidden=true;row.style.display='none'}setInterval(()=>{const r=document.querySelector('.prompt-row');if(!r)return;const visible=typeof waiting!=='undefined'&&waiting===true;r.hidden=!visible;r.style.display=visible?'flex':'none'},50)})();(()=>{const terminal=document.querySelector('.terminal');if(!terminal)return;const share=document.createElement('button');share.className='share-code';share.type='button';share.textContent='↗ Поділитись кодом і виконанням';share.style.cssText='margin-top:12px;width:100%;padding:12px 16px;border:1px solid #294565;border-radius:10px;background:#162d49;color:#eaf3ff;font:inherit;cursor:pointer';terminal.insertAdjacentElement('afterend',share);
+const shareNotice=document.createElement('div');
+shareNotice.className='share-notice';shareNotice.hidden=true;
+shareNotice.style.cssText='margin-top:10px;padding:12px;border:1px solid #365171;border-radius:10px;color:#eaf3ff;background:#101d30;font-size:14px;line-height:1.5;overflow-wrap:anywhere';
+shareNotice.setAttribute('aria-live','polite');
+const shareMessage=document.createElement('p');shareMessage.style.margin='0';
+const shareDownload=document.createElement('button');shareDownload.type='button';shareDownload.textContent='↓ Завантажити PNG';shareDownload.hidden=true;
+shareDownload.style.cssText='margin-top:10px;padding:9px 12px;border:1px solid #365171;border-radius:8px;background:#1b3049;color:#eaf3ff;font:inherit;cursor:pointer';
+shareNotice.append(shareMessage,shareDownload);share.insertAdjacentElement('afterend',shareNotice);
+let preparedShareBlob=null;
+const showShareNotice=(message,error=false)=>{
+shareNotice.hidden=false;shareNotice.setAttribute('role',error?'alert':'status');
+shareMessage.textContent=message;shareDownload.hidden=!preparedShareBlob;
+};
+const downloadShareImage=()=>{
+if(!preparedShareBlob)return;
+let url;
+try{
+url=URL.createObjectURL(preparedShareBlob);
+const link=document.createElement('a');link.href=url;link.download='kodik-python.png';
+document.body.appendChild(link);link.click();link.remove();
+showShareNotice('Запит на завантаження PNG передано браузеру. Перевір список завантажень. Якщо нічого не сталося, відкрий сайт у звичайному браузері.');
+}catch(error){
+showShareNotice('Браузер не зміг почати завантаження. Відкрий сайт у Chrome або Safari та спробуй ще раз. Код помилки: '+(error.name||'UnknownError'),true);
+}finally{if(url)setTimeout(()=>URL.revokeObjectURL(url),30000)}
+};
+shareDownload.onclick=downloadShareImage;
+const makeImage=async()=>{
 // Repaint first so programmatic edits and the active tab are reflected in the export.
 updateLines();
 if(document.fonts)await document.fonts.ready;
@@ -127,4 +154,35 @@ x.fillStyle='#dcecff';
 outputLines.forEach((text,i)=>x.fillText(text,pad,outputY+i*line));
 if(drawing)x.drawImage(drawing,pad,drawingY,drawingWidth,drawingHeight);
 return new Promise((resolve,reject)=>c.toBlob(blob=>blob?resolve(blob):reject(new Error('Не вдалося створити зображення')),'image/png'));
-};share.onclick=async()=>{share.disabled=true;try{const blob=await makeImage(),file=new File([blob],'kodik-python.png',{type:'image/png'});if(navigator.share&&navigator.canShare?.({files:[file]}))await navigator.share({title:'Мій код Python',text:'Код і результат виконання з Кодика',files:[file]});else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='kodik-python.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}}catch(e){if(e.name!=='AbortError')alert('Не вдалося підготувати зображення для поділу.')}finally{share.disabled=false}}})();
+};share.onclick=async()=>{
+share.disabled=true;preparedShareBlob=null;shareDownload.hidden=true;
+showShareNotice('Готую зображення…');
+let phase='image';
+try{
+const blob=await makeImage();preparedShareBlob=blob;phase='share';
+const file=new File([blob],'kodik-python.png',{type:'image/png'});
+if(navigator.share&&navigator.canShare?.({files:[file]})){
+await navigator.share({title:'Мій код Python',text:'Код і результат виконання з Кодика',files:[file]});
+showShareNotice('Зображення передано системному меню поширення.');
+}else{
+showShareNotice('Цей браузер не підтримує поширення PNG. Зображення можна завантажити кнопкою нижче.');
+downloadShareImage();
+}
+}catch(error){
+const name=error.name||'UnknownError';
+if(phase==='image'){
+showShareNotice('Не вдалося створити PNG. Якщо коду або виводу багато, скороти його та спробуй ще раз. Код помилки: '+name,true);
+}else if(name==='AbortError'){
+showShareNotice('Поширення скасовано або немає доступних застосунків для надсилання. Можна завантажити PNG кнопкою нижче.');
+}else{
+const reasons={
+NotAllowedError:'Браузер заблокував поширення. Можлива причина — обмеження браузера або затримка підготовки зображення.',
+SecurityError:'Поширення заблоковане правилами безпеки браузера. Відкрий HTTPS-адресу сайту безпосередньо у браузері.',
+InvalidStateError:'Інше вікно поширення вже відкрите або сторінка неактивна. Закрий його та повернися на сайт.',
+TypeError:'Браузер не підтримує передавання цього зображення.',
+DataError:'Не вдалося передати зображення вибраному застосунку.'
+};
+showShareNotice((reasons[name]||'Не вдалося відкрити меню поширення.')+' Спробуй завантажити PNG кнопкою нижче. Код помилки: '+name,true);
+}
+}finally{share.disabled=false}
+}})();
