@@ -28,6 +28,8 @@ jobs:
         run: |
           npm install --no-save --package-lock=false playwright@1.51.1
           npx playwright install --with-deps chromium
+          PYODIDE_DIR="$PWD/android/app/src/main/assets/web/pyodide" node robot-node.test.cjs
+          node android/robot-browser.cjs
           node highlight.test.cjs
           node share-image.test.cjs
           PYODIDE_DIR="$PWD/android/app/src/main/assets/web/pyodide" node turtle-node.test.cjs
@@ -44,8 +46,8 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging android/app/build/outputs/apk/debug/app-debug.apk | tee android/artifacts/apk-info.txt
           grep "sdkVersion:'28'" android/artifacts/apk-info.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs android/app/build/outputs/apk/debug/app-debug.apk > android/artifacts/signature.txt
-          cp android/app/build/outputs/apk/debug/app-debug.apk android/artifacts/Kodik-1.3-Android9.apk
-          sha256sum android/artifacts/Kodik-1.3-Android9.apk > android/artifacts/SHA256SUMS.txt
+          cp android/app/build/outputs/apk/debug/app-debug.apk android/artifacts/Kodik-1.4-Android9.apk
+          sha256sum android/artifacts/Kodik-1.4-Android9.apk > android/artifacts/SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
