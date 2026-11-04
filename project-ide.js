@@ -177,7 +177,7 @@ if(!yes)return;backup();project.remove(node.id);syncMutation();
 function clearRuntime(){
 if(runtime?.projectId){capture();runtime.leave();
 if(window.pyodide)window.pyodide.runPython("import sys\n_old_tk=sys.modules.get('tkinter')\nif _old_tk is not None and hasattr(_old_tk,'_cleanup'):\n    _old_tk._cleanup()");
-window.KodikTk?.reset();window.kodikTurtle?.beginRun()}
+window.KodikRobot?.beginRun();window.KodikTk?.reset();window.kodikTurtle?.beginRun()}
 }
 function replaceProject(next){
 saveEditor();capture();backup();clearRuntime();project=next;project.state.id=uid();window.kodikHistory?.clear();
@@ -235,7 +235,7 @@ window.pyodide=await loadPyodide();
 })().catch(error=>{enginePromise=null;throw error});
 await enginePromise;
 }
-await window.installKodikTurtle(window.pyodide);await window.installKodikTkinter(window.pyodide);
+await window.installKodikTurtle(window.pyodide);await window.installKodikTkinter(window.pyodide);await window.installKodikRobot(window.pyodide);
 if(!runtime){
 if(!setupPromise)setupPromise=fetch(new URL('project-runtime.py?v=1.24',document.baseURI)).then(response=>{if(!response.ok)throw new Error('Не вдалося завантажити режим проєкту');return response.text()}).catch(error=>{setupPromise=null;throw error});
 runtime=new Runtime(window.pyodide,await setupPromise);
@@ -265,9 +265,9 @@ if(!execution){try{await original.executeCode(values)}finally{setBusy(false)}ret
 let index=0;const code=execution.code.replace(inputPattern,()=>JSON.stringify(values[index++]||''));
 try{
 const result=await runtime.execute(code,execution.path);
-await window.kodikTurtle.finish();capture(true);
+window.KodikRobot.finish();await window.kodikTurtle.finish();capture(true);
 byId('output').textContent=byId('output').textContent.replace(/^Запускаю Python…\n?/,'');
-byId('output').textContent+=result||(window.KodikTk?.visible?'Графічний застосунок запущено.':window.kodikTurtle?.visible?'Малюнок готовий.':'Код виконано без виводу.');
+byId('output').textContent+=result||(window.KodikRobot?.visible?'Робот готовий. Натисни «Виконати» під картою.':window.KodikTk?.visible?'Графічний застосунок запущено.':window.kodikTurtle?.visible?'Малюнок готовий.':'Код виконано без виводу.');
 byId('status').textContent=(result.includes('Traceback (most recent call last)')?'Помилка · ':'Виконано · ')+execution.path;
 }catch(error){byId('output').textContent+='\n'+explainPythonError(error);capture(true)}
 finally{execution=null;waiting=false;setBusy(false)}
