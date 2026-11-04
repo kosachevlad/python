@@ -7,15 +7,15 @@ const script=html.match(/<script src="([^"?]+)(?:\?[^"]*)?"><\/script>/)[1];
 let app=await fs.readFile(path.join(repo,script),'utf8');
 app=app.replace("https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js","pyodide/pyodide.js")
 .replace("await loadPyodide()","await loadPyodide({indexURL:new URL('pyodide/',location.href).href})")
-.replaceAll("v1.24","v1.24 · Android 1.3");
+.replaceAll("v1.25","v1.25 · Android 1.4");
 const needle="if(navigator.share&&navigator.canShare?.({files:[file]}))";
 if(!app.includes(needle))throw Error('Share handler changed; update Android adapter.');
 app=app.replace(needle,"if(window.KodikAndroid){\nconst encoded=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob)});\nif(!KodikAndroid.sharePng(encoded))throw new Error('Не вдалося передати зображення Android');\n}else if(navigator.share&&navigator.canShare?.({files:[file]}))");
 html=html.replace(/<script>if\('serviceWorker'[\s\S]*?<\/script>/,'')
-.replaceAll('v1.24','v1.24 · Android 1.3');
+.replaceAll('v1.25','v1.25 · Android 1.4');
 await fs.writeFile(path.join(dest,script),app);
 await fs.writeFile(path.join(dest,'index.html'),html);
-for(const file of ['turtle.py','turtle-canvas.js','kodik_tkinter.py','tkinter-dom.js','project-store.js','project-runtime.js','project-runtime.py','project-ide.js'])await fs.copyFile(path.join(repo,file),path.join(dest,file));
+for(const file of ['robot-bundle.json','robot-canvas.js','turtle.py','turtle-canvas.js','kodik_tkinter.py','tkinter-dom.js','project-store.js','project-runtime.js','project-runtime.py','project-ide.js'])await fs.copyFile(path.join(repo,file),path.join(dest,file));
 const ideFile=path.join(dest,'project-ide.js');
 let ide=await fs.readFile(ideFile,'utf8');
 ide=ide.replace('https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js','pyodide/pyodide.js').replace('await loadPyodide()','await loadPyodide({indexURL:new URL(\'pyodide/\',location.href).href})');
@@ -32,3 +32,4 @@ console.log(name,data.length);
 console.log('Prepared offline Android assets from '+script);
 }
 main().catch(error=>{console.error(error);process.exitCode=1});
+

@@ -1,0 +1,59 @@
+name: Build Android APK
+on:
+  push:
+    branches: [features/robot]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Prepare offline Python and web assets
+        run: node android/prepare-web.cjs
+      - name: Verify browser behavior without external network
+        run: |
+          npm install --no-save --package-lock=false playwright@1.51.1
+          npx playwright install --with-deps chromium
+          PYODIDE_DIR="$PWD/android/app/src/main/assets/web/pyodide" node robot-node.test.cjs
+          node android/robot-browser.cjs
+          node highlight.test.cjs
+          node share-image.test.cjs
+          PYODIDE_DIR="$PWD/android/app/src/main/assets/web/pyodide" node turtle-node.test.cjs
+          PYODIDE_DIR="$PWD/android/app/src/main/assets/web/pyodide" node tkinter-node.test.cjs
+          node project-store.test.cjs
+          PYODIDE_DIR="$PWD/android/app/src/main/assets/web/pyodide" node project-runtime.test.cjs
+          node android/browser-smoke.cjs
+          node android/ide-browser.cjs
+      - name: Build APK
+        working-directory: android
+        run: gradle :app:assembleDebug :app:lintDebug --stacktrace
+      - name: Verify Android 9 compatibility and APK signature
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging android/app/build/outputs/apk/debug/app-debug.apk | tee android/artifacts/apk-info.txt
+          grep "sdkVersion:'28'" android/artifacts/apk-info.txt
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs android/app/build/outputs/apk/debug/app-debug.apk > android/artifacts/signature.txt
+          cp android/app/build/outputs/apk/debug/app-debug.apk android/artifacts/Kodik-1.4-Android9.apk
+          sha256sum android/artifacts/Kodik-1.4-Android9.apk > android/artifacts/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Kodik-Android9
+          path: |
+            android/artifacts/
+            android/app/build/reports/lint-results-debug.html
+          if-no-files-found: warn
+          retention-days: 30
+
