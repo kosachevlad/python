@@ -27,6 +27,9 @@ def _kp_execute(code, filename, root):
     _kp_sys.argv[:] = [filename]
     _kp_builtins.input = _kp_input
     namespace = {'__name__':'__main__', '__file__':filename, '__package__':None}
+    diagnostic = _kp_sys.modules.get('_kodik_diagnostics')
+    if diagnostic is not None:
+        diagnostic._executed[filename] = code
     output = _kp_io.StringIO()
     with _kp_contextlib.redirect_stdout(output), _kp_contextlib.redirect_stderr(output):
         try:
@@ -34,8 +37,11 @@ def _kp_execute(code, filename, root):
         except SystemExit as error:
             if error.code not in (None, 0):
                 print('SystemExit:', error.code)
-        except BaseException:
-            _kp_traceback.print_exc()
+        except BaseException as error:
+            if diagnostic is not None:
+                print(diagnostic.report_exception(error))
+            else:
+                _kp_traceback.print_exc()
     return output.getvalue()
 
 def _kp_leave(root):
@@ -44,3 +50,4 @@ def _kp_leave(root):
     _kp_sys.argv[:] = _kp_original_argv
     _kp_builtins.input = _kp_original_input
     _kp_os.chdir(_kp_original_cwd)
+

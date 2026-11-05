@@ -226,7 +226,7 @@ syncMutation();showNotice('Додано файлів: '+files.length);
 }
 async function ensureRuntime(){
 await window.ensureKodikPython();
-await window.installKodikTurtle(window.pyodide);await window.installKodikTkinter(window.pyodide);await window.installKodikRobot(window.pyodide);
+await window.installKodikTurtle(window.pyodide);await window.installKodikTkinter(window.pyodide);await window.installKodikRobot(window.pyodide);await window.KodikDiagnostics.install(window.pyodide);
 if(!runtime){
 if(!setupPromise)setupPromise=fetch(new URL('project-runtime.py?v=1.24',document.baseURI)).then(response=>{if(!response.ok)throw new Error('Не вдалося завантажити режим проєкту');return response.text()}).catch(error=>{setupPromise=null;throw error});
 runtime=new Runtime(window.pyodide,await setupPromise);
@@ -245,6 +245,7 @@ backup();setBusy(true);waiting=false;
 byId('output').textContent='Запускаю Python…\n';byId('status').textContent='Завантажую Python 3…';
 try{
 await ensureRuntime();runtime.write(project);
+if(!window.KodikDiagnostics.prepareRun(file.content,runtime.root+'/'+file.path)){execution=null;waiting=false;setBusy(false);return}
 execution={path:file.path,code:file.content};
 pendingCode=file.content;pendingPrompts=[...pendingCode.matchAll(inputPattern)].map(m=>m[2]);collectedInputs=[];
 if(pendingPrompts.length){waiting=true;byId('output').textContent+='\n'+pendingPrompts[0];byId('prompt').value='';byId('prompt').focus();byId('status').textContent='Очікую введення…'}
@@ -253,13 +254,13 @@ else await executeCode([]);
 };
 executeCode=async values=>{
 if(!execution){try{await original.executeCode(values)}finally{setBusy(false)}return}
-let index=0;const code=execution.code.replace(inputPattern,()=>JSON.stringify(values[index++]||''));
+const code=window.KodikDiagnostics.replaceInputs(execution.code,values);
 try{
 const result=await runtime.execute(code,execution.path);
 window.KodikRobot.finish();await window.kodikTurtle.finish();capture(true);
 byId('output').textContent=byId('output').textContent.replace(/^Запускаю Python…\n?/,'');
 byId('output').textContent+=result||(window.KodikRobot?.visible?'Робот готовий. Натисни «Виконати» під картою.':window.KodikTk?.visible?'Графічний застосунок запущено.':window.kodikTurtle?.visible?'Малюнок готовий.':'Код виконано без виводу.');
-byId('status').textContent=(result.includes('Traceback (most recent call last)')?'Помилка · ':'Виконано · ')+execution.path;
+byId('status').textContent=(window.KodikDiagnostics.hasRuntimeError||result.includes('Traceback (most recent call last)')?'Помилка · ':'Виконано · ')+execution.path;
 }catch(error){byId('output').textContent+='\n'+explainPythonError(error);capture(true)}
 finally{execution=null;waiting=false;setBusy(false)}
 };
@@ -291,8 +292,9 @@ importProjectInput.onchange=guarded(async()=>{if(importProjectInput.files[0])awa
 importFilesInput.onchange=guarded(async()=>{if(importFilesInput.files.length)await importFiles([...importFilesInput.files])});
 window.addEventListener('keydown',e=>{if(enabled&&(e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();saveEditor();showNotice('Проєкт збережено на цьому пристрої. Для копії файлом натисни «Зберегти проєкт».')}});
 window.addEventListener('beforeunload',()=>{try{if(enabled){saveEditor();capture();persist()}}catch{}});
-window.kodikIDE={get active(){return enabled},getState:()=>project.snapshot()};
+window.kodikIDE={get active(){return enabled},getState:()=>project.snapshot(),openFile(path){if(busy||waiting)return false;saveEditor();const file=project.at(path);if(!file||file.type!=='file'||file.encoding!=='utf8')return false;project.open(file.id);persist();renderIDE();return true}};
 refreshControls();
 if(localStorage.getItem(MODE)==='ide')mode(true);
 })();
+
 

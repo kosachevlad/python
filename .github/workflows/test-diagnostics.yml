@@ -1,0 +1,37 @@
+name: Test Python diagnostics and web regression
+on:
+  push:
+    branches: [features/python-diagnostics]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/prepare-browser.cjs
+      - name: Verify mobile navigation, input, caching and Python
+        run: |
+          npm install --no-save --package-lock=false playwright@1.51.1
+          npx playwright install --with-deps chromium
+          node highlight.test.cjs
+          node share-image.test.cjs
+          node share-errors.test.cjs
+          node feedback.test.cjs
+          node project-store.test.cjs
+          PYODIDE_DIR="$PWD/.browser-test/pyodide" node python-diagnostics.test.cjs
+          PYODIDE_DIR="$PWD/.browser-test/pyodide" node project-runtime.test.cjs
+          node tests/mobile-browser.cjs
+          node tests/diagnostics-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Mobile-preview
+          path: tests/artifacts/
+          retention-days: 30
+

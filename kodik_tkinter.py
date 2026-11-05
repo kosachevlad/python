@@ -65,7 +65,11 @@ def _proxy(callback, widget=None, event=False):
                 else:
                     result=callback()
         except Exception as error:
-            _bridge.appendOutput("❌ "+ "".join(_traceback.format_exception_only(type(error),error)))
+            diagnostic = _sys.modules.get('_kodik_diagnostics')
+            if diagnostic is not None:
+                _bridge.appendOutput(diagnostic.report_exception(error))
+            else:
+                _bridge.appendOutput("❌ "+ "".join(_traceback.format_exception_only(type(error),error)))
             result=None
         if buffer.getvalue():
             _bridge.appendOutput(buffer.getvalue())
@@ -360,3 +364,4 @@ for _name in ("Frame","LabelFrame","Label","Button","Entry","Checkbutton","Radio
 _sys.modules["tkinter.ttk"]=ttk
 __path__=[]
 __all__=[name for name in globals() if not name.startswith("_")]
+

@@ -1,4 +1,4 @@
-const VERSION='kodik-v1.30',PYTHON_CACHE='kodik-python-0.26.2';
+const VERSION='kodik-v1.31',PYTHON_CACHE='kodik-python-0.26.2';
 const core=new Set(['pyodide.js','pyodide.asm.js','pyodide.asm.wasm','python_stdlib.zip','pyodide-lock.json']);
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
@@ -21,3 +21,4 @@ if(response.ok)caches.open(VERSION).then(cache=>cache.put(event.request,response
 return response;
 }).catch(()=>caches.match(event.request)));
 });
+

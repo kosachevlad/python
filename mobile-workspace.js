@@ -33,7 +33,7 @@ launch.onclick=()=>byId('run').click();
 const previousRun=run,previousExecute=executeCode;
 let running=false;
 run=async()=>{
-if(running||waiting)return;
+if(running||waiting||window.KodikDiagnostics?.checking)return;
 running=true;view('result');sync();
 try{await previousRun()}finally{running=false;if(waiting)showPrompt();else showResult();sync()}
 };
@@ -61,3 +61,4 @@ window.addEventListener('resize',viewport);media.addEventListener('change',()=>{
 setInterval(sync,150);view('code');viewport();sync();
 window.kodikMobile={view,get currentView(){return document.body.dataset.mobileView}};
 })();
+
