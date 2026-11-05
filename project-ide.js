@@ -4,7 +4,7 @@ const {Project,path:cleanPath,parent,base,uid}=KodikProjectStore;
 const {Runtime,encode,bytesToBase64,base64ToBytes}=KodikProjectRuntime;
 const KEY='kodik-project-v1',BACKUP='kodik-project-backup-v1',MODE='kodik-mode-v1';
 const original={save,renderAll,renderTabs,run,executeCode,insert};
-let project,enabled=false,busy=false,execution=null,runtime=null,setupPromise=null,enginePromise=null,backupState=null;
+let project,enabled=false,busy=false,execution=null,runtime=null,setupPromise=null,backupState=null;
 let simpleState=null,captureScheduled=false,needsMigration=false,storageBlocked=false;
 const byId=id=>document.getElementById(id);
 const toolbar=document.createElement('div');toolbar.className='ide-toolbar';
@@ -225,16 +225,7 @@ project.create(destination,'file',data.content,data.encoding);
 syncMutation();showNotice('Додано файлів: '+files.length);
 }
 async function ensureRuntime(){
-if(!window.pyodide){
-if(!enginePromise)enginePromise=(async()=>{
-if(typeof loadPyodide!=='function'){
-const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';document.head.append(script);
-await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=()=>reject(new Error('Не вдалося завантажити Python'))});
-}
-window.pyodide=await loadPyodide();
-})().catch(error=>{enginePromise=null;throw error});
-await enginePromise;
-}
+await window.ensureKodikPython();
 await window.installKodikTurtle(window.pyodide);await window.installKodikTkinter(window.pyodide);await window.installKodikRobot(window.pyodide);
 if(!runtime){
 if(!setupPromise)setupPromise=fetch(new URL('project-runtime.py?v=1.24',document.baseURI)).then(response=>{if(!response.ok)throw new Error('Не вдалося завантажити режим проєкту');return response.text()}).catch(error=>{setupPromise=null;throw error});
@@ -304,3 +295,4 @@ window.kodikIDE={get active(){return enabled},getState:()=>project.snapshot()};
 refreshControls();
 if(localStorage.getItem(MODE)==='ide')mode(true);
 })();
+
