@@ -86,7 +86,11 @@ def _syntax(error):
         hint = tr('Вирівняй цей рядок із початком відповідного блоку. Не змішуй табуляції й пробіли.', 'Align this line with the matching block. Do not mix tabs and spaces.')
     elif "expected ':'" in message:
         title = tr('Пропущена двокрапка :', 'Missing colon :')
-        hint = tr('Додай : після заголовка if, elif, else, for, while, def, class, try, except, finally, with, match або case.', 'Add : after the block header (if, elif, else, for, while, def, class, try, except, finally, with, match or case).')
+        lines = _source(path).splitlines()
+        line = lines[error.lineno - 1] if error.lineno and error.lineno <= len(lines) else ''
+        header = re.match(r'\\s*((?:async\\s+)?(?:if|elif|else|for|while|def|class|try|except|finally|with|match|case))\\b', line)
+        name = header.group(1) if header else tr('блоку', 'block')
+        hint = tr('Додай : наприкінці заголовка ' + name + ' у цьому рядку. Команди всередині блоку запиши з відступом.', 'Add : at the end of this ' + name + ' header. Indent the statements inside the block.')
     elif 'was never closed' in message:
         bracket = re.search(r"['\"]([([{])['\"]", message)
         opening = bracket.group(1) if bracket else '('
