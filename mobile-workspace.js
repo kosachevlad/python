@@ -42,10 +42,14 @@ result.textContent=waiting?'✎ Введення':'▸ Результат';
 const question=waiting?output.textContent:'';
 if(waiting&&question!==lastPrompt){lastPrompt=question;showPrompt()}else if(!waiting)lastPrompt='';
 }
+let previousViewportHeight=0;
 function viewport(){
 const v=window.visualViewport;
 const inset=v?Math.max(0,innerHeight-v.height-v.offsetTop):0;
 document.documentElement.style.setProperty('--mobile-keyboard',inset+'px');
+const height=v?.height||innerHeight;
+if(Math.abs(height-previousViewportHeight)>1&&media.matches&&waiting&&document.body.dataset.mobileView==='result')requestAnimationFrame(()=>prompt.scrollIntoView({block:'center',behavior:'instant'}));
+previousViewportHeight=height;
 }
 window.visualViewport?.addEventListener('resize',viewport);window.visualViewport?.addEventListener('scroll',viewport);
 window.addEventListener('resize',viewport);media.addEventListener('change',()=>{viewport();sync()});
