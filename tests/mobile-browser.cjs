@@ -15,7 +15,14 @@ assert.equal(await page.locator('script[src$="/pyodide/pyodide.js"]').count(),1)
 assert(await page.locator('#editor').isVisible());assert(await page.locator('.terminal').isHidden());
 assert(await page.locator('#pythonEngineStatus').isHidden());assert.equal(await page.locator('#pythonEngineStatus').textContent(),'');
 assert(await page.locator('.share-footer .share-code').isVisible());
+assert(await page.locator('#contactButton').isVisible());
 assert(await page.locator('.share-footer').evaluate(e=>e===document.querySelector('.app').lastElementChild));
+await page.locator('#contactButton').click();assert(await page.locator('#contactDialog').isVisible());
+await page.locator('#contactEmail').fill('teacher@example.com');await page.locator('#contactMessage').fill('Пропозиція для уроку');
+await page.locator('#contactDialog').screenshot({path:path.join(__dirname,'artifacts/feedback-mobile.png')});
+assert(await page.locator('#contactDialog').evaluate(e=>e.getBoundingClientRect().width<=innerWidth));
+await page.locator('#cancelContact').click();assert(await page.locator('#contactDialog').isHidden());assert(await page.locator('#contactButton').evaluate(e=>e===document.activeElement));
+await page.locator('#contactButton').click();await page.keyboard.press('Escape');assert(await page.locator('#contactDialog').isHidden());
 await page.locator('.mobile-dock').screenshot({path:path.join(__dirname,'artifacts/mobile-run-bar.png')});
 await run('name = input("Як тебе звати? ")\nage = input("Який у тебе клас? ")\nprint("Привіт", name, age)');
 await page.waitForFunction(()=>typeof waiting!=='undefined'&&waiting,{},{timeout:90000});

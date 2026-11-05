@@ -22,6 +22,7 @@ jobs:
           node highlight.test.cjs
           node share-image.test.cjs
           node share-errors.test.cjs
+          node feedback.test.cjs
           node project-store.test.cjs
           PYODIDE_DIR="$PWD/.browser-test/pyodide" node project-runtime.test.cjs
           node tests/mobile-browser.cjs
