@@ -12,6 +12,8 @@ import json
 import linecache
 import os
 import re
+import keyword
+import tokenize
 import traceback
 import warnings
 
@@ -54,6 +56,18 @@ def _column(text, byte):
     return len(text.encode('utf-8')[:max(0, byte)].decode('utf-8', errors='ignore')) + 1
 
 
+def _line_tokens(source, line):
+    result = []
+    try:
+        for token in tokenize.generate_tokens(io.StringIO(source).readline):
+            if token.start[0] == line and token.type not in (tokenize.STRING, tokenize.COMMENT, tokenize.INDENT, tokenize.DEDENT, tokenize.NL, tokenize.NEWLINE, tokenize.ENDMARKER):
+                if token.string.strip():
+                    result.append(token.string)
+    except (tokenize.TokenError, IndentationError):
+        pass
+    return result
+
+
 def _item(path, line, column, end, kind, title, hint, details='', severity='error', source_override=None):
     source = _source(path) if source_override is None else source_override
     lines = source.splitlines()
@@ -72,7 +86,15 @@ def _syntax(error):
     title = tr('Помилка синтаксису', 'Syntax error')
     hint = tr('Перевір написання команди, розділові знаки та попередній рядок. Python указує місце, де не зміг розібрати код.',
               'Check the statement, punctuation and previous line. Python points to where parsing failed.')
-    if isinstance(error, TabError):
+    tokens = _line_tokens(_source(path), error.lineno)
+    pairs = set(zip(tokens, tokens[1:]))
+    if tokens[:2] == ['else', 'if']:
+        title = tr('else if замість elif', 'Use elif instead of else if')
+        hint = tr('У Python наступну умову записують одним словом elif: elif умова:.', 'Write the next condition with elif: elif condition:.')
+    elif tokens and tokens[0].lower() in keyword.kwlist and tokens[0] != tokens[0].lower():
+        title = tr('Неправильний регістр ключового слова', 'Incorrect keyword case')
+        hint = tr('Напиши ключове слово малими літерами: ', 'Use the lowercase keyword: ') + tokens[0].lower() + '.'
+    elif isinstance(error, TabError):
         title = tr('Змішані табуляції та пробіли', 'Mixed tabs and spaces')
         hint = tr('Використовуй пробіли для всіх відступів у блоці, наприклад по 4 пробіли на рівень.', 'Use spaces consistently, for example four spaces per indentation level.')
     elif 'expected an indented block' in message:
@@ -148,6 +170,18 @@ def _syntax(error):
     elif "expected 'except' or 'finally'" in message:
         title = tr('Незавершений try', 'Incomplete try statement')
         hint = tr('Після блоку try додай except або finally з відповідними відступами.', 'Add an except or finally block after try with matching indentation.')
+    elif tokens[:1] == ['for'] and 'in' not in tokens:
+        title = tr('Пропущено in у циклі for', 'Missing in in a for loop')
+        hint = tr('Додай in між змінною циклу й послідовністю: for i in range(5):.', 'Add in between the loop variable and the iterable: for i in range(5):.')
+    elif ('&', '&') in pairs or ('|', '|') in pairs:
+        title = tr('Неправильний логічний оператор', 'Invalid logical operator')
+        hint = tr('У Python використовуй and замість && та or замість ||.', 'Use and instead of && and or instead of || in Python.')
+    elif ('=', '<') in pairs or ('=', '>') in pairs or ('<', '>') in pairs or '<>' in tokens:
+        title = tr('Неправильний оператор порівняння', 'Invalid comparison operator')
+        hint = tr('Використовуй <=, >= або != замість =<, => або <> відповідно.', 'Use <=, >= or != instead of =<, => or <> respectively.')
+    elif len(tokens) > 1 and keyword.iskeyword(tokens[0]) and tokens[1] == '=':
+        title = tr('Ключове слово замість імені змінної', 'Keyword used as a variable name')
+        hint = tr('Обери інше ім’я змінної. Слова if, for, class, def та інші ключові слова зарезервовані Python.', 'Choose another variable name. Python keywords such as if, for, class and def are reserved.')
     return _item(path, error.lineno, error.offset, error.end_offset,
                  type(error).__name__, title, hint, message)
 

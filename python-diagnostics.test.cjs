@@ -15,7 +15,7 @@ const syntax=[
 ['print(1',1,'Незакрита дужка'],['x = [1,\n 2',1,'Незакрита дужка'],['x = {"a":1',1,'Незакрита дужка'],['print(1))',1,'Зайва'],['x = [1, 2)',1,'різного типу'],
 ['print("привіт)',1,'Незакриті лапки'],["x = 'text",1,'Незакриті лапки'],['x = """text\ntext',1,'багаторядковий'],['x = f"{1"',1,'f-рядку'],['print(“привіт”)',1,'символ'],
 ['if True:\nprint(1)',2,'відступу'],['    print(1)',1,'Зайвий відступ'],['if True:\n    print(1)\n  print(2)',3,'Відступ'],['if True:\n\tprint(1)\n        print(2)',3,'табуляції'],
-['print(1 2)',1,'кома'],['if x = 3:\n    pass',1,'порівняння'],['print "hello"',1,'дужок'],['x = 07',1,'нуль'],['2name = 1',1,'числа'],
+['for i range(3):\n    pass',1,'Пропущено in'],['If True:\n    pass',1,'регістр'],['if True:\n    pass\nelse if False:\n    pass',3,'elif'],['if True && False:\n    pass',1,'and'],['if True || False:\n    pass',1,'or'],['if 1 =< 2:\n    pass',1,'порівняння'],['if 2 => 1:\n    pass',1,'порівняння'],['if 1 <> 2:\n    pass',1,'порівняння'],['class = 1',1,'змінної'],['print(1 2)',1,'кома'],['if x = 3:\n    pass',1,'порівняння'],['print "hello"',1,'дужок'],['x = 07',1,'нуль'],['2name = 1',1,'числа'],
 ['return 3',1,'блоком'],['break',1,'блоком'],['continue',1,'блоком'],['def f(a,a):\n    pass',1,'параметр'],['def f(a=1,b):\n    pass',1,'Порядок'],['print(a=1,2)',1,'Порядок'],['3 = x',1,'присвоювання'],['try:\n    pass\nprint(1)',3,'try']
 ];
 for(const [code,line,hint] of syntax){const result=check(code,false);assert.equal(result.length,1,code);assert.equal(result[0].line,line,code);assert((result[0].title+' '+result[0].hint).includes(hint),code+' -> '+JSON.stringify(result));assert.equal(result[0].severity,'error');assert(result[0].column>=1);assert.equal(result[0].source,code)}
