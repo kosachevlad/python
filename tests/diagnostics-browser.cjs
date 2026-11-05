@@ -16,7 +16,7 @@ await page.goto('http://127.0.0.1:'+server.address().port);await page.waitForFun
 await run('x = 1\nif x == 1\n    print(x)');
 assert.equal((await items())[0].line,2);assert((await items())[0].title.includes('двокрапка'));assert.equal(await page.evaluate(()=>waiting),false);
 await page.locator('.diagnostics-panel').screenshot({path:path.join(__dirname,'artifacts/python-missing-colon.png')});
-await page.locator('.diagnostic-location').click();assert(await page.locator('#editor').isVisible());
+const errorOutput=await page.locator('#output').textContent();await page.locator('.diagnostic-location').click();assert(await page.locator('#editor').isVisible());assert.equal(await page.locator('#output').textContent(),errorOutput);
 assert.equal(await page.locator('#editor').evaluate(e=>e.value.slice(0,e.selectionStart).split('\n').length),2);
 assert.equal(await page.locator('.diagnostic-gutter').textContent(),'2');
 await run('print(“привіт”)');assert.equal((await items())[0].type,'SyntaxError');assert((await items())[0].title.includes('символ'));await page.locator('#mobileCode').click();assert.equal(await page.locator('#editor').inputValue(),'print(“привіт”)');

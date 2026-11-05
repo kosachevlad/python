@@ -28,10 +28,11 @@ for(let i=0;i<rows.length;i++){rows[i].classList.toggle('diagnostic-line',lines.
 }
 function jump(item){
 if(!item.line)return;
+if(waiting||checking||$('run').disabled){$('diagnosticStatus').textContent=choose('Заверши поточне введення або виконання перед переходом.','Finish the current input or execution before navigating.');return}
 const current=sources()[item.path];
 if(current!==item.source){$('diagnosticStatus').textContent=choose('Код уже змінено. Натисни «Перевірити код» ще раз.','The code has changed. Check it again.');return}
 if(item.path.startsWith(projectRoot)&&window.kodikIDE?.active){if(!kodikIDE.openFile(item.path.slice(projectRoot.length)))return}
-else if(item.path.startsWith(lessonRoot)&&!window.kodikIDE?.active){save();const id=tabs.findIndex(t=>lessonRoot+t.name===item.path);if(id<0)return;active=id;renderAll()}
+else if(item.path.startsWith(lessonRoot)&&!window.kodikIDE?.active){save();const id=tabs.findIndex(t=>lessonRoot+t.name===item.path);if(id<0)return;if(id!==active){const previousOutput=$('output').textContent;active=id;renderAll();$('output').textContent=previousOutput}}
 else return;
 window.kodikMobile?.view('code');
 const editor=$('editor'),lines=editor.value.split('\n');
