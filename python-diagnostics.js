@@ -5,7 +5,7 @@ const panel=document.createElement('section');panel.className='diagnostics-panel
 document.querySelector('.workspace').insertAdjacentElement('beforebegin',panel);
 const check=document.createElement('button');check.id='checkPython';check.type='button';check.className='edit-action';
 document.querySelector('.edit-actions').append(check);
-let installed=null,loading=null,items=[],checking=false,runtimeError=false;
+let installed=null,loading=null,items=[],checking=false,runtimeError=false,dismissed=false;
 const lessonRoot='/home/pyodide/kodik-lessons/',projectRoot='/home/pyodide/kodik-project/';
 function path(){
 if(window.kodikIDE?.active){const s=kodikIDE.getState();return projectRoot+(s.nodes.find(n=>n.id===s.activeId)?.path||'main.py')}
@@ -44,8 +44,14 @@ editor.focus({preventScroll:true});editor.setSelectionRange(lineStart+before,lin
 editor.scrollTop=Math.max(0,(item.line-1)*24-editor.clientHeight/3);editor.scrollIntoView({block:'center',behavior:'instant'});markers();
 }
 function render(showClean=false){
-panel.replaceChildren();panel.hidden=!items.length&&!showClean;
-const heading=document.createElement('h2');heading.textContent=choose('Перевірка Python','Python check');panel.append(heading);
+panel.replaceChildren();panel.hidden=dismissed||(!items.length&&!showClean);
+const header=document.createElement('div');header.className='diagnostics-header';
+const heading=document.createElement('h2');heading.textContent=choose('Перевірка Python','Python check');
+const close=document.createElement('button');close.type='button';close.className='diagnostics-close';close.textContent='×';
+close.setAttribute('aria-label',choose('Закрити повідомлення перевірки Python','Close Python check message'));
+close.title=choose('Закрити','Close');
+close.onclick=()=>{dismissed=true;panel.hidden=true;const target=check.getClientRects().length?check:$('mobileResult')||$('run');target?.focus({preventScroll:true})};
+header.append(heading,close);panel.append(header);
 const status=document.createElement('p');status.id='diagnosticStatus';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
 status.textContent=items.length?choose('Знайдено повідомлень: ','Messages found: ')+items.length:choose('Синтаксичних помилок і вибраних попереджень Pyflakes не знайдено. Логіку програми та всі помилки виконання це не перевіряє.','No syntax errors or selected Pyflakes warnings found. This does not verify program logic or all runtime errors.');panel.append(status);
 for(const item of items){
@@ -70,13 +76,13 @@ function register(forRun=false){window.pyodide.runPython('_kd.register(__import_
 function analyze(code,filename,lint=true){return JSON.parse(window.pyodide.runPython('_kd.check_json('+JSON.stringify(code)+','+JSON.stringify(filename)+','+(lint?'True':'False')+')'))}
 function refresh(){check.textContent=choose('✓ Перевірити код','✓ Check code');check.disabled=checking||$('editor').readOnly||waiting||$('run').disabled;markers()}
 window.kodikReportDiagnostic=text=>{
-const item=JSON.parse(text);runtimeError=true;items=items.filter(old=>!(old.path===item.path&&old.line===item.line));items.push(item);render();
+const item=JSON.parse(text);dismissed=false;runtimeError=true;items=items.filter(old=>!(old.path===item.path&&old.line===item.line));items.push(item);render();
 };
 check.onclick=async()=>{
 if(checking||waiting||$('run').disabled||$('editor').readOnly)return;
-checking=true;$('run').disabled=true;refresh();
+checking=true;dismissed=false;$('run').disabled=true;refresh();
 try{const py=await window.ensureKodikPython();await install(py);save();register();items=analyze($('editor').value,path());runtimeError=false;render(true)}
-catch(error){panel.hidden=false;panel.textContent=choose('Не вдалося перевірити код: ','Could not check code: ')+error.message}
+catch(error){items=[];render(true);$('diagnosticStatus').textContent=choose('Не вдалося перевірити код: ','Could not check code: ')+error.message}
 finally{checking=false;$('run').disabled=false;refresh()}
 };
 const originalUpdate=updateLines;updateLines=()=>{originalUpdate();refresh()};
@@ -84,7 +90,7 @@ $('editor').addEventListener('input',()=>{items=items.filter(i=>i.path!==path())
 for(const event of ['keyup','click','select','focus','scroll'])$('editor').addEventListener(event,()=>requestAnimationFrame(markers));
 $('uiLang').addEventListener('change',refresh);
 window.KodikDiagnostics={install,currentPath:path,get checking(){return checking},get hasRuntimeError(){return runtimeError},get items(){return items.map(i=>({...i}))},format,
-prepareRun(code,filename){register(true);runtimeError=false;items=analyze(code,filename);render();const errors=items.filter(i=>i.severity==='error');if(errors.length){runtimeError=true;$('output').textContent=errors.map(format).join('\n\n');$('status').textContent=choose('Виправ помилку перед запуском','Fix the error before running');return false}return true},
+prepareRun(code,filename){dismissed=false;register(true);runtimeError=false;items=analyze(code,filename);render();const errors=items.filter(i=>i.severity==='error');if(errors.length){runtimeError=true;$('output').textContent=errors.map(format).join('\n\n');$('status').textContent=choose('Виправ помилку перед запуском','Fix the error before running');return false}return true},
 replaceInputs(code,values){let i=0;return code.replace(inputPattern,match=>'('+JSON.stringify(values[i++]??'')+'\n'.repeat((match.match(/\n/g)||[]).length)+')')}
 };
 refresh();

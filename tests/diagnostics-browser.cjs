@@ -16,6 +16,10 @@ await page.goto('http://127.0.0.1:'+server.address().port);await page.waitForFun
 await run('x = 1\nif x == 1\n    print(x)');
 assert.equal((await items())[0].line,2);assert((await items())[0].title.includes('двокрапка'));assert.equal(await page.evaluate(()=>waiting),false);
 await page.locator('.diagnostics-panel').screenshot({path:path.join(__dirname,'artifacts/python-missing-colon.png')});
+const retainedItems=await items();const retainedOutput=await page.locator('#output').textContent();
+await page.locator('.diagnostics-close').click();assert(await page.locator('.diagnostics-panel').isHidden());assert.deepEqual(await items(),retainedItems);assert.equal(await page.locator('#output').textContent(),retainedOutput);
+await page.locator('#mobileCode').click();assert(await page.locator('.diagnostics-panel').isHidden());
+await check();assert(await page.locator('.diagnostics-panel').isVisible());
 const errorOutput=await page.locator('#output').textContent();await page.locator('.diagnostic-location').click();assert(await page.locator('#editor').isVisible());assert.equal(await page.locator('#output').textContent(),errorOutput);
 assert.equal(await page.locator('#editor').evaluate(e=>e.value.slice(0,e.selectionStart).split('\n').length),2);
 assert.equal(await page.locator('.diagnostic-gutter').textContent(),'2');
@@ -23,7 +27,8 @@ await run('print(“привіт”)');assert.equal((await items())[0].type,'Syn
 await run('print("Не змінюй “лапки” всередині тексту")');assert((await page.locator('#output').textContent()).includes('“лапки”'));
 await code('print("НЕ ВИКОНУВАТИ")\npritn("hi")');const before=await page.locator('#output').textContent();await check();assert.equal(await page.locator('#output').textContent(),before);assert((await items()).some(i=>i.type==='UndefinedName'&&i.hint.includes('print')));
 await code('print("коментар # ( { без помилки")');await check();assert.equal((await items()).length,0);
-await run('x = 10\ny = 0\nprint(x / y)');assert.equal((await items()).at(-1).line,3);assert.equal((await items()).at(-1).type,'ZeroDivisionError');await page.waitForTimeout(1200);assert((await page.locator('#output').textContent()).includes('main.py:3'));assert(!(await page.locator('#output').textContent()).includes('на рядку 2'));
+await page.locator('.diagnostics-close').click();assert(await page.locator('.diagnostics-panel').isHidden());
+await run('x = 10\ny = 0\nprint(x / y)');assert(await page.locator('.diagnostics-panel').isVisible());assert.equal((await items()).at(-1).line,3);assert.equal((await items()).at(-1).type,'ZeroDivisionError');await page.waitForTimeout(1200);assert((await page.locator('#output').textContent()).includes('main.py:3'));assert(!(await page.locator('#output').textContent()).includes('на рядку 2'));
 await page.locator('.diagnostics-panel').screenshot({path:path.join(__dirname,'artifacts/python-runtime-error.png')});
 await code('name = input(\n    "Імʼя? "\n)\nprint(int(name))');await page.locator('#mobileRun').click();await page.waitForFunction(()=>waiting);await page.locator('#prompt').fill('abc');await page.locator('#send').click();await done();assert.equal((await items()).at(-1).line,4);assert.equal((await items()).at(-1).type,'ValueError');
 await run('x = input("Name?")\nif True\n    pass');assert.equal(await page.evaluate(()=>waiting),false);assert.equal((await items())[0].line,2);
