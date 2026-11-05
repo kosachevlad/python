@@ -19,6 +19,8 @@ await page.locator('.diagnostics-panel').screenshot({path:path.join(__dirname,'a
 await page.locator('.diagnostic-location').click();assert(await page.locator('#editor').isVisible());
 assert.equal(await page.locator('#editor').evaluate(e=>e.value.slice(0,e.selectionStart).split('\n').length),2);
 assert.equal(await page.locator('.diagnostic-gutter').textContent(),'2');
+await run('print(“привіт”)');assert.equal((await items())[0].type,'SyntaxError');assert((await items())[0].title.includes('символ'));await page.locator('#mobileCode').click();assert.equal(await page.locator('#editor').inputValue(),'print(“привіт”)');
+await run('print("Не змінюй “лапки” всередині тексту")');assert((await page.locator('#output').textContent()).includes('“лапки”'));
 await code('print("НЕ ВИКОНУВАТИ")\npritn("hi")');const before=await page.locator('#output').textContent();await check();assert.equal(await page.locator('#output').textContent(),before);assert((await items()).some(i=>i.type==='UndefinedName'&&i.hint.includes('print')));
 await code('print("коментар # ( { без помилки")');await check();assert.equal((await items()).length,0);
 await run('x = 10\ny = 0\nprint(x / y)');assert.equal((await items()).at(-1).line,3);assert.equal((await items()).at(-1).type,'ZeroDivisionError');await page.waitForTimeout(1200);assert((await page.locator('#output').textContent()).includes('main.py:3'));assert(!(await page.locator('#output').textContent()).includes('на рядку 2'));
