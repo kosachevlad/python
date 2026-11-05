@@ -53,7 +53,7 @@ sync();
 
 
 (()=>{const bar=document.getElementById('mobileSymbols');if(!bar)return;const spacer=document.createElement('div');spacer.style.display='none';spacer.style.height=bar.offsetHeight+'px';bar.parentNode.insertBefore(spacer,bar);const update=()=>{if(window.innerWidth>560){bar.classList.remove('is-floating');spacer.style.display='none';return}if(!bar.classList.contains('is-floating')){if(spacer.getBoundingClientRect().top<0){spacer.style.display='block';spacer.style.height=bar.offsetHeight+'px';bar.classList.add('is-floating')}}else if(spacer.getBoundingClientRect().top>=0){bar.classList.remove('is-floating');spacer.style.display='none'}};window.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);update()})();
-const APP_VERSION='v1.31';console.info(`Кодик ${APP_VERSION} · версія застосунку`);const versionLabel=document.createElement('span');versionLabel.className='version';versionLabel.textContent=` (${APP_VERSION})`;document.querySelector('.brand h1')?.append(versionLabel);
+const APP_VERSION='v1.32';console.info(`Кодик ${APP_VERSION} · версія застосунку`);const versionLabel=document.createElement('span');versionLabel.className='version';versionLabel.textContent=` (${APP_VERSION})`;document.querySelector('.brand h1')?.append(versionLabel);
 (()=>{const editor=$('editor'),wrap=document.querySelector('.editor-wrap'),gutter=$('gutter');if(!editor||!wrap)return;const highlight=document.createElement('pre');highlight.className='code-highlight';wrap.insertBefore(highlight,editor);const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const paint=line=>{
 const keywords=new Set('def class if else elif for while in return import from as try except finally with and or not True False None'.split(' '));
 const builtins=new Set('print input range len str int float list dict set open'.split(' '));
@@ -75,16 +75,16 @@ offset=start+token.length;
 }
 return html+esc(line.slice(offset))||' ';
 };const update=()=>{const lines=editor.value.split('\n'),line=editor.value.slice(0,editor.selectionStart).split('\n').length;highlight.innerHTML=lines.map((v,i)=>`<span class="${i+1===line?'active-line':''}">${paint(v)}</span>`).join('\n');gutter.innerHTML=lines.map((_,i)=>`<span class="gutter-line ${i+1===line?'active':''}">${i+1}</span>`).join('');highlight.scrollTop=editor.scrollTop;highlight.scrollLeft=editor.scrollLeft};['input','keyup','click','select','focus'].forEach(e=>editor.addEventListener(e,update));editor.addEventListener('scroll',update);const old=updateLines;updateLines=()=>{old();update()};update()})();
-console.info('Кодик v1.31 · версія застосунку');document.querySelectorAll('.version').forEach(e=>e.textContent='(v1.31)');
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
+console.info('Кодик v1.32 · версія застосунку');document.querySelectorAll('.version').forEach(e=>e.textContent='(v1.32)');
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.32)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.32)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.32)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.32)</span>'},0);
 setTimeout(()=>{document.querySelectorAll('.tab').forEach(t=>t.scrollIntoView({inline:'nearest'}))},0);
 
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
-setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.32)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.32)</span>'},0);
+setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.32)</span>'},0);
 (()=>{const originalExecuteCode=executeCode;executeCode=async values=>{await originalExecuteCode(values);const o=$('output');if(o)setTimeout(()=>{o.textContent=o.textContent.replace(/^Запускаю Python…\n?/,'').replace(/^Запускаю Python\.\.\.\n?/,'')},1000)}})();setInterval(()=>{const row=document.querySelector('.prompt-row');if(row)row.style.display=waiting?'flex':'none'},100);setInterval(()=>{const row=document.querySelector('.prompt-row');if(!row)return;try{const visible=typeof waiting!=='undefined'&&waiting===true;row.hidden=!visible;row.style.display=visible?'flex':'none'}catch(e){row.hidden=true;row.style.display='none'}},50);(()=>{const row=document.querySelector('.prompt-row');if(row){row.hidden=true;row.style.display='none'}setInterval(()=>{const r=document.querySelector('.prompt-row');if(!r)return;const visible=typeof waiting!=='undefined'&&waiting===true;r.hidden=!visible;r.style.display=visible?'flex':'none'},50)})();(()=>{const terminal=document.querySelector('.terminal');if(!terminal)return;const share=document.createElement('button');share.className='share-code';share.type='button';share.textContent='↗ Поділитись кодом і виконанням';share.style.cssText='margin-top:12px;width:100%;padding:12px 16px;border:1px solid #294565;border-radius:10px;background:#162d49;color:#eaf3ff;font:inherit;cursor:pointer';terminal.insertAdjacentElement('afterend',share);
 const shareNotice=document.createElement('div');
 shareNotice.className='share-notice';shareNotice.hidden=true;

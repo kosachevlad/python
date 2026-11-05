@@ -4,8 +4,8 @@ const badge=document.createElement('button');badge.type='button';badge.id='pytho
 badge.setAttribute('aria-live','polite');document.querySelector('.topbar').insertAdjacentElement('afterend',badge);
 const base=new URL(window.KODIK_PYODIDE_URL||(window.KodikAndroid?'pyodide/':'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/'),document.baseURI);
 let pending=null,state='idle';
-function update(next,message){state=next;badge.textContent=message;badge.hidden=next==='ready';badge.dataset.state=next;badge.disabled=next==='loading'||next==='ready';window.dispatchEvent(new CustomEvent('kodik-engine-state',{detail:{state:next,message}}))}
-update('idle','Python · підготувати');
+function update(next,message){state=next;badge.textContent=message;badge.hidden=next==='idle'||next==='ready';badge.dataset.state=next;badge.disabled=next==='loading'||next==='ready';window.dispatchEvent(new CustomEvent('kodik-engine-state',{detail:{state:next,message}}))}
+update('idle','');
 async function loadScript(){
 if(typeof window.loadPyodide==='function')return;
 await new Promise((resolve,reject)=>{
