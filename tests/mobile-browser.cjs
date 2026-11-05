@@ -13,6 +13,9 @@ await page.goto(url);await page.waitForFunction(()=>navigator.serviceWorker.cont
 await page.waitForFunction(()=>window.kodikEngine?.state==='ready',{},{timeout:90000});
 assert.equal(await page.locator('script[src$="/pyodide/pyodide.js"]').count(),1);
 assert(await page.locator('#editor').isVisible());assert(await page.locator('.terminal').isHidden());
+assert(await page.locator('#pythonEngineStatus').isHidden());assert.equal(await page.locator('#pythonEngineStatus').textContent(),'');
+assert(await page.locator('.share-footer .share-code').isVisible());
+assert(await page.locator('.share-footer').evaluate(e=>e===document.querySelector('.app').lastElementChild));
 await page.locator('.mobile-dock').screenshot({path:path.join(__dirname,'artifacts/mobile-run-bar.png')});
 await run('name = input("Як тебе звати? ")\nage = input("Який у тебе клас? ")\nprint("Привіт", name, age)');
 await page.waitForFunction(()=>typeof waiting!=='undefined'&&waiting,{},{timeout:90000});
@@ -22,7 +25,11 @@ const visible=await page.locator('#prompt').evaluate(e=>{const r=e.getBoundingCl
 await page.screenshot({path:path.join(__dirname,'artifacts/mobile-input.png'),fullPage:true});
 await page.locator('#prompt').fill('Оля');await page.locator('#send').click();await page.locator('#prompt').fill('7');await page.locator('#send').click();await finished('Привіт Оля 7');
 assert.equal(await page.evaluate(()=>kodikMobile.currentView),'result');
+assert(await page.locator('.share-footer .share-code').isVisible());
 await page.locator('#mobileCode').click();assert((await page.locator('#editor').inputValue()).includes('input('));
+assert(await page.locator('.share-footer .share-code').isVisible());
+const downloaded=page.waitForEvent('download');await page.locator('.share-code').click();await downloaded;
+assert(await page.locator('.share-footer .share-notice').isVisible());
 await page.locator('#modeIDE').click();await run('from pathlib import Path\nPath("answer.txt").write_text("42")\nprint("IDE працює")');await finished('IDE працює');
 assert((await page.evaluate(()=>kodikIDE.getState())).nodes.some(n=>n.path==='answer.txt'));
 await run('import tkinter as tk\nr=tk.Tk()\ntk.Label(r,text="Привіт, клас!").pack()\nr.mainloop()');

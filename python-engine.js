@@ -4,7 +4,7 @@ const badge=document.createElement('button');badge.type='button';badge.id='pytho
 badge.setAttribute('aria-live','polite');document.querySelector('.topbar').insertAdjacentElement('afterend',badge);
 const base=new URL(window.KODIK_PYODIDE_URL||(window.KodikAndroid?'pyodide/':'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/'),document.baseURI);
 let pending=null,state='idle';
-function update(next,message){state=next;badge.textContent=message;badge.dataset.state=next;badge.disabled=next==='loading'||next==='ready';window.dispatchEvent(new CustomEvent('kodik-engine-state',{detail:{state:next,message}}))}
+function update(next,message){state=next;badge.textContent=message;badge.hidden=next==='ready';badge.dataset.state=next;badge.disabled=next==='loading'||next==='ready';window.dispatchEvent(new CustomEvent('kodik-engine-state',{detail:{state:next,message}}))}
 update('idle','Python · підготувати');
 async function loadScript(){
 if(typeof window.loadPyodide==='function')return;
@@ -15,10 +15,10 @@ script.onload=()=>{clearTimeout(timer);resolve()};script.onerror=()=>{clearTimeo
 });
 }
 window.ensureKodikPython=()=>{
-if(window.pyodide){update('ready','Python готовий');return Promise.resolve(window.pyodide)}
+if(window.pyodide){update('ready','');return Promise.resolve(window.pyodide)}
 if(pending)return pending;
 update('loading','Готую Python… Перший запуск потребує завантаження середовища.');
-pending=(async()=>{await loadScript();window.pyodide=await window.loadPyodide({indexURL:base.href});update('ready','Python готовий');return window.pyodide})().catch(error=>{pending=null;update('error','Python не завантажився · натисни, щоб повторити');throw error});
+pending=(async()=>{await loadScript();window.pyodide=await window.loadPyodide({indexURL:base.href});update('ready','');return window.pyodide})().catch(error=>{pending=null;update('error','Python не завантажився · натисни, щоб повторити');throw error});
 return pending;
 };
 window.kodikEngine={get state(){return state}};

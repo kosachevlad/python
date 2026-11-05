@@ -5,6 +5,11 @@ const dock=document.createElement('nav');dock.className='mobile-dock';dock.setAt
 dock.innerHTML='<button type="button" id="mobileCode">⌨ Код</button><button type="button" id="mobileResult">▸ Результат</button><button type="button" id="mobileRun">▶ Запустити</button>';
 document.body.append(dock);document.body.dataset.mobileView='code';
 const code=byId('mobileCode'),result=byId('mobileResult'),launch=byId('mobileRun'),output=byId('output'),prompt=byId('prompt');
+
+const share=document.querySelector('.share-code'),shareNotice=document.querySelector('.share-notice');
+const footer=document.createElement('footer');footer.className='share-footer';
+if(share){share.textContent='↗ Поділитися кодом і результатом';footer.append(share);if(shareNotice)footer.append(shareNotice);document.querySelector('.app').append(footer)}
+
 const heading=document.createElement('h2');heading.className='mobile-result-heading';heading.textContent='Результат виконання';document.querySelector('.side').prepend(heading);
 function view(name,{focus=false}={}){
 document.body.dataset.mobileView=name;
