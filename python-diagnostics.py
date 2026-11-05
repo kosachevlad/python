@@ -110,7 +110,7 @@ def _syntax(error):
         title = tr('Пропущена двокрапка :', 'Missing colon :')
         lines = _source(path).splitlines()
         line = lines[error.lineno - 1] if error.lineno and error.lineno <= len(lines) else ''
-        header = re.match(r'\\s*((?:async\\s+)?(?:if|elif|else|for|while|def|class|try|except|finally|with|match|case))\\b', line)
+        header = re.match(r'\s*((?:async\s+)?(?:if|elif|else|for|while|def|class|try|except|finally|with|match|case))\b', line)
         name = header.group(1) if header else tr('блоку', 'block')
         hint = tr('Додай : наприкінці заголовка ' + name + ' у цьому рядку. Команди всередині блоку запиши з відступом.', 'Add : at the end of this ' + name + ' header. Indent the statements inside the block.')
     elif 'was never closed' in message:
