@@ -19,7 +19,7 @@ const syntax=[
 ['return 3',1,'блоком'],['break',1,'блоком'],['continue',1,'блоком'],['def f(a,a):\n    pass',1,'параметр'],['def f(a=1,b):\n    pass',1,'Порядок'],['print(a=1,2)',1,'Порядок'],['3 = x',1,'присвоювання'],['try:\n    pass\nprint(1)',3,'try']
 ];
 for(const [code,line,hint] of syntax){const result=check(code,false);assert.equal(result.length,1,code);assert.equal(result[0].line,line,code);assert((result[0].title+' '+result[0].hint).includes(hint),code+' -> '+JSON.stringify(result));assert.equal(result[0].severity,'error');assert(result[0].column>=1);assert.equal(result[0].source,code)}
-assert(check('if True\\n    pass',false)[0].hint.includes('заголовка if'));
+assert(check('if True\n    pass',false)[0].hint.includes('заголовка if'));
 const lint=[['pritn("hi")','UndefinedName','print'],['x=0\ndef f():\n    print(x)\n    x = 2','UndefinedLocal',''],['x = {"a":1,"a":2}','MultiValueRepeatedKeyLiteral',''],['if (False, True):\n    pass','IfTuple',''],['x=1\nif x is 1:\n    pass','IsLiteral',''],['print(f"hello")','FStringMissingPlaceholders',''],['"{} {}".format(1)','StringDotFormatMissingArgument','']];
 for(const [code,type,hint] of lint){const result=check(code);assert(result.some(d=>d.type===type),code+' -> '+JSON.stringify(result));if(hint)assert(result.some(d=>d.hint.includes(hint)))}
 for(const code of ['print("# текст: [ ( { ")','# "незакрита лапка в коментарі\nprint("ok")','x = """текст\n( [ {\n"""','from robot import *\nforward()','raise RuntimeError("must not execute")','print("Привіт 👋")','x = "it\\\'s fine"'])assert.equal(check(code).filter(d=>d.severity==='error').length,0,code);
