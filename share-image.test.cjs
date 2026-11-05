@@ -5,13 +5,13 @@ const a=source.indexOf('const esc=s=>'),b=source.indexOf(';const update=()=>',a)
 const paint=vm.runInNewContext(source.slice(a,b)+';paint');
 const colors=Object.fromEntries([...css.matchAll(/\.syntax-([a-z]+)\{color:([^}]+)\}/g)].map(m=>[m[1],m[2]]));
 const decode=s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
-const code='# Спробуй змінити цей код\nprint("Привіт # 👋")\nfor i in range(3):\n'+ 'x'.repeat(180);
+let code='# Спробуй змінити цей код\nprint("Привіт # 👋")\nfor i in range(3):\n'+ 'x'.repeat(180);
 const rows=code.split('\n').map(line=>{
 const nodes=[],re=/<span class="syntax-([a-z]+)">([\s\S]*?)<\/span>|([^<]+)/g;
 for(const m of paint(line).matchAll(re))nodes.push({nodeType:m[1]?1:3,textContent:decode(m[2]??m[3]),color:colors[m[1]]});
 return {textContent:line,childNodes:nodes,color:'#eaf4ff'};
 });
-const output='Привіт 👋\nPython — це цікаво! 1';
+let output='Привіт 👋\nPython — це цікаво! 1';
 let repaints=0;
 const draws=[],ctx={font:'',fillStyle:'',scale(){},fillRect(){},measureText(text){return {width:Array.from(text).length*10}},fillText(text,x,y){draws.push({text,x,y,color:this.fillStyle})}};
 const blob={type:'image/png'};
@@ -36,6 +36,20 @@ assert.equal(parts.map(d=>d.text).join(''),line);
 for(let j=1;j<parts.length;j++)assert.equal(parts[j].x,parts[j-1].x+ctx.measureText(parts[j-1].text).width);
 }
 for(const text of output.split('\n'))assert(draws.some(d=>d.text===text&&d.color==='#dcecff'));
+// Short snippets no longer inherit a 1000px minimum; neither heading is clipped.
+code='x = 1';output='1';draws.length=0;
+await makeImage();
+assert(canvas.width<2000,'Short exports remove empty space on the right');
+const rightEdge=()=>Math.max(...draws.map(d=>d.x+ctx.measureText(d.text.trimEnd()).width));
+assert(canvas.width/2>=rightEdge()+28,'Every visible line and heading keeps its right padding');
+assert(canvas.width/2<rightEdge()+29,'Width follows the actual content');
+const compactWidth=canvas.width;
+code+=' '.repeat(200);await makeImage();
+assert.equal(canvas.width,compactWidth,'Trailing whitespace does not add empty image area');
+output='Результат: '+'я'.repeat(240);draws.length=0;await makeImage();
+assert(canvas.width/2>=rightEdge()+28,'Long output is preserved without clipping');
+code='';output='';draws.length=0;await makeImage();
+assert(canvas.width/2>=rightEdge()+28,'Empty snippets still fit the title and result heading');
 canvas.toBlob=callback=>callback(null);
 await assert.rejects(makeImage(),/Не вдалося створити зображення/);
 console.log('Passed: shared PNG uses editor token colors, preserves code/output and Unicode, sizes long lines, handles PNG failures.');
