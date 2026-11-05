@@ -76,7 +76,6 @@ offset=start+token.length;
 return html+esc(line.slice(offset))||' ';
 };const update=()=>{const lines=editor.value.split('\n'),line=editor.value.slice(0,editor.selectionStart).split('\n').length;highlight.innerHTML=lines.map((v,i)=>`<span class="${i+1===line?'active-line':''}">${paint(v)}</span>`).join('\n');gutter.innerHTML=lines.map((_,i)=>`<span class="gutter-line ${i+1===line?'active':''}">${i+1}</span>`).join('');highlight.scrollTop=editor.scrollTop;highlight.scrollLeft=editor.scrollLeft};['input','keyup','click','select','focus'].forEach(e=>editor.addEventListener(e,update));editor.addEventListener('scroll',update);const old=updateLines;updateLines=()=>{old();update()};update()})();
 console.info('Кодик v1.31 · версія застосунку');document.querySelectorAll('.version').forEach(e=>e.textContent='(v1.31)');
-window.addEventListener('load',()=>{const o=document.getElementById('output');if(!o)return;let busy=false;const clean=()=>{if(busy)return;const r=o.textContent||'',d=r.match(/<string>, line (\d+)/),i=r.indexOf('❌');if(!d||i<0)return;const after=r.slice(i),detail=after.match(/IndentationError:[\s\S]*/);if(!detail)return;busy=true;o.textContent=r.slice(0,i)+`❌ Неправильний відступ на рядку 2 (або на рядку ${d[1]}).\nУсі рядки одного блоку мають мати однаковий відступ.\n\nДеталі: ${detail[0]}`;busy=false};new MutationObserver(clean).observe(o,{childList:true,subtree:true,characterData:true});clean()});
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
 setTimeout(()=>{const h=document.querySelector('.brand h1');if(h)h.innerHTML='Кодик <span class="version">(v1.31)</span>'},0);
@@ -197,4 +196,3 @@ showShareNotice((reasons[name]||'Не вдалося відкрити меню �
 }
 }finally{share.disabled=false}
 }})();
-
