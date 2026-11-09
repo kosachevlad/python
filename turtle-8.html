@@ -69,6 +69,10 @@ pre .syntax-keyword{color:#ff79c6}pre .syntax-string{color:#f1fa8c}pre .syntax-n
 .palette-colors{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin:1rem 0;padding-left:1.6rem}
 .palette-colors li{margin:0}
 .color-dot{display:inline-block;width:.85rem;height:.85rem;margin-right:.2rem;border:1px solid #e3ebf5;border-radius:50%;background:var(--swatch);vertical-align:-.07em}
+.crest-stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}
+.crest-stages .diagram{min-width:0}
+.crest-stages svg{width:min(100%,180px);max-height:220px}
+.crest-stages figcaption{text-align:center}
 </style>
 </head>
 <body>
@@ -79,7 +83,7 @@ pre .syntax-keyword{color:#ff79c6}pre .syntax-string{color:#f1fa8c}pre .syntax-n
       <p class="eyebrow">ТВОРЧА ПРАКТИКА · 30–40 ХВ</p>
       <h1 id="title">Неонова <span>розетка</span></h1>
       <p>Один квадрат ти вже вмієш малювати. А як зробити з нього візерунок, схожий на неонову квітку? Поверни черепашку після кожного квадрата й дай циклу повторити цей рух.</p>
-      <div class="lesson-links"><a class="button" href="#steps">Почати завдання <span aria-hidden="true">↓</span></a><a href="#variants">Кола й зірки</a><a href="#palette">Більше кольорів</a></div>
+      <div class="lesson-links"><a class="button" href="#steps">Почати завдання <span aria-hidden="true">↓</span></a><a href="#variants">Кола й зірки</a><a href="#palette">Більше кольорів</a><a href="#tryzub">Герб України</a></div>
     </div>
     <figure class="hero-art" aria-label="Кінцевий візерунок: 12 квадратів, повернутих навколо спільної вершини"><svg viewBox="-156 -156 312 312" aria-hidden="true" focusable="false"><g fill="none" stroke-width="1.7" stroke-linejoin="round"><path d="M0 0H105V-105H0Z" transform="rotate(0)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-30)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-60)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-90)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-120)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-150)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-180)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-210)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-240)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-270)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-300)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-330)" stroke="#ffc475"/></g><circle r="3.6" fill="#f9fcff"/></svg><figcaption>12 квадратів · 3 кольори · 1 спільний центр</figcaption></figure>
   </section>
@@ -305,6 +309,108 @@ turtle.<span class="syntax-function">done</span>()</code></pre></details>
 screen.<span class="syntax-function">animation_speed</span>(<span class="syntax-number">4</span>)</code></pre>
       <p><code>pen.speed(10)</code> вмикає швидкий рух черепашки, а <code>screen.animation_speed(4)</code> прискорює його ще в чотири рази. Спробуй <code>2</code>, <code>4</code> або <code>8</code> і порівняй. Множник <code>1</code> повертає звичайну швидкість. Ця команда є розширенням Turtle у «Кодику».</p>
     </div>
+  </section>
+  <section class="section" id="tryzub" aria-labelledby="tryzub-title">
+    <div class="section-head">
+      <p class="eyebrow">ПРАКТИКА З КООРДИНАТАМИ</p>
+      <h2 id="tryzub-title">Малюємо малий Державний Герб України</h2>
+      <p>Намалюй синій щит із золотим тризубом. Для цього завдання черепашка рухається між точками за координатами <code>(x, y)</code>.</p>
+    </div>
+    <div class="crest-stages">
+      <figure class="diagram" aria-label="Синій щит із золотою облямівкою">
+        <svg viewBox="-150 -207 300 414" aria-hidden="true" focusable="false"><polygon points="-136,-192 137,-192 137,98 135,113 128,127 118,139 105,147 0,191 -106,147 -119,139 -129,127 -135,114 -136,98" fill="#005bbb" stroke="#ffd500" stroke-width="2" stroke-linejoin="round"/></svg>
+        <figcaption>1. Синій щит</figcaption>
+      </figure>
+      <figure class="diagram" aria-label="На щиті намальовано праву половину тризуба">
+        <svg viewBox="-150 -207 300 414" aria-hidden="true" focusable="false"><polygon points="-136,-192 137,-192 137,98 135,113 128,127 118,139 105,147 0,191 -106,147 -119,139 -129,127 -135,114 -136,98" fill="#005bbb" stroke="#ffd500" stroke-width="2" stroke-linejoin="round"/><polygon points="0,-171 -1,-145 -1,-87 -1,-30 0,-3 4,10 9,22 14,34 20,44 -2,60 -9,87 -6,123 0,165 2,161 5,158 8,155 12,153 24,141 34,128 41,113 45,97 101,97 101,-146 66,-116 49,-80 42,-39 39,5 54,9 60,20 55,33 37,40 17,-4 11,-46 11,-88 13,-136 12,-146 10,-156 6,-164 0,-171" fill="#ffd500" stroke="#ffd500" stroke-width="2" stroke-linejoin="round"/><polygon points="84,-111 84,13 75,13 72,7 68,1 63,-4 57,-8 60,-36 63,-64 71,-90 84,-111" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="75,30 84,30 84,81 47,81 46,75 46,68 45,62 43,56 54,53 64,48 71,40 75,30" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="27,60 28,65 29,70 29,76 29,81 8,81 10,73 14,67 20,63 27,60" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="8,97 28,97 25,107 21,116 15,125 8,133" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/></svg>
+        <figcaption>2. Права половина</figcaption>
+      </figure>
+      <figure class="diagram" aria-label="Золотий тризуб із симетричними половинами на синьому щиті">
+        <svg viewBox="-150 -207 300 414" aria-hidden="true" focusable="false"><polygon points="-136,-192 137,-192 137,98 135,113 128,127 118,139 105,147 0,191 -106,147 -119,139 -129,127 -135,114 -136,98" fill="#005bbb" stroke="#ffd500" stroke-width="2" stroke-linejoin="round"/><polygon points="0,-171 -1,-145 -1,-87 -1,-30 0,-3 4,10 9,22 14,34 20,44 -2,60 -9,87 -6,123 0,165 2,161 5,158 8,155 12,153 24,141 34,128 41,113 45,97 101,97 101,-146 66,-116 49,-80 42,-39 39,5 54,9 60,20 55,33 37,40 17,-4 11,-46 11,-88 13,-136 12,-146 10,-156 6,-164 0,-171" fill="#ffd500" stroke="#ffd500" stroke-width="2" stroke-linejoin="round"/><polygon points="0,-171 1,-145 1,-87 1,-30 0,-3 -4,10 -9,22 -14,34 -20,44 2,60 9,87 6,123 0,165 -2,161 -5,158 -8,155 -12,153 -24,141 -34,128 -41,113 -45,97 -101,97 -101,-146 -66,-116 -49,-80 -42,-39 -39,5 -54,9 -60,20 -55,33 -37,40 -17,-4 -11,-46 -11,-88 -13,-136 -12,-146 -10,-156 -6,-164 0,-171" fill="#ffd500" stroke="#ffd500" stroke-width="2" stroke-linejoin="round"/><polygon points="84,-111 84,13 75,13 72,7 68,1 63,-4 57,-8 60,-36 63,-64 71,-90 84,-111" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="75,30 84,30 84,81 47,81 46,75 46,68 45,62 43,56 54,53 64,48 71,40 75,30" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="27,60 28,65 29,70 29,76 29,81 8,81 10,73 14,67 20,63 27,60" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="8,97 28,97 25,107 21,116 15,125 8,133" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="-84,-111 -84,13 -75,13 -72,7 -68,1 -63,-4 -57,-8 -60,-36 -63,-64 -71,-90 -84,-111" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="-75,30 -84,30 -84,81 -47,81 -46,75 -46,68 -45,62 -43,56 -54,53 -64,48 -71,40 -75,30" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="-27,60 -28,65 -29,70 -29,76 -29,81 -8,81 -10,73 -14,67 -20,63 -27,60" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/><polygon points="-8,97 -28,97 -25,107 -21,116 -15,125 -8,133" fill="#005bbb" stroke="#005bbb" stroke-width="2" stroke-linejoin="round"/></svg>
+        <figcaption>3. Готовий герб</figcaption>
+      </figure>
+    </div>
+    <ol>
+      <li><strong>Щит.</strong> Пройди по точках зі списку <code>shield</code> за допомогою <code>pen.goto(x, y)</code>. Замкни контур і залий його синім кольором.</li>
+      <li><strong>Права половина.</strong> Намалюй золотий контур за точками <code>right_half</code>. Піднімай перо перед переходом до початку нового контуру.</li>
+      <li><strong>Віддзеркалення.</strong> Щоб отримати ліву половину, зміни знак <code>x</code> і залиш <code>y</code> таким самим. Наприклад, точка <code>(100, 60)</code> стане <code>(-100, 60)</code>. Сині просвіти <code>cutouts</code> намалюй поверх золотих половин.</li>
+    </ol>
+    <details><summary>Переглянути код</summary><pre><code id="program-tryzub"><span class="syntax-keyword">import</span> turtle
+
+BLUE = <span class="syntax-string">"#005bbb"</span>
+GOLD = <span class="syntax-string">"#ffd500"</span>
+
+screen = turtle.<span class="syntax-function">Screen</span>()
+screen.<span class="syntax-function">bgcolor</span>(<span class="syntax-string">"#08111f"</span>)
+pen = turtle.<span class="syntax-function">Turtle</span>()
+pen.<span class="syntax-function">speed</span>(<span class="syntax-number">10</span>)
+screen.<span class="syntax-function">animation_speed</span>(<span class="syntax-number">4</span>)
+pen.<span class="syntax-function">pensize</span>(<span class="syntax-number">2</span>)
+
+<span class="syntax-keyword">def</span> <span class="syntax-function">draw_polygon</span>(points, fill, outline, mirror=<span class="syntax-number">1</span>):
+    start_x, start_y = points[<span class="syntax-number">0</span>]
+    pen.<span class="syntax-function">penup</span>()
+    pen.<span class="syntax-function">goto</span>(mirror * start_x, start_y)
+    pen.<span class="syntax-function">color</span>(outline, fill)
+    pen.<span class="syntax-function">pendown</span>()
+    pen.<span class="syntax-function">begin_fill</span>()
+    <span class="syntax-keyword">for</span> x, y <span class="syntax-keyword">in</span> points[<span class="syntax-number">1</span>:]:
+        pen.<span class="syntax-function">goto</span>(mirror * x, y)
+    pen.<span class="syntax-function">goto</span>(mirror * start_x, start_y)
+    pen.<span class="syntax-function">end_fill</span>()
+
+<span class="syntax-comment"># 1. Щит</span>
+shield = [
+    (-<span class="syntax-number">136</span>, <span class="syntax-number">192</span>), (<span class="syntax-number">137</span>, <span class="syntax-number">192</span>), (<span class="syntax-number">137</span>, -<span class="syntax-number">98</span>), (<span class="syntax-number">135</span>, -<span class="syntax-number">113</span>), (<span class="syntax-number">128</span>, -<span class="syntax-number">127</span>),
+    (<span class="syntax-number">118</span>, -<span class="syntax-number">139</span>), (<span class="syntax-number">105</span>, -<span class="syntax-number">147</span>), (<span class="syntax-number">0</span>, -<span class="syntax-number">191</span>), (-<span class="syntax-number">106</span>, -<span class="syntax-number">147</span>), (-<span class="syntax-number">119</span>, -<span class="syntax-number">139</span>),
+    (-<span class="syntax-number">129</span>, -<span class="syntax-number">127</span>), (-<span class="syntax-number">135</span>, -<span class="syntax-number">114</span>), (-<span class="syntax-number">136</span>, -<span class="syntax-number">98</span>),
+]
+<span class="syntax-function">draw_polygon</span>(shield, BLUE, GOLD)
+
+<span class="syntax-comment"># 2. Права половина тризуба</span>
+right_half = [
+    (<span class="syntax-number">0</span>, <span class="syntax-number">171</span>), (-<span class="syntax-number">1</span>, <span class="syntax-number">145</span>), (-<span class="syntax-number">1</span>, <span class="syntax-number">87</span>), (-<span class="syntax-number">1</span>, <span class="syntax-number">30</span>), (<span class="syntax-number">0</span>, <span class="syntax-number">3</span>),
+    (<span class="syntax-number">4</span>, -<span class="syntax-number">10</span>), (<span class="syntax-number">9</span>, -<span class="syntax-number">22</span>), (<span class="syntax-number">14</span>, -<span class="syntax-number">34</span>), (<span class="syntax-number">20</span>, -<span class="syntax-number">44</span>), (-<span class="syntax-number">2</span>, -<span class="syntax-number">60</span>),
+    (-<span class="syntax-number">9</span>, -<span class="syntax-number">87</span>), (-<span class="syntax-number">6</span>, -<span class="syntax-number">123</span>), (<span class="syntax-number">0</span>, -<span class="syntax-number">165</span>), (<span class="syntax-number">2</span>, -<span class="syntax-number">161</span>), (<span class="syntax-number">5</span>, -<span class="syntax-number">158</span>),
+    (<span class="syntax-number">8</span>, -<span class="syntax-number">155</span>), (<span class="syntax-number">12</span>, -<span class="syntax-number">153</span>), (<span class="syntax-number">24</span>, -<span class="syntax-number">141</span>), (<span class="syntax-number">34</span>, -<span class="syntax-number">128</span>), (<span class="syntax-number">41</span>, -<span class="syntax-number">113</span>),
+    (<span class="syntax-number">45</span>, -<span class="syntax-number">97</span>), (<span class="syntax-number">101</span>, -<span class="syntax-number">97</span>), (<span class="syntax-number">101</span>, <span class="syntax-number">146</span>), (<span class="syntax-number">66</span>, <span class="syntax-number">116</span>), (<span class="syntax-number">49</span>, <span class="syntax-number">80</span>),
+    (<span class="syntax-number">42</span>, <span class="syntax-number">39</span>), (<span class="syntax-number">39</span>, -<span class="syntax-number">5</span>), (<span class="syntax-number">54</span>, -<span class="syntax-number">9</span>), (<span class="syntax-number">60</span>, -<span class="syntax-number">20</span>), (<span class="syntax-number">55</span>, -<span class="syntax-number">33</span>),
+    (<span class="syntax-number">37</span>, -<span class="syntax-number">40</span>), (<span class="syntax-number">17</span>, <span class="syntax-number">4</span>), (<span class="syntax-number">11</span>, <span class="syntax-number">46</span>), (<span class="syntax-number">11</span>, <span class="syntax-number">88</span>), (<span class="syntax-number">13</span>, <span class="syntax-number">136</span>),
+    (<span class="syntax-number">12</span>, <span class="syntax-number">146</span>), (<span class="syntax-number">10</span>, <span class="syntax-number">156</span>), (<span class="syntax-number">6</span>, <span class="syntax-number">164</span>), (<span class="syntax-number">0</span>, <span class="syntax-number">171</span>),
+]
+
+<span class="syntax-comment"># 3. Обидві половини й сині просвіти</span>
+cutouts = [
+    [
+        (<span class="syntax-number">84</span>, <span class="syntax-number">111</span>), (<span class="syntax-number">84</span>, -<span class="syntax-number">13</span>), (<span class="syntax-number">75</span>, -<span class="syntax-number">13</span>), (<span class="syntax-number">72</span>, -<span class="syntax-number">7</span>), (<span class="syntax-number">68</span>, -<span class="syntax-number">1</span>),
+        (<span class="syntax-number">63</span>, <span class="syntax-number">4</span>), (<span class="syntax-number">57</span>, <span class="syntax-number">8</span>), (<span class="syntax-number">60</span>, <span class="syntax-number">36</span>), (<span class="syntax-number">63</span>, <span class="syntax-number">64</span>), (<span class="syntax-number">71</span>, <span class="syntax-number">90</span>),
+        (<span class="syntax-number">84</span>, <span class="syntax-number">111</span>),
+    ],
+    [
+        (<span class="syntax-number">75</span>, -<span class="syntax-number">30</span>), (<span class="syntax-number">84</span>, -<span class="syntax-number">30</span>), (<span class="syntax-number">84</span>, -<span class="syntax-number">81</span>), (<span class="syntax-number">47</span>, -<span class="syntax-number">81</span>), (<span class="syntax-number">46</span>, -<span class="syntax-number">75</span>),
+        (<span class="syntax-number">46</span>, -<span class="syntax-number">68</span>), (<span class="syntax-number">45</span>, -<span class="syntax-number">62</span>), (<span class="syntax-number">43</span>, -<span class="syntax-number">56</span>), (<span class="syntax-number">54</span>, -<span class="syntax-number">53</span>), (<span class="syntax-number">64</span>, -<span class="syntax-number">48</span>),
+        (<span class="syntax-number">71</span>, -<span class="syntax-number">40</span>), (<span class="syntax-number">75</span>, -<span class="syntax-number">30</span>),
+    ],
+    [
+        (<span class="syntax-number">27</span>, -<span class="syntax-number">60</span>), (<span class="syntax-number">28</span>, -<span class="syntax-number">65</span>), (<span class="syntax-number">29</span>, -<span class="syntax-number">70</span>), (<span class="syntax-number">29</span>, -<span class="syntax-number">76</span>), (<span class="syntax-number">29</span>, -<span class="syntax-number">81</span>),
+        (<span class="syntax-number">8</span>, -<span class="syntax-number">81</span>), (<span class="syntax-number">10</span>, -<span class="syntax-number">73</span>), (<span class="syntax-number">14</span>, -<span class="syntax-number">67</span>), (<span class="syntax-number">20</span>, -<span class="syntax-number">63</span>), (<span class="syntax-number">27</span>, -<span class="syntax-number">60</span>),
+    ],
+    [
+        (<span class="syntax-number">8</span>, -<span class="syntax-number">97</span>), (<span class="syntax-number">28</span>, -<span class="syntax-number">97</span>), (<span class="syntax-number">25</span>, -<span class="syntax-number">107</span>), (<span class="syntax-number">21</span>, -<span class="syntax-number">116</span>), (<span class="syntax-number">15</span>, -<span class="syntax-number">125</span>),
+        (<span class="syntax-number">8</span>, -<span class="syntax-number">133</span>),
+    ],
+]
+<span class="syntax-keyword">for</span> mirror <span class="syntax-keyword">in</span> (<span class="syntax-number">1</span>, -<span class="syntax-number">1</span>):
+    <span class="syntax-function">draw_polygon</span>(right_half, GOLD, GOLD, mirror)
+<span class="syntax-keyword">for</span> mirror <span class="syntax-keyword">in</span> (<span class="syntax-number">1</span>, -<span class="syntax-number">1</span>):
+    <span class="syntax-keyword">for</span> opening <span class="syntax-keyword">in</span> cutouts:
+        <span class="syntax-function">draw_polygon</span>(opening, BLUE, BLUE, mirror)
+
+pen.<span class="syntax-function">hideturtle</span>()
+turtle.<span class="syntax-function">done</span>()</code></pre></details>
+    <a class="button" href="./?turtle8=tryzub">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
+    <p class="try"><strong>Спробуй.</strong> Зміни множник швидкості з <code>4</code> на <code>2</code> і простеж, як черепашка малює дві симетричні половини.</p>
+    <p class="meta">Навчальний малюнок зі спрощених контурів. <a href="https://commons.wikimedia.org/wiki/File:Coat_of_Arms_of_Ukraine.svg">Векторний зразок</a> · <a href="https://zakon.rada.gov.ua/laws/show/2137-12">Постанова Верховної Ради України про Державний герб</a></p>
   </section>
   <section class="section mission" aria-labelledby="mission-title">
     <p class="eyebrow">САМОСТІЙНА РОБОТА</p>
