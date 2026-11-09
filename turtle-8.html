@@ -65,6 +65,10 @@ footer{border-top:1px solid var(--line);padding:20px 0 30px;color:var(--muted);f
 @media(max-width:690px){.hero,.step,.lab{grid-template-columns:minmax(0,1fr)}.hero{padding:36px 0;gap:20px}.hero-art svg{max-height:280px}.diagram svg{max-height:190px}.step,.lab{padding:15px}.section{margin-bottom:36px}.wrap{width:calc(100% - 28px)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 pre .syntax-keyword{color:#ff79c6}pre .syntax-string{color:#f1fa8c}pre .syntax-number{color:#bd93f9}pre .syntax-function{color:#50fa7b}pre .syntax-builtin{color:#8be9fd}pre .syntax-comment{color:#90a6bd}
+.lesson-links{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.palette-colors{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin:1rem 0;padding-left:1.6rem}
+.palette-colors li{margin:0}
+.color-dot{display:inline-block;width:.85rem;height:.85rem;margin-right:.2rem;border:1px solid #e3ebf5;border-radius:50%;background:var(--swatch);vertical-align:-.07em}
 </style>
 </head>
 <body>
@@ -75,7 +79,7 @@ pre .syntax-keyword{color:#ff79c6}pre .syntax-string{color:#f1fa8c}pre .syntax-n
       <p class="eyebrow">ТВОРЧА ПРАКТИКА · 30–40 ХВ</p>
       <h1 id="title">Неонова <span>розетка</span></h1>
       <p>Один квадрат ти вже вмієш малювати. А як зробити з нього візерунок, схожий на неонову квітку? Поверни черепашку після кожного квадрата й дай циклу повторити цей рух.</p>
-      <a class="button" href="#steps">Почати завдання <span aria-hidden="true">↓</span></a>
+      <div class="lesson-links"><a class="button" href="#steps">Почати завдання <span aria-hidden="true">↓</span></a><a href="#variants">Кола й зірки</a><a href="#palette">Більше кольорів</a></div>
     </div>
     <figure class="hero-art" aria-label="Кінцевий візерунок: 12 квадратів, повернутих навколо спільної вершини"><svg viewBox="-156 -156 312 312" aria-hidden="true" focusable="false"><g fill="none" stroke-width="1.7" stroke-linejoin="round"><path d="M0 0H105V-105H0Z" transform="rotate(0)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-30)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-60)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-90)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-120)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-150)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-180)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-210)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-240)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-270)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-300)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-330)" stroke="#ffc475"/></g><circle r="3.6" fill="#f9fcff"/></svg><figcaption>12 квадратів · 3 кольори · 1 спільний центр</figcaption></figure>
   </section>
@@ -192,15 +196,115 @@ turtle.<span class="syntax-function">done</span>()</code></pre></details>
       </div>
     </div>
   </section>
+  <section class="section" id="variants" aria-labelledby="variants-title">
+    <div class="section-head">
+      <p class="eyebrow">ЗМІНИ ФІГУРУ</p>
+      <h2 id="variants-title">Кола й п’ятикутні зірки</h2>
+      <p>Вибери іншу фігуру для внутрішньої частини циклу. Зовнішній цикл, як і раніше, розподіляє фігури навколо спільної точки.</p>
+    </div>
+    <article class="step" id="circles">
+      <figure class="diagram" aria-label="Дванадцять кіл у шести кольорах торкаються спільної точки">
+        <svg viewBox="-140 -140 280 280" aria-hidden="true" focusable="false"><g fill="none" stroke-width="1.7" stroke-linejoin="round"><circle cx="0" cy="-66" r="66" transform="rotate(0)" stroke="#57f3c3"/><circle cx="0" cy="-66" r="66" transform="rotate(-30)" stroke="#a597ff"/><circle cx="0" cy="-66" r="66" transform="rotate(-60)" stroke="#ffc475"/><circle cx="0" cy="-66" r="66" transform="rotate(-90)" stroke="#ff85a6"/><circle cx="0" cy="-66" r="66" transform="rotate(-120)" stroke="#78bdff"/><circle cx="0" cy="-66" r="66" transform="rotate(-150)" stroke="#f1fa8c"/><circle cx="0" cy="-66" r="66" transform="rotate(-180)" stroke="#57f3c3"/><circle cx="0" cy="-66" r="66" transform="rotate(-210)" stroke="#a597ff"/><circle cx="0" cy="-66" r="66" transform="rotate(-240)" stroke="#ffc475"/><circle cx="0" cy="-66" r="66" transform="rotate(-270)" stroke="#ff85a6"/><circle cx="0" cy="-66" r="66" transform="rotate(-300)" stroke="#78bdff"/><circle cx="0" cy="-66" r="66" transform="rotate(-330)" stroke="#f1fa8c"/></g><circle r="3.6" fill="#f9fcff"/></svg>
+        <figcaption><span class="origin"></span> Спільна точка лежить на краю кожного кола</figcaption>
+      </figure>
+      <div class="step-body">
+        <p class="eyebrow">КОЛА <span>· радіус 66 · поворот між колами 30°</span></p>
+        <h3>Розетка з кіл</h3>
+        <p>Заміни цикл із чотирьох сторін одним рядком <code>pen.circle(66)</code>. Число 66 — радіус. Після повного кола черепашка повертається до старту. Поверни її на <code>360 / count</code>, щоб наступне коло змістилося навколо спільної точки.</p>
+        <details><summary>Переглянути код</summary><pre><code id="program-circles"><span class="syntax-keyword">import</span> turtle
+
+screen = turtle.<span class="syntax-function">Screen</span>()
+screen.<span class="syntax-function">bgcolor</span>(<span class="syntax-string">"#08111f"</span>)
+pen = turtle.<span class="syntax-function">Turtle</span>()
+pen.<span class="syntax-function">pensize</span>(<span class="syntax-number">2</span>)
+pen.<span class="syntax-function">speed</span>(<span class="syntax-number">0</span>)
+
+palette = [
+    <span class="syntax-string">"#57f3c3"</span>, <span class="syntax-string">"#a597ff"</span>, <span class="syntax-string">"#ffc475"</span>,
+    <span class="syntax-string">"#ff85a6"</span>, <span class="syntax-string">"#78bdff"</span>, <span class="syntax-string">"#f1fa8c"</span>,
+]
+count = <span class="syntax-number">12</span>
+
+<span class="syntax-keyword">for</span> i <span class="syntax-keyword">in</span> <span class="syntax-builtin">range</span>(count):
+    pen.<span class="syntax-function">color</span>(palette[i % <span class="syntax-builtin">len</span>(palette)])
+    pen.<span class="syntax-function">circle</span>(<span class="syntax-number">66</span>)
+    pen.<span class="syntax-function">left</span>(<span class="syntax-number">360</span> / count)
+
+pen.<span class="syntax-function">hideturtle</span>()
+turtle.<span class="syntax-function">done</span>()</code></pre></details>
+        <a class="button button-alt" href="./?turtle8=circles">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
+        <p class="try"><strong>Спробуй.</strong> Зменш радіус до 45. Які частини візерунка зміняться?</p>
+      </div>
+    </article>
+    <article class="step" id="stars">
+      <figure class="diagram" aria-label="Дванадцять п’ятикутних зірок у шести кольорах мають спільну вершину">
+        <svg viewBox="-140 -140 280 280" aria-hidden="true" focusable="false"><g fill="none" stroke-width="1.7" stroke-linejoin="round"><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(0)" stroke="#57f3c3"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-30)" stroke="#a597ff"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-60)" stroke="#ffc475"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-90)" stroke="#ff85a6"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-120)" stroke="#78bdff"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-150)" stroke="#f1fa8c"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-180)" stroke="#57f3c3"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-210)" stroke="#a597ff"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-240)" stroke="#ffc475"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-270)" stroke="#ff85a6"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-300)" stroke="#78bdff"/><path d="M0 0L118.00 0.00L22.54 69.36L59.00 -42.87L95.46 69.36Z" transform="rotate(-330)" stroke="#f1fa8c"/></g><circle r="3.6" fill="#f9fcff"/></svg>
+        <figcaption><span class="origin"></span> Кожна зірка починається з білої точки</figcaption>
+      </figure>
+      <div class="step-body">
+        <p class="eyebrow">ЗІРКИ <span>· 5 відрізків · поворот у зірці 144°</span></p>
+        <h3>Розетка з п’ятикутних зірок</h3>
+        <p>Для однієї зірки п’ять разів пройди вперед і поверни праворуч на <code>144</code>°. Черепашка з’єднує вершини через одну й за п’ять поворотів робить два повні оберти, тому <code>720 / 5 = 144</code>. Між готовими зірками повертай ліворуч на <code>360 / count</code>.</p>
+        <details><summary>Переглянути код</summary><pre><code id="program-stars"><span class="syntax-keyword">import</span> turtle
+
+screen = turtle.<span class="syntax-function">Screen</span>()
+screen.<span class="syntax-function">bgcolor</span>(<span class="syntax-string">"#08111f"</span>)
+pen = turtle.<span class="syntax-function">Turtle</span>()
+pen.<span class="syntax-function">pensize</span>(<span class="syntax-number">2</span>)
+pen.<span class="syntax-function">speed</span>(<span class="syntax-number">0</span>)
+
+palette = [
+    <span class="syntax-string">"#57f3c3"</span>, <span class="syntax-string">"#a597ff"</span>, <span class="syntax-string">"#ffc475"</span>,
+    <span class="syntax-string">"#ff85a6"</span>, <span class="syntax-string">"#78bdff"</span>, <span class="syntax-string">"#f1fa8c"</span>,
+]
+count = <span class="syntax-number">12</span>
+
+<span class="syntax-keyword">for</span> i <span class="syntax-keyword">in</span> <span class="syntax-builtin">range</span>(count):
+    pen.<span class="syntax-function">color</span>(palette[i % <span class="syntax-builtin">len</span>(palette)])
+    <span class="syntax-keyword">for</span> side <span class="syntax-keyword">in</span> <span class="syntax-builtin">range</span>(<span class="syntax-number">5</span>):
+        pen.<span class="syntax-function">forward</span>(<span class="syntax-number">118</span>)
+        pen.<span class="syntax-function">right</span>(<span class="syntax-number">144</span>)
+    pen.<span class="syntax-function">left</span>(<span class="syntax-number">360</span> / count)
+
+pen.<span class="syntax-function">hideturtle</span>()
+turtle.<span class="syntax-function">done</span>()</code></pre></details>
+        <a class="button button-alt" href="./?turtle8=stars">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
+        <p class="try"><strong>Спробуй.</strong> Зміни довжину відрізка на 90 і порівняй розмір зірок.</p>
+      </div>
+    </article>
+  </section>
+  <section class="section" id="palette" aria-labelledby="palette-title">
+    <div class="section-head">
+      <p class="eyebrow">ЗМІНИ ПАЛІТРУ</p>
+      <h2 id="palette-title">Як додати більше кольорів</h2>
+    </div>
+    <div class="mission">
+      <p>У третьому прикладі з квадратами в списку <code>palette</code> є три кольори. Заміни цей список на той, що нижче. Ми додали ще три коди кольорів у лапках і розділили їх комами.</p>
+      <pre><code>palette = [
+    <span class="syntax-string">"#57f3c3"</span>, <span class="syntax-string">"#a597ff"</span>, <span class="syntax-string">"#ffc475"</span>,
+    <span class="syntax-string">"#ff85a6"</span>, <span class="syntax-string">"#78bdff"</span>, <span class="syntax-string">"#f1fa8c"</span>,
+]</code></pre>
+      <ol class="palette-colors" aria-label="Порядок кольорів у палітрі">
+        <li><span class="color-dot" style="--swatch:#57f3c3" aria-hidden="true"></span> м’ятний</li>
+        <li><span class="color-dot" style="--swatch:#a597ff" aria-hidden="true"></span> фіолетовий</li>
+        <li><span class="color-dot" style="--swatch:#ffc475" aria-hidden="true"></span> помаранчевий</li>
+        <li><span class="color-dot" style="--swatch:#ff85a6" aria-hidden="true"></span> рожевий</li>
+        <li><span class="color-dot" style="--swatch:#78bdff" aria-hidden="true"></span> блакитний</li>
+        <li><span class="color-dot" style="--swatch:#f1fa8c" aria-hidden="true"></span> лимонний</li>
+      </ol>
+      <p>Залиш <code>pen.color(palette[i % len(palette)])</code> всередині циклу. <code>len(palette)</code> рахує кольори, а <code>%</code> повертає індекс на початок списку після останнього кольору. Тому за 12 фігур палітра з 6 кольорів повториться двічі. Сьома фігура буде знову м’ятною.</p>
+      <p class="try"><strong>Спробуй.</strong> Додай сьомий колір <code>"#ffffff"</code> перед <code>]</code>. Якого кольору тепер буде восьма фігура?</p>
+    </div>
+  </section>
   <section class="section mission" aria-labelledby="mission-title">
     <p class="eyebrow">САМОСТІЙНА РОБОТА</p>
     <h2 id="mission-title">Створи власний значок</h2>
     <ol>
-      <li>Почни з третього прикладу. Вибери <strong>8, 15 або 18</strong> квадратів. Перед запуском обчисли кут і звір його з мінілабораторією.</li>
-      <li>Заміни щонайменше <strong>два кольори</strong> в <code>palette</code>. Наприклад, спробуй <code>"#ff85a6"</code> і <code>"#78bdff"</code>.</li>
+      <li>Вибери основу для значка — квадрати з третього прикладу, кола або зірки. Намалюй <strong>8, 15 або 18</strong> фігур. Перед запуском обчисли кут між фігурами і звір його з мінілабораторією.</li>
+      <li>Додай щонайменше <strong>два кольори</strong> до <code>palette</code>. Скористайся прикладом вище та перевір, коли палітра почне повторюватися.</li>
       <li>Намалюй у центрі світлу крапку: перед <code>pen.hideturtle()</code> додай <code>pen.dot(12, "white")</code>. Потім допиши на початку коду коментар із назвою свого значка.</li>
     </ol>
-    <details><summary>Підказка, якщо малюнок не схожий на розетку</summary><p>Перевір відступи: <code>pen.left(90)</code> має виконуватися після кожної сторони, а <code>pen.left(360 / count)</code> — один раз після цілого квадрата. Кожен новий квадрат починається в центрі, бо черепашка після попереднього повертається до старту.</p></details>
+    <details><summary>Підказка, якщо малюнок не схожий на розетку</summary><p>Перевір відступи. Поворот <code>pen.left(360 / count)</code> має виконуватися один раз після кожної готової фігури. У квадрата й зірки є ще один поворот усередині циклу, після кожної сторони.</p></details>
     <p><strong>Бонус:</strong> заміни квадрати рівносторонніми трикутниками. Зміни кількість сторін і поворот усередині фігури. Кут між готовими фігурами залиш <code>360 / count</code>.</p>
     <p><strong>Що здати:</strong> код і знімок розетки. Додай одне речення: який поворот відбувається в центрі й чому?</p>
     <a class="button" href="./?turtle8=glow">Почати зі зразка <span aria-hidden="true">↗</span></a>
