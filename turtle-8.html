@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111f">
+<title>Неонова розетка · Turtle для 8 класу · Кодик</title>
+<style>
+:root{color-scheme:dark;--bg:#08111f;--panel:#101c30;--ink:#eef6ff;--muted:#b8c9de;--mint:#57f3c3;--line:#2b415e;--lav:#c9baff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 80% 0%,#1e3050 0,transparent 36rem),var(--bg);color:var(--ink);font:1rem/1.58 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--mint)} a:hover{text-decoration-thickness:2px}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #ffc475;outline-offset:4px}
+.wrap{width:min(1080px,100% - 40px);margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:21px 0;border-bottom:1px solid var(--line)}
+.brand{font-weight:800;text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:.6rem}
+.logo{padding:.25rem .5rem;border-radius:.55rem;background:var(--mint);color:var(--bg);font:900 .88rem/1.4 ui-monospace,monospace}
+.meta{color:var(--muted);font-size:.88rem}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;padding:64px 0 48px}
+.eyebrow{margin:0;color:var(--mint);font-size:.82rem;font-weight:800;letter-spacing:.1em}
+.eyebrow span{color:var(--lav);letter-spacing:.025em}
+h1,h2,h3{line-height:1.12;margin:0;letter-spacing:-.03em}
+h1{font-size:clamp(3rem,7vw,5.8rem);margin:.55rem 0 1rem}
+h1 span{display:block;color:var(--mint)}
+h2{font-size:clamp(1.8rem,4vw,2.85rem);margin:.45rem 0 .9rem}
+h3{font-size:clamp(1.35rem,3vw,1.85rem);margin:.4rem 0 .75rem}
+p{margin:.55rem 0 1rem;color:var(--muted)}
+.hero p:not(.eyebrow){max-width:54ch;font-size:1.12rem}
+.button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.64rem 1rem;border-radius:.65rem;background:var(--mint);color:#08111f;border:1px solid transparent;font:inherit;font-weight:750;text-decoration:none;cursor:pointer}
+.button:hover{background:#9affdf}
+.button:disabled{background:#20334b;color:#b8c9de;border-color:var(--line);cursor:default}
+.button-alt{background:#182c43;color:var(--ink);border-color:#426080}
+.button-alt:hover{background:#234261}
+.hero-art,.diagram,.play-art{margin:0;display:grid;place-items:center;border:1px solid var(--line);border-radius:1rem;background-color:#0a1424;background-image:radial-gradient(#283f5e 1px,transparent 1px);background-size:18px 18px;overflow:hidden}
+.hero-art{min-width:0;padding:10px 14px 15px;box-shadow:0 12px 48px #0005}
+.hero-art svg{width:min(100%,360px);filter:drop-shadow(0 0 5px #57f3c380)}
+figcaption{color:var(--muted);font-size:.8rem;background:#0a1424;padding:.25rem .6rem;border-radius:.5rem}
+.section{margin:0 0 54px;scroll-margin-top:1rem}
+.section-head{margin-bottom:1.2rem}
+.section-head p{max-width:72ch}
+.step{display:grid;grid-template-columns:minmax(170px,.69fr) minmax(0,1.31fr);gap:22px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:1rem;padding:20px;margin:.85rem 0;scroll-margin-top:1rem}
+.diagram{padding:10px 8px 9px}
+.diagram svg{width:min(100%,255px);height:auto}
+.origin{display:inline-block;width:.55rem;height:.55rem;border-radius:100%;background:var(--ink);margin-right:.3rem}
+.step-body{min-width:0}
+details{margin:0 0 .7rem}
+summary{color:var(--lav);font-weight:700;cursor:pointer;padding:.55rem 0;width:fit-content;min-height:44px}
+code,pre{font-family:ui-monospace,Consolas,monospace} p code,li code{color:#f2e9ff;background:#22324a;border-radius:.25em;padding:.08em .28em}
+pre{font-size:.88rem;line-height:1.5;margin:.25rem 0 .85rem;max-width:100%;overflow:auto;background:#08111f;border:1px solid var(--line);border-radius:.6rem;padding:.8rem;color:var(--ink)}
+.try{margin:.85rem 0 0}
+.try strong{color:var(--ink)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center;padding:22px;background:var(--panel);border:1px solid var(--line);border-radius:1rem}
+.play-art{min-width:0;padding:8px}
+.play-art svg{display:block;width:min(100%,320px)}
+.controls label{display:block;font-weight:750}
+input[type=range]{width:100%;accent-color:var(--mint);height:32px;cursor:pointer}
+.control-buttons{display:flex;flex-wrap:wrap;gap:.5rem}
+.formula{color:var(--mint);font-weight:800;font-variant-numeric:tabular-nums;margin:.15rem 0 .8rem}
+#progress{margin:.8rem 0 0}
+.mission{background:linear-gradient(145deg,#172843,#151d35);border:1px solid #465b7f;border-radius:1rem;padding:clamp(18px,4vw,32px)}
+ol{padding-left:1.35rem}
+ol li{padding-left:.2rem;margin:.4rem 0}
+footer{border-top:1px solid var(--line);padding:20px 0 30px;color:var(--muted);font-size:.9rem}
+@media(max-width:690px){.hero,.step,.lab{grid-template-columns:minmax(0,1fr)}.hero{padding:36px 0;gap:20px}.hero-art svg{max-height:280px}.diagram svg{max-height:190px}.step,.lab{padding:15px}.section{margin-bottom:36px}.wrap{width:calc(100% - 28px)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="top wrap"><a class="brand" href="./"><span class="logo" aria-hidden="true">&lt;/&gt;</span> Кодик</a><span class="meta">Python · Turtle · 8 клас</span></header>
+<main class="wrap">
+  <section class="hero" aria-labelledby="title">
+    <div>
+      <p class="eyebrow">ТВОРЧА ПРАКТИКА · 30–40 ХВ</p>
+      <h1 id="title">Неонова <span>розетка</span></h1>
+      <p>Один квадрат ти вже вмієш малювати. А як зробити з нього візерунок, схожий на неонову квітку? Поверни черепашку після кожного квадрата й дай циклу повторити цей рух.</p>
+      <a class="button" href="#steps">Почати завдання <span aria-hidden="true">↓</span></a>
+    </div>
+    <figure class="hero-art" aria-label="Кінцевий візерунок: 12 квадратів, повернутих навколо спільної вершини"><svg viewBox="-156 -156 312 312" aria-hidden="true" focusable="false"><g fill="none" stroke-width="1.7" stroke-linejoin="round"><path d="M0 0H105V-105H0Z" transform="rotate(0)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-30)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-60)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-90)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-120)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-150)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-180)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-210)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-240)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-270)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-300)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-330)" stroke="#ffc475"/></g><circle r="3.6" fill="#f9fcff"/></svg><figcaption>12 квадратів · 3 кольори · 1 спільний центр</figcaption></figure>
+  </section>
+  <section class="section" id="steps" aria-labelledby="steps-title">
+    <div class="section-head">
+      <p class="eyebrow">ВІД КВАДРАТА ДО ВІЗЕРУНКА</p>
+      <h2 id="steps-title">Три кроки до розетки</h2>
+      <p>Порівнюй схему з кодом. Кнопка під кожним кроком відкриє приклад в окремій вкладці редактора в режимі «Навчання». Натисни «Запустити», а потім зміни один рядок і порівняй результат.</p>
+    </div>
+<article class="step" id="square">
+  <figure class="diagram" aria-label="Один квадрат виходить із центральної точки">
+    <svg viewBox="-156 -156 312 312" aria-hidden="true" focusable="false"><g fill="none" stroke-width="1.7" stroke-linejoin="round"><path d="M0 0H105V-105H0Z" transform="rotate(0)" stroke="#57f3c3"/></g><circle r="3.6" fill="#f9fcff"/></svg>
+    <figcaption><span class="origin"></span> Старт черепашки</figcaption>
+  </figure>
+  <div class="step-body">
+    <p class="eyebrow">КРОК 01 <span>· 4 сторони × 90°</span></p>
+    <h3>Згадай рухи</h3>
+    <p>Почни з одного квадрата зі стороною 105. Прочитай тіло циклу: крок уперед, поворот ліворуч на 90°, і так чотири рази.</p>
+    <details><summary>Переглянути код</summary><pre><code id="program-square">import turtle
+
+screen = turtle.Screen()
+screen.bgcolor("#08111f")
+pen = turtle.Turtle()
+pen.pensize(2)
+pen.speed(0)
+pen.color("#57f3c3")
+
+for side in range(4):
+    pen.forward(105)
+    pen.left(90)
+
+pen.hideturtle()
+turtle.done()</code></pre></details>
+    <a class="button button-alt" href="./?turtle8=square">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
+    <p class="try"><strong>Спробуй:</strong> Зміни 105 на 80. Що змінилося, а що залишилося таким самим?</p>
+  </div>
+</article>
+<article class="step" id="turn">
+  <figure class="diagram" aria-label="Три квадрати повернуті на 0, 30 і 60 градусів">
+    <svg viewBox="-156 -156 312 312" aria-hidden="true" focusable="false"><g fill="none" stroke-width="1.7" stroke-linejoin="round"><path d="M0 0H105V-105H0Z" transform="rotate(0)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-30)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-60)" stroke="#57f3c3"/></g><circle r="3.6" fill="#f9fcff"/></svg>
+    <figcaption><span class="origin"></span> Старт черепашки</figcaption>
+  </figure>
+  <div class="step-body">
+    <p class="eyebrow">КРОК 02 <span>· 90° на куті · 30° у центрі</span></p>
+    <h3>Поверни наступний квадрат</h3>
+    <p>Вклади цикл квадрата у зовнішній цикл. Після кожного готового квадрата черепашка стоїть у центрі й повертається ще на 30°. Так три квадрати дивляться в різні боки.</p>
+    <details><summary>Переглянути код</summary><pre><code id="program-turn">import turtle
+
+screen = turtle.Screen()
+screen.bgcolor("#08111f")
+pen = turtle.Turtle()
+pen.pensize(2)
+pen.speed(0)
+pen.color("#57f3c3")
+
+for i in range(3):
+    for side in range(4):
+        pen.forward(105)
+        pen.left(90)
+    pen.left(30)
+
+pen.hideturtle()
+turtle.done()</code></pre></details>
+    <a class="button button-alt" href="./?turtle8=turn">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
+    <p class="try"><strong>Спробуй:</strong> Знайди в коді обидва повороти. Чому один рядок має менший відступ?</p>
+  </div>
+</article>
+<article class="step" id="glow">
+  <figure class="diagram" aria-label="Розетка з дванадцяти квадратів у трьох кольорах">
+    <svg viewBox="-156 -156 312 312" aria-hidden="true" focusable="false"><g fill="none" stroke-width="1.7" stroke-linejoin="round"><path d="M0 0H105V-105H0Z" transform="rotate(0)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-30)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-60)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-90)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-120)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-150)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-180)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-210)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-240)" stroke="#ffc475"/><path d="M0 0H105V-105H0Z" transform="rotate(-270)" stroke="#57f3c3"/><path d="M0 0H105V-105H0Z" transform="rotate(-300)" stroke="#a597ff"/><path d="M0 0H105V-105H0Z" transform="rotate(-330)" stroke="#ffc475"/></g><circle r="3.6" fill="#f9fcff"/></svg>
+    <figcaption><span class="origin"></span> Старт черепашки</figcaption>
+  </figure>
+  <div class="step-body">
+    <p class="eyebrow">КРОК 03 <span>· 12 квадратів × 30° = 360°</span></p>
+    <h3>Замкни коло й додай колір</h3>
+    <p>Візьми 12 квадратів і розподіли їх на повний оберт: 360° ÷ 12 = 30°. У кожному повторі бери колір із палітри. Вираз <code>i % len(palette)</code> повертає нас на початок палітри, коли кольори закінчуються.</p>
+    <details><summary>Переглянути код</summary><pre><code id="program-glow">import turtle
+
+screen = turtle.Screen()
+screen.bgcolor("#08111f")
+pen = turtle.Turtle()
+pen.pensize(2)
+pen.speed(0)
+
+palette = ["#57f3c3", "#a597ff", "#ffc475"]
+count = 12
+
+for i in range(count):
+    pen.color(palette[i % len(palette)])
+    for side in range(4):
+        pen.forward(105)
+        pen.left(90)
+    pen.left(360 / count)
+
+pen.hideturtle()
+turtle.done()</code></pre></details>
+    <a class="button button-alt" href="./?turtle8=glow">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
+    <p class="try"><strong>Спробуй:</strong> Перед запуском передбач, який колір буде у четвертого квадрата.</p>
+  </div>
+</article>
+  </section>
+  <section class="section" aria-labelledby="lab-title">
+    <div class="section-head"><p class="eyebrow">МІНІЛАБОРАТОРІЯ</p><h2 id="lab-title">Випробуй свій кут</h2><p>Вибери кількість квадратів і малюй по одному. Подивись, як змінюється кут, коли квадратів стає більше.</p></div>
+    <div class="lab">
+      <div class="play-art">
+        <svg id="play-art" role="img" aria-label="Один квадрат біля центру" viewBox="-156 -156 312 312"><g id="play-lines" fill="none" stroke-width="1.7" stroke-linejoin="round"><path d="M0 0H105V-105H0Z" transform="rotate(0)" stroke="#57f3c3"/></g><circle r="3.6" fill="#f9fcff"/></svg>
+      </div>
+      <div class="controls">
+        <label for="count">Кількість квадратів: <output id="count-value" for="count">12</output></label>
+        <input type="range" id="count" min="3" max="24" value="12" step="1">
+        <p class="formula" id="formula">360° ÷ 12 = 30°</p>
+        <div class="control-buttons"><button class="button" id="next" type="button">Ще один квадрат</button><button class="button button-alt" id="reset" type="button">Спочатку</button></div>
+        <p id="progress" role="status">Намальовано: 1 із 12.</p>
+      </div>
+    </div>
+  </section>
+  <section class="section mission" aria-labelledby="mission-title">
+    <p class="eyebrow">САМОСТІЙНА РОБОТА</p>
+    <h2 id="mission-title">Створи власний значок</h2>
+    <ol>
+      <li>Почни з третього прикладу. Вибери <strong>8, 15 або 18</strong> квадратів. Перед запуском обчисли кут і звір його з мінілабораторією.</li>
+      <li>Заміни щонайменше <strong>два кольори</strong> в <code>palette</code>. Наприклад, спробуй <code>"#ff85a6"</code> і <code>"#78bdff"</code>.</li>
+      <li>Намалюй у центрі світлу крапку: перед <code>pen.hideturtle()</code> додай <code>pen.dot(12, "white")</code>. Потім допиши на початку коду коментар із назвою свого значка.</li>
+    </ol>
+    <details><summary>Підказка, якщо малюнок не схожий на розетку</summary><p>Перевір відступи: <code>pen.left(90)</code> має виконуватися після кожної сторони, а <code>pen.left(360 / count)</code> — один раз після цілого квадрата. Кожен новий квадрат починається в центрі, бо черепашка після попереднього повертається до старту.</p></details>
+    <p><strong>Бонус:</strong> заміни квадрати рівносторонніми трикутниками. Зміни кількість сторін і поворот усередині фігури. Кут між готовими фігурами залиш <code>360 / count</code>.</p>
+    <p><strong>Що здати:</strong> код і знімок розетки. Додай одне речення: який поворот відбувається в центрі й чому?</p>
+    <a class="button" href="./?turtle8=glow">Почати зі зразка <span aria-hidden="true">↗</span></a>
+  </section>
+</main>
+<footer class="wrap"><a href="./">← До редактора «Кодик»</a> · <a href="https://docs.python.org/3/library/turtle.html">Довідка Python Turtle</a></footer>
+<script>
+(() => {
+  const countInput = document.getElementById('count');
+  const canvas = document.getElementById('play-art');
+  const lines = document.getElementById('play-lines');
+  const next = document.getElementById('next');
+  const colors = ['#57f3c3', '#a597ff', '#ffc475'];
+  const number = new Intl.NumberFormat('uk-UA', { maximumFractionDigits: 2 });
+  let drawn = 1;
+  function render() {
+    const count = Number(countInput.value);
+    const angle = 360 / count;
+    document.getElementById('count-value').textContent = count;
+    document.getElementById('formula').textContent = '360° ÷ ' + count + (Number.isInteger(angle * 100) ? ' = ' : ' ≈ ') + number.format(angle) + '°';
+    while (lines.firstChild) lines.firstChild.remove();
+    for (let i = 0; i < drawn; i++) {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M0 0H105V-105H0Z');
+      path.setAttribute('transform', 'rotate(' + (-i * angle) + ')');
+      path.setAttribute('stroke', colors[i % colors.length]);
+      lines.append(path);
+    }
+    next.disabled = drawn >= count;
+    const progress = 'Намальовано: ' + drawn + ' із ' + count + '.';
+    document.getElementById('progress').textContent = progress + (next.disabled ? ' Розетку завершено!' : '');
+    canvas.setAttribute('aria-label', progress + ' Квадрати повертаються навколо спільної вершини.');
+  }
+  function reset() { drawn = 1; render(); }
+  countInput.addEventListener('input', reset);
+  next.addEventListener('click', () => { if (drawn < Number(countInput.value)) drawn++; render(); });
+  document.getElementById('reset').addEventListener('click', reset);
+  render();
+})();
+</script>
+</body>
+</html>
