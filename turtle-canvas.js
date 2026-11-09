@@ -11,6 +11,7 @@ const art=document.createElement('canvas'),ink=art.getContext('2d');
 art.width=canvas.width;art.height=canvas.height;
 let queue=[],history=[],turtles=new Map(),background='white',animated=true;
 let frame=0,current=null,resolvers=[],generation=0;
+let animationMultiplier = 1;
 const point=(x,y)=>[canvas.width/2+x,canvas.height/2-y];
 const segment=(context,c,x0=c.x0,y0=c.y0,x=c.x,y=c.y)=>{
 if(!c.draw)return;
@@ -36,6 +37,7 @@ ink.textBaseline='bottom';ink.fillText(c.text,...point(c.x,c.y));
 function redrawArt(){ink.clearRect(0,0,art.width,art.height);history.forEach(drawMark)}
 function render(){
 ctx.fillStyle=background;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(art,0,0);
+if (current) segment(ctx, current.command, current.command.x0, current.command.y0, current.x, current.y);
 for(const t of turtles.values()){
 if(!t.visible||t.shape==='blank')continue;
 ctx.save();ctx.translate(...point(t.x,t.y));ctx.rotate(-t.angle*Math.PI/180);
@@ -56,21 +58,33 @@ function tick(now,token){
 if(token!==generation)return;
 frame=0;
 let budget=0;
+let nextStart = now;
 while(budget++<300){
-if(current){
-const c=current.command,f=Math.min(1,(now-current.start)/current.duration);
-const x=c.x0+(c.x-c.x0)*f,y=c.y0+(c.y-c.y0)*f;
-segment(ink,c,current.x,current.y,x,y);
-Object.assign(turtles.get(c.id),{x,y});current.x=x;current.y=y;
-if(f<1)break;
-history.push(c);current=null;redrawArt();
+if (current) {
+  const {command, start, duration} = current;
+  const progress = Math.min(1, (now - start) / duration);
+  const x = command.x0 + (command.x - command.x0) * progress;
+  const y = command.y0 + (command.y - command.y0) * progress;
+  Object.assign(turtles.get(command.id), {x, y});
+  Object.assign(current, {x, y});
+  if (progress < 1) break;
+  drawMark(command);
+  history.push(command);
+  nextStart = start + duration;
+  current = null;
 }
 const c=queue.shift();if(!c)break;
 if(c.op==='pose')turtles.set(c.id,c);
 if(c.op==='move'){
 if(!turtles.has(c.id))turtles.set(c.id,{...c,angle:0,visible:true,shape:'classic'});
-const duration=animated&&c.speed?Math.min(1000,Math.hypot(c.x-c.x0,c.y-c.y0)*12/(c.speed+1)):0;
-if(duration>0){current={command:c,start:now,duration,x:c.x0,y:c.y0};break}
+const duration = animated && c.speed
+  ? Math.min(1000, Math.hypot(c.x-c.x0, c.y-c.y0) * 12 / (c.speed+1)) / animationMultiplier
+  : 0;
+if (duration > 0) {
+  current = {command: c, start: nextStart, duration, x: c.x0, y: c.y0};
+  // Use the rest of this frame for short moves, such as the segments of a circle.
+  continue;
+}
 drawMark(c);history.push(c);Object.assign(turtles.get(c.id),{x:c.x,y:c.y});
 }
 if(['dot','fill','write'].includes(c.op)){history.push(c);drawMark(c)}
@@ -79,6 +93,7 @@ if(c.op==='clear_all'){history=[];turtles.clear();redrawArt()}
 if(c.op==='background')background=c.color;
 if(c.op==='title')panel.querySelector('#turtleTitle').textContent='🐢 '+c.text;
 if(c.op==='tracer')animated=c.enabled;
+if (c.op === 'animation_speed') animationMultiplier = c.multiplier;
 if(c.op==='close')panel.hidden=true;
 if(c.op==='setup'){
 canvas.width=art.width=c.width;canvas.height=art.height=c.height;redrawArt();
@@ -99,6 +114,7 @@ validColor(value){return typeof value==='string'&&CSS.supports('color',value)},
 beginRun(){
 generation++;if(frame)cancelAnimationFrame(frame);frame=0;queue=[];current=null;history=[];
 turtles.clear();background='white';animated=true;canvas.width=art.width=640;canvas.height=art.height=480;
+animationMultiplier = 1;
 panel.querySelector('#turtleTitle').textContent='🐢 Черепашка';panel.hidden=true;render();settle();
 },
 finish(){return queue.length||current?new Promise(resolve=>resolvers.push(resolve)):Promise.resolve()},
@@ -108,7 +124,7 @@ get canvas(){return canvas}
 window.kodikTurtle=bridge;
 let sourcePromise;
 window.installKodikTurtle=async pyodide=>{
-if(!sourcePromise)sourcePromise=fetch(new URL('turtle.py?v=1.22',document.baseURI)).then(response=>{
+if(!sourcePromise)sourcePromise=fetch(new URL('turtle.py?v=animation-speed-1',document.baseURI)).then(response=>{
 if(!response.ok)throw new Error('Не вдалося завантажити turtle');return response.text();
 }).catch(error=>{sourcePromise=null;throw error});
 const source=await sourcePromise;

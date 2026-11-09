@@ -46,6 +46,12 @@ class _Screen:
             self.bgcolor(bg)
         if canvwidth is not None or canvheight is not None:
             self.setup(canvwidth or 640, canvheight or 480)
+    def animation_speed(self, multiplier):
+        """Multiply the playback speed of animated turtles in Kodik."""
+        multiplier = _number(multiplier)
+        if not 1 <= multiplier <= 20:
+            raise TurtleGraphicsError("animation_speed: множник має бути від 1 до 20")
+        _emit("animation_speed", multiplier=multiplier)
     def tracer(self, n=None, delay=None):
         if n is not None:
             _emit("tracer", enabled=bool(n))
@@ -303,7 +309,7 @@ def _screen_delegate(name):
         return getattr(Screen(), name)(*args, **kwargs)
     return method
 
-for _name in ("bgcolor colormode title setup screensize tracer update bye clearscreen resetscreen "
+for _name in ("bgcolor colormode title setup screensize animation_speed tracer update bye clearscreen resetscreen "
               "window_width window_height onkey onkeypress onkeyrelease onclick ontimer listen exitonclick").split():
     globals()[_name] = _screen_delegate(_name)
 
