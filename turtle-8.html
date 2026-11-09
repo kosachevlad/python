@@ -64,6 +64,7 @@ ol li{padding-left:.2rem;margin:.4rem 0}
 footer{border-top:1px solid var(--line);padding:20px 0 30px;color:var(--muted);font-size:.9rem}
 @media(max-width:690px){.hero,.step,.lab{grid-template-columns:minmax(0,1fr)}.hero{padding:36px 0;gap:20px}.hero-art svg{max-height:280px}.diagram svg{max-height:190px}.step,.lab{padding:15px}.section{margin-bottom:36px}.wrap{width:calc(100% - 28px)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+pre .syntax-keyword{color:#ff79c6}pre .syntax-string{color:#f1fa8c}pre .syntax-number{color:#bd93f9}pre .syntax-function{color:#50fa7b}pre .syntax-builtin{color:#8be9fd}pre .syntax-comment{color:#90a6bd}
 </style>
 </head>
 <body>
@@ -93,21 +94,21 @@ footer{border-top:1px solid var(--line);padding:20px 0 30px;color:var(--muted);f
     <p class="eyebrow">КРОК 01 <span>· 4 сторони × 90°</span></p>
     <h3>Згадай рухи</h3>
     <p>Почни з одного квадрата зі стороною 105. Прочитай тіло циклу: крок уперед, поворот ліворуч на 90°, і так чотири рази.</p>
-    <details><summary>Переглянути код</summary><pre><code id="program-square">import turtle
+    <details><summary>Переглянути код</summary><pre><code id="program-square"><span class="syntax-keyword">import</span> turtle
 
-screen = turtle.Screen()
-screen.bgcolor("#08111f")
-pen = turtle.Turtle()
-pen.pensize(2)
-pen.speed(0)
-pen.color("#57f3c3")
+screen = turtle.<span class="syntax-function">Screen</span>()
+screen.<span class="syntax-function">bgcolor</span>(<span class="syntax-string">"#08111f"</span>)
+pen = turtle.<span class="syntax-function">Turtle</span>()
+pen.<span class="syntax-function">pensize</span>(<span class="syntax-number">2</span>)
+pen.<span class="syntax-function">speed</span>(<span class="syntax-number">0</span>)
+pen.<span class="syntax-function">color</span>(<span class="syntax-string">"#57f3c3"</span>)
 
-for side in range(4):
-    pen.forward(105)
-    pen.left(90)
+<span class="syntax-keyword">for</span> side <span class="syntax-keyword">in</span> <span class="syntax-builtin">range</span>(<span class="syntax-number">4</span>):
+    pen.<span class="syntax-function">forward</span>(<span class="syntax-number">105</span>)
+    pen.<span class="syntax-function">left</span>(<span class="syntax-number">90</span>)
 
-pen.hideturtle()
-turtle.done()</code></pre></details>
+pen.<span class="syntax-function">hideturtle</span>()
+turtle.<span class="syntax-function">done</span>()</code></pre></details>
     <a class="button button-alt" href="./?turtle8=square">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
     <p class="try"><strong>Спробуй:</strong> Зміни 105 на 80. Що змінилося, а що залишилося таким самим?</p>
   </div>
@@ -121,23 +122,23 @@ turtle.done()</code></pre></details>
     <p class="eyebrow">КРОК 02 <span>· 90° на куті · 30° у центрі</span></p>
     <h3>Поверни наступний квадрат</h3>
     <p>Вклади цикл квадрата у зовнішній цикл. Після кожного готового квадрата черепашка стоїть у центрі й повертається ще на 30°. Так три квадрати дивляться в різні боки.</p>
-    <details><summary>Переглянути код</summary><pre><code id="program-turn">import turtle
+    <details><summary>Переглянути код</summary><pre><code id="program-turn"><span class="syntax-keyword">import</span> turtle
 
-screen = turtle.Screen()
-screen.bgcolor("#08111f")
-pen = turtle.Turtle()
-pen.pensize(2)
-pen.speed(0)
-pen.color("#57f3c3")
+screen = turtle.<span class="syntax-function">Screen</span>()
+screen.<span class="syntax-function">bgcolor</span>(<span class="syntax-string">"#08111f"</span>)
+pen = turtle.<span class="syntax-function">Turtle</span>()
+pen.<span class="syntax-function">pensize</span>(<span class="syntax-number">2</span>)
+pen.<span class="syntax-function">speed</span>(<span class="syntax-number">0</span>)
+pen.<span class="syntax-function">color</span>(<span class="syntax-string">"#57f3c3"</span>)
 
-for i in range(3):
-    for side in range(4):
-        pen.forward(105)
-        pen.left(90)
-    pen.left(30)
+<span class="syntax-keyword">for</span> i <span class="syntax-keyword">in</span> <span class="syntax-builtin">range</span>(<span class="syntax-number">3</span>):
+    <span class="syntax-keyword">for</span> side <span class="syntax-keyword">in</span> <span class="syntax-builtin">range</span>(<span class="syntax-number">4</span>):
+        pen.<span class="syntax-function">forward</span>(<span class="syntax-number">105</span>)
+        pen.<span class="syntax-function">left</span>(<span class="syntax-number">90</span>)
+    pen.<span class="syntax-function">left</span>(<span class="syntax-number">30</span>)
 
-pen.hideturtle()
-turtle.done()</code></pre></details>
+pen.<span class="syntax-function">hideturtle</span>()
+turtle.<span class="syntax-function">done</span>()</code></pre></details>
     <a class="button button-alt" href="./?turtle8=turn">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
     <p class="try"><strong>Спробуй:</strong> Знайди в коді обидва повороти. Чому один рядок має менший відступ?</p>
   </div>
@@ -151,26 +152,26 @@ turtle.done()</code></pre></details>
     <p class="eyebrow">КРОК 03 <span>· 12 квадратів × 30° = 360°</span></p>
     <h3>Замкни коло й додай колір</h3>
     <p>Візьми 12 квадратів і розподіли їх на повний оберт: 360° ÷ 12 = 30°. У кожному повторі бери колір із палітри. Вираз <code>i % len(palette)</code> повертає нас на початок палітри, коли кольори закінчуються.</p>
-    <details><summary>Переглянути код</summary><pre><code id="program-glow">import turtle
+    <details><summary>Переглянути код</summary><pre><code id="program-glow"><span class="syntax-keyword">import</span> turtle
 
-screen = turtle.Screen()
-screen.bgcolor("#08111f")
-pen = turtle.Turtle()
-pen.pensize(2)
-pen.speed(0)
+screen = turtle.<span class="syntax-function">Screen</span>()
+screen.<span class="syntax-function">bgcolor</span>(<span class="syntax-string">"#08111f"</span>)
+pen = turtle.<span class="syntax-function">Turtle</span>()
+pen.<span class="syntax-function">pensize</span>(<span class="syntax-number">2</span>)
+pen.<span class="syntax-function">speed</span>(<span class="syntax-number">0</span>)
 
-palette = ["#57f3c3", "#a597ff", "#ffc475"]
-count = 12
+palette = [<span class="syntax-string">"#57f3c3"</span>, <span class="syntax-string">"#a597ff"</span>, <span class="syntax-string">"#ffc475"</span>]
+count = <span class="syntax-number">12</span>
 
-for i in range(count):
-    pen.color(palette[i % len(palette)])
-    for side in range(4):
-        pen.forward(105)
-        pen.left(90)
-    pen.left(360 / count)
+<span class="syntax-keyword">for</span> i <span class="syntax-keyword">in</span> <span class="syntax-builtin">range</span>(count):
+    pen.<span class="syntax-function">color</span>(palette[i % <span class="syntax-builtin">len</span>(palette)])
+    <span class="syntax-keyword">for</span> side <span class="syntax-keyword">in</span> <span class="syntax-builtin">range</span>(<span class="syntax-number">4</span>):
+        pen.<span class="syntax-function">forward</span>(<span class="syntax-number">105</span>)
+        pen.<span class="syntax-function">left</span>(<span class="syntax-number">90</span>)
+    pen.<span class="syntax-function">left</span>(<span class="syntax-number">360</span> / count)
 
-pen.hideturtle()
-turtle.done()</code></pre></details>
+pen.<span class="syntax-function">hideturtle</span>()
+turtle.<span class="syntax-function">done</span>()</code></pre></details>
     <a class="button button-alt" href="./?turtle8=glow">Відкрити код у Кодику <span aria-hidden="true">↗</span></a>
     <p class="try"><strong>Спробуй:</strong> Перед запуском передбач, який колір буде у четвертого квадрата.</p>
   </div>
