@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111f">
+<title>Урок 1. Типи даних і print() · Кодик</title>
+<link rel="stylesheet" href="lessons.css?v=1">
+</head>
+<body>
+<header class="top wrap"><a class="brand" href="./"><span class="logo" aria-hidden="true">&lt;/&gt;</span> Кодик</a><a class="back" href="lessons.html">Усі уроки</a></header>
+<main class="wrap">
+  <div class="intro">
+    <p class="tag">Урок 1</p>
+    <h1>Типи даних і <code>print()</code></h1>
+    <p>Розпізнай цілі й дробові числа, текст і логічні значення. Навчися виводити їх у термінал.</p>
+    <a class="button" href="#hello">Почати урок <span aria-hidden="true">↓</span></a>
+  </div>
+  <section id="hello" class="section" aria-labelledby="hello-title">
+    <h2 id="hello-title">1. Перший рядок у терміналі</h2>
+    <p>Напиши <code>print()</code> і в дужках передай текст у лапках. У «Кодику» натисни «Запустити». Термінал покаже текст без лапок.</p>
+    <div class="example">
+      <div>
+        <h3>Код Python</h3>
+        <pre><code id="program-hello"><span class="syntax-builtin">print</span>(<span class="syntax-string">"Привіт, Python!"</span>)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Це мій перший урок."</span>)</code></pre>
+      </div>
+      <div>
+        <h3>Очікуваний вивід</h3>
+        <pre class="output"><samp>Привіт, Python!
+Це мій перший урок.</samp></pre>
+      </div>
+    </div>
+    <a class="button" href="./?lesson1=hello">Відкрити в Кодику <span aria-hidden="true">↗</span></a>
+    <p class="practice">Заміни привітання власним повідомленням і додай третій рядок із print().</p>
+  </section>
+  <section class="section" aria-labelledby="types-title">
+    <h2 id="types-title">2. Чотири типи даних</h2>
+    <dl class="types">
+      <div><dt><code>int</code></dt><dd>Ціле число. Наприклад, <code>8</code>.</dd></div>
+      <div><dt><code>float</code></dt><dd>Тип для чисел із дробовою частиною. Наприклад, <code>1.5</code>. У коді ставимо крапку.</dd></div>
+      <div><dt><code>str</code></dt><dd>Текст у лапках. Наприклад, <code>"8"</code>.</dd></div>
+      <div><dt><code>bool</code></dt><dd>Логічне значення <code>True</code> або <code>False</code>. Пишемо з великої літери й без лапок.</dd></div>
+    </dl>
+    <p>Тип показує, що це за значення. Функція <code>type()</code> визначає тип, а <code>.__name__</code> дає його коротку назву.</p>
+    <div class="example">
+      <div>
+        <h3>Код Python</h3>
+        <pre><code id="program-types"><span class="syntax-builtin">print</span>(<span class="syntax-builtin">type</span>(<span class="syntax-number">8</span>).__name__)
+<span class="syntax-builtin">print</span>(<span class="syntax-builtin">type</span>(<span class="syntax-number">1.5</span>).__name__)
+<span class="syntax-builtin">print</span>(<span class="syntax-builtin">type</span>(<span class="syntax-string">"8"</span>).__name__)
+<span class="syntax-builtin">print</span>(<span class="syntax-builtin">type</span>(<span class="syntax-keyword">True</span>).__name__)</code></pre>
+      </div>
+      <div>
+        <h3>Очікуваний вивід</h3>
+        <pre class="output"><samp>int
+float
+str
+bool</samp></pre>
+      </div>
+    </div>
+    <a class="button" href="./?lesson1=types">Відкрити в Кодику <span aria-hidden="true">↗</span></a>
+    <p class="practice">Порівняй 8 і "8". Яке з цих значень можна додати до числа 2?</p>
+  </section>
+  <section class="section" aria-labelledby="profile-title">
+    <h2 id="profile-title">3. Текст, значення й обчислення</h2>
+    <p>Збережи дані у змінних. У <code>print()</code> перелічуй значення через кому. Python зазвичай ставить між ними пробіл і переходить на новий рядок після кожного виклику.</p>
+    <div class="example">
+      <div>
+        <h3>Код Python</h3>
+        <pre><code id="program-profile">name = <span class="syntax-string">"Робот К-8"</span>
+points = <span class="syntax-number">7</span>
+height = <span class="syntax-number">1.5</span>
+ready = <span class="syntax-keyword">True</span>
+
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Ім’я:"</span>, name)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Зріст:"</span>, height, <span class="syntax-string">"м"</span>)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Готовий:"</span>, ready)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Бали після бонусу:"</span>, points + <span class="syntax-number">2</span>)</code></pre>
+      </div>
+      <div>
+        <h3>Очікуваний вивід</h3>
+        <pre class="output"><samp>Ім’я: Робот К-8
+Зріст: 1.5 м
+Готовий: True
+Бали після бонусу: 9</samp></pre>
+      </div>
+    </div>
+    <a class="button" href="./?lesson1=profile">Відкрити в Кодику <span aria-hidden="true">↗</span></a>
+    <p class="practice">Зміни кількість балів і перед запуском передбач, яким буде останній рядок.</p>
+  </section>
+  <section class="section task" aria-labelledby="task-title">
+    <h2 id="task-title">Самостійна робота. Картка персонажа</h2>
+    <ol>
+      <li>Вигадай персонажа і створи для нього чотири змінні. Запиши ім’я, кількість балів, зріст із дробовою частиною та стан готовності.</li>
+      <li>Виведи всі чотири значення в термінал із підписами. Наприклад, <code>print("Бали:", points)</code>.</li>
+      <li>Додай ще один виклик <code>print()</code>, який покаже кількість балів після бонусу в 5 балів.</li>
+    </ol>
+    <details>
+      <summary>Самоперевірка</summary>
+      <p>У терміналі має бути п’ять рядків. У кожному видно підпис і значення. Якщо початкових балів було 7, в останньому рядку має бути 12.</p>
+    </details>
+  </section>
+</main>
+<footer class="wrap"><a href="lessons.html">← Усі уроки</a> · <a href="https://docs.python.org/3/library/functions.html#print">Довідка Python про print()</a></footer>
+</body>
+</html>

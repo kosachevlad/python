@@ -4,17 +4,28 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#08111f"><title>Кодик — Python для дітей</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232bd9a7'/%3E%3Cpath d='M18 20h28v24H18z' fill='%2308111f'/%3E%3Cpath d='M24 28l6 4-6 4m10 0h6' stroke='%232bd9a7' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="feedback.css?v=v1.33"><style>.brand .turtle-lesson-link{display:inline-flex;align-items:center;min-height:24px;color:#57f3c3;font-size:.79rem;font-weight:700;text-underline-offset:.15em}.brand .turtle-lesson-link:focus-visible{outline:2px solid #ffd166;outline-offset:3px}</style></head><body><main class="app">
-<header class="topbar"><div class="brand"><div class="logo">&lt;/&gt;</div><div><h1>Кодик <span class="version">(v1.33)</span></h1><a class="turtle-lesson-link" href="./turtle-8.html">Урок Turtle</a></div></div><div class="actions"><span class="lang-pill">UA / EN</span><select class="select" id="uiLang"><option value="uk">Українська</option><option value="en">English</option></select><button class="run" id="run">▶ Запустити</button></div></header>
+<link rel="stylesheet" href="feedback.css?v=v1.33"><style>.brand .lessons-link{display:inline-flex;align-items:center;min-height:24px;color:#57f3c3;font-size:.79rem;font-weight:700;text-underline-offset:.15em}.brand .lessons-link:focus-visible{outline:2px solid #ffd166;outline-offset:3px}</style></head><body><main class="app">
+<header class="topbar"><div class="brand"><div class="logo">&lt;/&gt;</div><div><h1>Кодик <span class="version">(v1.33)</span></h1><a class="lessons-link" href="./lessons.html">Уроки</a></div></div><div class="actions"><span class="lang-pill">UA / EN</span><select class="select" id="uiLang"><option value="uk">Українська</option><option value="en">English</option></select><button class="run" id="run">▶ Запустити</button></div></header>
 <section class="workspace"><div class="card"><nav class="tabs" id="tabs"></nav><div class="editor-wrap"><div class="gutter" id="gutter">1</div><textarea class="editor" id="editor" spellcheck="false"></textarea></div><div class="editor-foot"><span id="saved">● Збережено локально</span><span>Python 3 · <span id="chars">0</span> символів</span></div><div class="terminal"><div class="term-head">▸ термінал <span style="float:right">input() підтримує UA / EN</span></div><div class="output" id="output">Готово до запуску. Натисни «Запустити», щоб побачити результат.</div><div class="prompt-row"><input class="prompt" id="prompt" placeholder="Введи відповідь для input()…"><button class="send" id="send">Надіслати</button></div></div></div>
 <aside class="side"><div class="panel"><h2>Клавіатура коду</h2><div class="key-grid" id="keys"></div><p class="hint">Спеціальні символи вставляються правильно на будь-якому Android-пристрої — лапки завжди Python-сумісні.</p></div><div class="panel"><h2>Швидкі вставки</h2><div class="quick" id="quick"></div><p class="hint">Можна перемикати мову інтерфейсу. Код і введення в терміналі приймають українські та англійські символи.</p></div><div class="panel"><div class="status"><span class="dot"></span><span id="status">Локальний режим · дані зберігаються на цьому пристрої</span></div></div></aside></section></main>
-<script src="python-engine.js?v=v1.33"></script><script src="app-ed0a328a.js?v=v1.33"></script><script src="turtle-canvas.js?v=animation-speed-1"></script><script src="tkinter-dom.js?v=v1.33"></script><script src="robot-canvas.js?v=v1.33"></script><script src="project-store.js?v=v1.33"></script><script src="project-runtime.js?v=v1.33"></script><script src="project-ide.js?v=v1.33"></script><script src="python-diagnostics.js?v=v1.33"></script><script src="mobile-workspace.js?v=v1.33"></script><script src="feedback.js?v=v1.33"></script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=v1.33').then(r=>r.update());const isTurtleExample=['square','turn','glow','circles','stars','tryzub'].includes(new URLSearchParams(location.search).get('turtle8'));navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!isTurtleExample)location.reload()})}</script><script>
+<script src="python-engine.js?v=v1.33"></script><script src="app-ed0a328a.js?v=v1.33"></script><script src="turtle-canvas.js?v=animation-speed-1"></script><script src="tkinter-dom.js?v=v1.33"></script><script src="robot-canvas.js?v=v1.33"></script><script src="project-store.js?v=v1.33"></script><script src="project-runtime.js?v=v1.33"></script><script src="project-ide.js?v=v1.33"></script><script src="python-diagnostics.js?v=v1.33"></script><script src="mobile-workspace.js?v=v1.33"></script><script src="feedback.js?v=v1.33"></script><script>
 (() => {
   const url = new URL(location.href);
-  const example = url.searchParams.get('turtle8');
-  if (!['square', 'turn', 'glow', 'circles', 'stars', 'tryzub'].includes(example)) return;
+  const lessons = [
+    { parameter: 'turtle8', page: './turtle-8.html', prefix: 'turtle8-', examples: ['square', 'turn', 'glow', 'circles', 'stars', 'tryzub'] },
+    { parameter: 'lesson1', page: './python-1.html', prefix: 'lesson1-', examples: ['hello', 'types', 'profile'] }
+  ];
+  const selected = lessons.find(lesson => lesson.examples.includes(url.searchParams.get(lesson.parameter)));
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js?v=v1.33').then(registration => registration.update());
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!selected) location.reload();
+    });
+  }
+  if (!selected) return;
+  const example = url.searchParams.get(selected.parameter);
   const hint = document.getElementById('output');
-  fetch('./turtle-8.html').then(response => {
+  fetch(selected.page).then(response => {
     if (!response.ok) throw new Error('Lesson unavailable');
     return response.text();
   }).then(html => {
@@ -27,7 +38,7 @@
       throw new Error('Editor busy');
     }
     save();
-    const stem = 'turtle8-' + example;
+    const stem = selected.prefix + example;
     let tabIndex = tabs.findIndex(tab => (tab.name === stem + '.py' || tab.name.startsWith(stem + '-')) && tab.code === code);
     if (tabIndex < 0) {
       let name = stem + '.py';
@@ -37,11 +48,11 @@
     active = tabIndex;
     renderAll();
     save();
-    hint.textContent = 'Приклад із уроку Turtle відкрито. Натисни «Запустити».';
-    url.searchParams.delete('turtle8');
+    hint.textContent = 'Приклад з уроку відкрито. Натисни «Запустити».';
+    url.searchParams.delete(selected.parameter);
     history.replaceState(history.state, '', url);
   }).catch(() => {
-    hint.textContent = 'Не вдалося відкрити приклад. Повернися до уроку Turtle і скопіюй код вручну.';
+    hint.textContent = 'Не вдалося відкрити приклад. Повернися до уроку й скопіюй код вручну.';
   });
 })();
 </script>
