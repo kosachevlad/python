@@ -13,7 +13,8 @@
   const url = new URL(location.href);
   const lessons = [
     { parameter: 'turtle8', page: './turtle-8.html', prefix: 'turtle8-', examples: ['square', 'turn', 'glow', 'circles', 'stars', 'tryzub'] },
-    { parameter: 'lesson1', page: './python-1.html', prefix: 'lesson1-', examples: ['hello', 'types', 'profile'] }
+    { parameter: 'lesson1', page: './python-1.html', prefix: 'lesson1-', examples: ['hello', 'types', 'profile'] },
+    { parameter: 'lesson2', page: './python-2.html', prefix: 'lesson2-', examples: ['name', 'string', 'age', 'total'] }
   ];
   const selected = lessons.find(lesson => lesson.examples.includes(url.searchParams.get(lesson.parameter)));
   if ('serviceWorker' in navigator) {

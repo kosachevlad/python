@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111f">
+<title>Урок 2. input() і print() · Кодик</title>
+<link rel="stylesheet" href="lessons.css?v=1">
+</head>
+<body>
+<header class="top wrap"><a class="brand" href="./"><span class="logo" aria-hidden="true">&lt;/&gt;</span> Кодик</a><a class="back" href="lessons.html">Усі уроки</a></header>
+<main class="wrap">
+  <div class="intro">
+    <p class="tag">Урок 2</p>
+    <h1>Запитуємо й відповідаємо: <code>input()</code> та <code>print()</code></h1>
+    <p>Навчи програму вести короткий діалог. Ти введеш відповідь у терміналі, а програма використає її в повідомленні чи обчисленні.</p>
+    <a class="button" href="#dialog">Почати урок <span aria-hidden="true">↓</span></a>
+  </div>
+  <section id="dialog" class="section" aria-labelledby="dialog-title">
+    <h2 id="dialog-title">1. Програма запитує ім’я</h2>
+    <p><code>input("Як тебе звати? ")</code> показує запитання й чекає на відповідь. У «Кодику» натисни «Запустити», введи відповідь у полі під терміналом і натисни «Надіслати» або Enter. Змінна <code>name</code> збереже введений текст.</p>
+    <div class="example"><div><h3>Код Python</h3><pre><code id="program-name">name = <span class="syntax-builtin">input</span>(<span class="syntax-string">"Як тебе звати? "</span>)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">f"Привіт, {name}!"</span>)</code></pre></div><div><h3>Приклад діалогу</h3><pre class="output"><samp>Як тебе звати? Оля
+Привіт, Оля!</samp></pre></div></div>
+    <a class="button" href="./?lesson2=name">Відкрити в Кодику <span aria-hidden="true">↗</span></a>
+    <p class="practice">Спробуй ввести інше ім’я. У рядку з <code>f</code> значення <code>name</code> підставиться у фігурні дужки.</p>
+  </section>
+  <section class="section" aria-labelledby="string-title">
+    <h2 id="string-title">2. Відповідь завжди є рядком</h2>
+    <p>За замовчуванням <code>input()</code> повертає <code>str</code> — рядок, навіть якщо ввести цифри. Тому <code>"7" + "2"</code> дає <code>"72"</code>: рядки з’єднуються. Функція <code>type(...).__name__</code> покаже тип значення.</p>
+    <div class="example"><div><h3>Код Python</h3><pre><code id="program-string">answer = <span class="syntax-builtin">input</span>(<span class="syntax-string">"Введи число 7: "</span>)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Тип:"</span>, <span class="syntax-builtin">type</span>(answer).__name__)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Плюс рядок 2:"</span>, answer + <span class="syntax-string">"2"</span>)</code></pre></div><div><h3>Якщо ввести 7</h3><pre class="output"><samp>Введи число 7: 7
+Тип: str
+Плюс рядок 2: 72</samp></pre></div></div>
+    <a class="button" href="./?lesson2=string">Відкрити в Кодику <span aria-hidden="true">↗</span></a>
+    <p class="practice">Перед запуском передбач результат, якщо ввести <code>15</code>.</p>
+  </section>
+  <section class="section" aria-labelledby="number-title">
+    <h2 id="number-title">3. Перетворюємо відповідь на число</h2>
+    <p>Коли потрібне ціле число, обгорни введення у <code>int(input(...))</code>. Спочатку <code>input()</code> читає рядок, потім <code>int()</code> перетворює його на число. Тепер <code>+</code> додає числа.</p>
+    <div class="example"><div><h3>Код Python</h3><pre><code id="program-age">age = <span class="syntax-builtin">int</span>(<span class="syntax-builtin">input</span>(<span class="syntax-string">"Скільки тобі років? "</span>))
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Тип:"</span>, <span class="syntax-builtin">type</span>(age).__name__)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">f"Через рік тобі буде {age + 1}."</span>)</code></pre></div><div><h3>Якщо ввести 13</h3><pre class="output"><samp>Скільки тобі років? 13
+Тип: int
+Через рік тобі буде 14.</samp></pre></div></div>
+    <a class="button" href="./?lesson2=age">Відкрити в Кодику <span aria-hidden="true">↗</span></a>
+    <p class="practice">Вводь ціле число без лапок. Якщо ввести слово або дріб на кшталт <code>2.5</code>, <code>int()</code> повідомить про помилку перетворення.</p>
+  </section>
+  <section class="section" aria-labelledby="total-title">
+    <h2 id="total-title">4. Два введення — один результат</h2>
+    <p>Запитай два числа окремо. Кожне введення перетвори за допомогою <code>int()</code> і виведи суму через <code>print()</code>.</p>
+    <div class="example"><div><h3>Код Python</h3><pre><code id="program-total">apples = <span class="syntax-builtin">int</span>(<span class="syntax-builtin">input</span>(<span class="syntax-string">"Скільки червоних яблук? "</span>))
+pears = <span class="syntax-builtin">int</span>(<span class="syntax-builtin">input</span>(<span class="syntax-string">"Скільки зелених груш? "</span>))
+<span class="syntax-builtin">print</span>(<span class="syntax-string">f"Усього фруктів: {apples + pears}"</span>)</code></pre></div><div><h3>Якщо ввести 3, потім 4</h3><pre class="output"><samp>Скільки червоних яблук? 3
+Скільки зелених груш? 4
+Усього фруктів: 7</samp></pre></div></div>
+    <a class="button" href="./?lesson2=total">Відкрити в Кодику <span aria-hidden="true">↗</span></a>
+    <p class="practice">Зміни запитання так, щоб програма рахувала не фрукти, а предмети для твоєї гри.</p>
+  </section>
+  <section class="section task" aria-labelledby="tasks-title">
+    <h2 id="tasks-title">Вправи для тебе</h2>
+    <ol>
+      <li><strong>Вітальна листівка.</strong> Запитай ім’я та улюблений колір. Виведи два рядки з відповідями, використавши <code>print()</code> і f-рядок.</li>
+      <li><strong>Квитки.</strong> Запитай кількість дитячих квитків. Один квиток коштує 30 грн. Виведи загальну вартість. Для введення кількості використай <code>int(input(...))</code>.</li>
+      <li><strong>Два рівні гри.</strong> Запитай бали за перший і другий рівні, додай їх і виведи підсумок. Перед запуском передбач результат для 8 та 12 балів.</li>
+      <li><strong>Знайди помилку.</strong> Спробуй <code>points = input("Бали: ")</code> та <code>print(points + 5)</code>. Поясни помилку й виправ перший рядок, щоб програма додавала 5.</li>
+    </ol>
+    <details><summary>Підказки й самоперевірка</summary><p>Для квитків: <code>count = int(input("Скільки квитків? "))</code>, а вартість дорівнює <code>count * 30</code>. За два рівні з 8 і 12 балами вийде 20. В останній вправі <code>points</code> є рядком; обгорни <code>input(...)</code> у <code>int(...)</code>.</p></details>
+  </section>
+</main>
+<footer class="wrap"><a href="lessons.html">← Усі уроки</a> · <a href="turtle-8.html">Урок 3: Turtle →</a></footer>
+</body>
+</html>
