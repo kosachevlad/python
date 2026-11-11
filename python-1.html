@@ -65,6 +65,7 @@ bool</samp></pre>
   <section class="section" aria-labelledby="profile-title">
     <h2 id="profile-title">3. Текст, значення й обчислення</h2>
     <p>Збережи дані у змінних. У <code>print()</code> перелічуй значення через кому. Python зазвичай ставить між ними пробіл і переходить на новий рядок після кожного виклику.</p>
+    <p><strong>F-рядок.</strong> Постав літеру <code>f</code> перед відкривальними лапками й напиши ім’я вже створеної змінної у фігурних дужках. У виклику <code>print(f"Ім’я: {name}")</code> Python підставить поточне значення <code>name</code> замість <code>{name}</code>. Зміни <code>name</code> і запусти код знову, щоб побачити нове ім’я в терміналі.</p>
     <div class="example">
       <div>
         <h3>Код Python</h3>
@@ -73,7 +74,7 @@ points = <span class="syntax-number">7</span>
 height = <span class="syntax-number">1.5</span>
 ready = <span class="syntax-keyword">True</span>
 
-<span class="syntax-builtin">print</span>(<span class="syntax-string">"Ім’я:"</span>, name)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">f"Ім’я: {name}"</span>)
 <span class="syntax-builtin">print</span>(<span class="syntax-string">"Зріст:"</span>, height, <span class="syntax-string">"м"</span>)
 <span class="syntax-builtin">print</span>(<span class="syntax-string">"Готовий:"</span>, ready)
 <span class="syntax-builtin">print</span>(<span class="syntax-string">"Бали після бонусу:"</span>, points + <span class="syntax-number">2</span>)</code></pre>
