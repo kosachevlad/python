@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111f">
+<title>Урок 4. Списки в Python · Кодик</title>
+<link rel="stylesheet" href="lessons.css?v=1">
+</head>
+<body>
+<header class="top wrap">
+  <a class="brand" href="./"><span class="logo" aria-hidden="true">&lt;/&gt;</span> Кодик</a>
+  <a class="back" href="lessons.html">Усі уроки</a>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="tag">Урок 4 · 8 клас</p>
+    <h1>Списки в Python</h1>
+    <p>Навчися зберігати кілька значень в одній змінній, читати й змінювати їх за індексом та додавати нові записи.</p>
+    <a class="button" href="#index-title">Почати урок <span aria-hidden="true">↓</span></a>
+  </div>
+  <section class="section" aria-labelledby="index-title">
+    <h2 id="index-title">1. Створюємо список і читаємо його елементи</h2>
+    <p>Щоб зберегти температуру за п’ять днів, запиши числа в квадратних дужках через кому. Кожне число — це елемент списку. Його позицію називають <strong>індексом</strong>. У Python відлік починається з нуля, тому перший елемент має індекс <code>0</code>, а третій — <code>2</code>.</p>
+    <div class="example">
+      <div>
+        <h3>Код Python</h3>
+        <pre><code>temperatures = [12, 14, 13, 15, 16]
+<span class="syntax-builtin">print</span>(temperatures[0])
+<span class="syntax-builtin">print</span>(temperatures[2])</code></pre>
+      </div>
+      <div>
+        <h3>Результат</h3>
+        <pre class="output"><samp>12
+13</samp></pre>
+      </div>
+    </div>
+    <p class="practice">Перед запуском передбач, яке число дасть <code>temperatures[4]</code>.</p>
+  </section>
+  <section class="section" aria-labelledby="change-title">
+    <h2 id="change-title">2. Виправляємо й додаємо записи</h2>
+    <p>Щоб виправити вимірювання за третій день, присвой нове значення елементу з індексом <code>2</code>. Метод <code>append()</code> додає запис у кінець списку, а <code>len()</code> повертає кількість елементів.</p>
+    <div class="example">
+      <div>
+        <h3>Продовження попереднього прикладу</h3>
+        <pre><code>temperatures[2] = 17
+temperatures.append(18)
+<span class="syntax-builtin">print</span>(temperatures)
+<span class="syntax-builtin">print</span>(<span class="syntax-builtin">len</span>(temperatures))</code></pre>
+      </div>
+      <div>
+        <h3>Нові рядки в терміналі</h3>
+        <pre class="output"><samp>[12, 14, 17, 15, 16, 18]
+6</samp></pre>
+      </div>
+    </div>
+    <p class="practice">Після якої команди змінилася кількість елементів?</p>
+  </section>
+  <section class="section task" aria-labelledby="practice-title">
+    <h2 id="practice-title">Практична робота. Щоденник спостережень за птахами</h2>
+    <p>У редакторі «Кодика» створи нову вкладку й самостійно напиши програму. За п’ять днів біля годівниці помітили 4, 7, 5, 6 і 8 птахів відповідно.</p>
+    <ol>
+      <li>Створи список <code>birds</code> із цих п’яти чисел.</li>
+      <li>Виведи кількість птахів за другий день.</li>
+      <li>Виправ запис за третій день — там було 9 птахів.</li>
+      <li>Додай запис за шостий день — 10 птахів.</li>
+      <li>Виведи оновлений список і кількість днів спостережень.</li>
+    </ol>
+    <details>
+      <summary>Очікуваний результат</summary>
+      <pre class="output"><samp>7
+[4, 7, 9, 6, 8, 10]
+6</samp></pre>
+    </details>
+  </section>
+  <section class="section task" aria-labelledby="challenge-title">
+    <h2 id="challenge-title">★ Завдання із зірочкою. Дні вище середнього</h2>
+    <p>Допиши програму, щоб вона обчислила середню кількість птахів за день і порахувала, у скільки днів птахів було <strong>більше за середнє</strong>. Перевір програму з іншими числами у списку.</p>
+    <details>
+      <summary>Підказка</summary>
+      <p>Поділи суму елементів (<code>sum()</code>) на їхню кількість (<code>len()</code>). Почни лічильник днів з нуля. За допомогою <code>for</code> переглянь кожен запис і збільш лічильник, якщо значення більше за середнє.</p>
+    </details>
+    <details>
+      <summary>Очікуваний результат</summary>
+      <p>Для оновленого списку середнє — приблизно <strong>7,33 птаха за день</strong>. Понад середнє було у <strong>3 дні</strong>.</p>
+    </details>
+  </section>
+  <section class="section task" aria-labelledby="review-title">
+    <h2 id="review-title">Перевір себе</h2>
+    <ul>
+      <li>Який індекс має запис за другий день?</li>
+      <li>Як виправити наявний запис? Як додати новий?</li>
+      <li>Що в цій задачі обчислюють <code>len(birds)</code> і <code>sum(birds)</code>?</li>
+    </ul>
+  </section>
+</main>
+<footer class="wrap"><a href="turtle-8.html">← Урок 3 · Turtle</a> · <a href="lessons.html">Усі уроки</a></footer>
+</body>
+</html>

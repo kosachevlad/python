@@ -1,4 +1,4 @@
-const VERSION='kodik-v1.33',PYTHON_CACHE='kodik-python-0.26.2';
+const VERSION='kodik-v1.34',PYTHON_CACHE='kodik-python-0.26.2';
 const core=new Set(['pyodide.js','pyodide.asm.js','pyodide.asm.wasm','python_stdlib.zip','pyodide-lock.json']);
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
