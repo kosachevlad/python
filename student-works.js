@@ -117,7 +117,10 @@
       likeButton.className = 'student-work-like';
       const updateLike = () => {
         const isLiked = likedIds().includes(work.id);
-        likeButton.textContent = isLiked ? '♥ Вподобано' : '♡ Лайк';
+        // On this static GitHub Pages site we only know the current browser's vote.
+        // Do not present this 0/1 value as a global like count.
+        likeButton.textContent = isLiked ? '♥ 1 · Вподобано' : '♡ 0 · Лайк';
+        likeButton.setAttribute('aria-label', (isLiked ? 'Вподобано' : 'Поставити лайк') + '. Лайків із цього браузера: ' + Number(isLiked));
         likeButton.setAttribute('aria-pressed', String(isLiked));
         likeButton.disabled = isLiked;
         likeButton.title = isLiked ? 'Ви вже поставили лайк на цьому пристрої' : 'Поставити лайк';
