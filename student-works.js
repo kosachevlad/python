@@ -31,23 +31,58 @@
   dialog.append(heading, status, gallery);
   document.body.append(dialog);
 
-  const likedKey = 'kodik-student-works-liked-v1';
-  function likedIds() {
-    try {
-      const value = JSON.parse(localStorage.getItem(likedKey) || '[]');
-      return Array.isArray(value) ? value.filter(x => typeof x === 'string') : [];
-    } catch { return []; }
-  }
-  function like(id) {
-    const ids = likedIds();
-    if (ids.includes(id)) return false;
-    try {
-      localStorage.setItem(likedKey, JSON.stringify([...ids, id]));
-      return true;
-    } catch {
-      status.textContent = 'Не вдалося зберегти лайк: браузер забороняє локальне сховище.';
-      return false;
+  // Firestore counts are global. We deliberately never fall back to misleading
+  // local-only totals if Firebase has not been configured or is unavailable.
+  let likesServicePromise;
+  const workLikeControls = new Map();
+  async function service() {
+    if (!likesServicePromise) {
+      likesServicePromise = (async () => {
+        const response = await fetch('./firebase-config.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Firebase config unavailable');
+        const config = await response.json();
+        if (!config?.apiKey || !config?.projectId || !config?.appId || !config?.authDomain) {
+          throw new Error('Firebase config missing');
+        }
+        const { createFirebaseLikes } = await import('./firebase-likes.js?v=1');
+        return createFirebaseLikes(config);
+      })().catch(error => { likesServicePromise = null; throw error; });
     }
+    return likesServicePromise;
+  }
+  function updateLikeButton(button, { count, liked, pending = false, error = false }) {
+    button.disabled = pending || liked || error;
+    button.setAttribute('aria-pressed', String(Boolean(liked)));
+    button.textContent = error ? '♡ Лайки недоступні'
+      : count == null ? '♡ Завантаження…'
+      : (liked ? '♥ ' : '♡ ') + count + (liked ? ' · Вподобано' : ' · Лайк');
+    button.title = error ? 'Не вдалося отримати кількість лайків із Firebase'
+      : liked ? 'Ви вже вподобали цю роботу' : 'Вподобати роботу';
+  }
+  async function refreshLikes(ids) {
+    if (!ids.length) return;
+    let api;
+    try { api = await service(); }
+    catch {
+      for (const id of ids) {
+        const control = workLikeControls.get(id);
+        if (control) updateLikeButton(control.button, { error: true });
+      }
+      return;
+    }
+    await Promise.all(ids.map(async id => {
+      const control = workLikeControls.get(id);
+      if (!control || control.busy) return;
+      try {
+        const state = await api.state(id);
+        if (control !== workLikeControls.get(id) || control.busy) return;
+        control.count = state.count;
+        control.liked = state.liked;
+        updateLikeButton(control.button, state);
+      } catch {
+        if (control === workLikeControls.get(id)) updateLikeButton(control.button, { error: true });
+      }
+    }));
   }
   function formatDate(value) {
     const date = new Date(value + 'T12:00:00');
@@ -79,6 +114,7 @@
   }
   function render(items) {
     gallery.replaceChildren();
+    workLikeControls.clear();
     status.textContent = '';
     if (!items.length) {
       status.textContent = 'Тут незабаром з’являться перші роботи учнів.';
@@ -115,21 +151,30 @@
       const likeButton = document.createElement('button');
       likeButton.type = 'button';
       likeButton.className = 'student-work-like';
-      const updateLike = () => {
-        const isLiked = likedIds().includes(work.id);
-        likeButton.textContent = isLiked ? '♥ Вподобано' : '♡ Лайк';
-        likeButton.setAttribute('aria-pressed', String(isLiked));
-        likeButton.disabled = isLiked;
-        likeButton.title = isLiked ? 'Ви вже поставили лайк на цьому пристрої' : 'Поставити лайк';
+      const control = { button: likeButton, count: null, liked: false, busy: false };
+      workLikeControls.set(work.id, control);
+      updateLikeButton(likeButton, { count: null, pending: true });
+      likeButton.onclick = async () => {
+        if (control.busy || control.liked || control.count === null) return;
+        control.busy = true;
+        updateLikeButton(likeButton, { count: control.count, liked: control.liked, pending: true });
+        try {
+          const api = await service();
+          const state = await api.like(work.id);
+          control.count = state.count;
+          control.liked = state.liked;
+          updateLikeButton(likeButton, state);
+        } catch {
+          updateLikeButton(likeButton, { error: true });
+        } finally { control.busy = false; }
       };
-      likeButton.onclick = () => { if (like(work.id)) updateLike(); };
-      updateLike();
       actions.append(tryButton, likeButton);
       details.append(title, author, date, actions);
       card.append(image, details);
       gallery.append(card);
     }
     if (!gallery.children.length) status.textContent = 'Поки що немає опублікованих робіт.';
+    void refreshLikes([...workLikeControls.keys()]);
   }
   let loaded = false;
   async function load() {
@@ -148,6 +193,7 @@
   button.onclick = () => {
     dialog.showModal();
     if (!loaded) load();
+    else void refreshLikes([...workLikeControls.keys()]);
     close.focus();
   };
   close.onclick = () => dialog.close();
