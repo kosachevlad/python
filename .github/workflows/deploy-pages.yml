@@ -1,0 +1,72 @@
+name: Deploy Kodik to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare static site
+        run: |
+          mkdir -p _site
+          rsync -a --exclude='.git/' --exclude='.github/' --exclude='_site/' \
+            --exclude='firebase-config.json' --exclude='firestore.rules' \
+            --exclude='FIREBASE-LIKES-SETUP.md' --exclude='*.md' ./ _site/
+
+      - name: Generate Firebase web configuration from GitHub secret
+        env:
+          FIREBASE_WEB_CONFIG: ${{ secrets.KODIK_FIREBASE_WEB_CONFIG }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          raw = os.environ.get("FIREBASE_WEB_CONFIG", "")
+          if not raw:
+              raise SystemExit("KODIK_FIREBASE_WEB_CONFIG is missing. Set it in repository Actions secrets.")
+          try:
+              config = json.loads(raw)
+          except json.JSONDecodeError:
+              raise SystemExit("KODIK_FIREBASE_WEB_CONFIG must be valid JSON.")
+          if not isinstance(config, dict):
+              raise SystemExit("Firebase config must be a JSON object.")
+          fields = ("apiKey", "authDomain", "projectId", "appId")
+          if any(not isinstance(config.get(key), str) or not config[key] for key in fields):
+              raise SystemExit("Firebase web configuration is missing required fields.")
+          # The generated file is a PUBLIC browser asset, not a hidden server secret.
+          Path("_site/firebase-config.json").write_text(
+              json.dumps(config, ensure_ascii=False, separators=(",", ":")),
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
