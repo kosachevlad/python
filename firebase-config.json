@@ -1,6 +1,9 @@
 {
-  "apiKey": "",
-  "authDomain": "",
-  "projectId": "",
-  "appId": ""
+  "apiKey": "AIzaSyDtSmlYhxUwaq5_JyW-UM6itwM-30xRjiM",
+  "authDomain": "kodyk-c0bae.firebaseapp.com",
+  "projectId": "kodyk-c0bae",
+  "storageBucket": "kodyk-c0bae.firebasestorage.app",
+  "messagingSenderId": "645866660420",
+  "appId": "1:645866660420:web:32ed7391dbd86f228e5211",
+  "measurementId": "G-TR69W0HF83"
 }
