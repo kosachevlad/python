@@ -1,0 +1,9 @@
+[
+  {
+    "id": "sofia-shara-pikachu-2026-11-13",
+    "surname": "Софія Шара",
+    "date": "2026-11-13",
+    "image": "student-works/sofia-shara-pikachu.svg",
+    "code": "import turtle\n\nt = turtle.Turtle()\nt.speed(5)\nturtle.bgcolor(\"lightblue\")\nt.pensize(3)\n\n# Голова\nt.penup()\nt.goto(0, -50)\nt.pendown()\nt.color(\"black\", \"yellow\")\nt.begin_fill()\nt.circle(100)\nt.end_fill()\n\n# Ліве вухо\nt.penup()\nt.goto(-65, 110)\nt.pendown()\nt.color(\"black\", \"yellow\")\nt.begin_fill()\nt.goto(-110, 230)\nt.goto(-30, 170)\nt.goto(-65, 110)\nt.end_fill()\n\n# Праве вухо\nt.penup()\nt.goto(65, 110)\nt.pendown()\nt.begin_fill()\nt.goto(110, 230)\nt.goto(30, 170)\nt.goto(65, 110)\nt.end_fill()\n\n# Очі\nt.penup()\nt.goto(-35, 65)\nt.pendown()\nt.color(\"black\")\nt.begin_fill()\nt.circle(10)\nt.end_fill()\n\nt.penup()\nt.goto(35, 65)\nt.pendown()\nt.begin_fill()\nt.circle(10)\nt.end_fill()\n\n# Щічки\nt.penup()\nt.goto(-70, 10)\nt.pendown()\nt.color(\"red\")\nt.begin_fill()\nt.circle(15)\nt.end_fill()\n\nt.penup()\nt.goto(70, 10)\nt.pendown()\nt.begin_fill()\nt.circle(15)\nt.end_fill()\n\n# Носик\nt.penup()\nt.goto(-5, 35)\nt.pendown()\nt.color(\"black\")\nt.begin_fill()\nt.circle(5)\nt.end_fill()\n\n# Усмішка\nt.penup()\nt.goto(-25, 15)\nt.setheading(-60)\nt.pendown()\nt.circle(30, 120)\n\nt.hideturtle()\nturtle.done()\n"
+  }
+]
