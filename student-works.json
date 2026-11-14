@@ -19,5 +19,12 @@
     "date": "2026-11-13",
     "image": "student-works/sofia-shara-totoro.svg",
     "code": "import turtle\n\nt = turtle.Turtle()\nt.speed(0)\nturtle.bgcolor(\"lightblue\")\nt.pensize(3)\n\n# Тіло\nt.penup()\nt.goto(0, -120)\nt.pendown()\nt.color(\"black\", \"gray\")\nt.begin_fill()\nt.circle(100)\nt.end_fill()\n\n# Вушка\nt.penup()\nt.goto(-65, 65)\nt.pendown()\nt.color(\"black\", \"gray\")\nt.begin_fill()\nt.goto(-90, 140)\nt.goto(-35, 90)\nt.goto(-65, 65)\nt.end_fill()\n\nt.penup()\nt.goto(65, 65)\nt.pendown()\nt.begin_fill()\nt.goto(90, 140)\nt.goto(35, 90)\nt.goto(65, 65)\nt.end_fill()\n\n# Животик\nt.penup()\nt.goto(0, -100)\nt.pendown()\nt.color(\"black\", \"white\")\nt.begin_fill()\nt.circle(65)\nt.end_fill()\n\n# Очі\nt.penup()\nt.goto(-35, 35)\nt.dot(18, \"black\")\n\nt.penup()\nt.goto(35, 35)\nt.dot(18, \"black\")\n\n# Ніс\nt.penup()\nt.goto(-8, 10)\nt.dot(15, \"black\")\n\n# Рот\nt.penup()\nt.goto(-15, -10)\nt.setheading(-60)\nt.pendown()\nt.circle(18, 120)\n\n# Вуса\nfor x in [-1, 1]:\n    for y in [0, -15]:\n        t.penup()\n        t.goto(x * 45, y)\n        t.pendown()\n        t.setheading(0 if x == 1 else 180)\n        t.forward(25)\n\n# Плямки на животику\nfor x, y in [(-25, -65), (0, -50), (25, -65)]:\n    t.penup()\n    t.goto(x, y)\n    t.dot(12, \"gray\")\n\nt.hideturtle()\nturtle.done()\n"
+  },
+  {
+    "id": "kosachev-vladyslav-rainbow-flower-2026-11-13",
+    "surname": "Косачев Владислав",
+    "date": "2026-11-13",
+    "image": "student-works/kosachev-vladyslav-rainbow-flower.svg",
+    "code": "import turtle\nimport math\nimport colorsys\n\nt = turtle.Turtle()\ns = turtle.Screen()\n\ns.bgcolor(\"black\")\ns.setup(800, 800)\n\nt.speed(0)\nt.width(2)\nt.hideturtle()\n\nfor i in range(360):\n    h = (0.85 + i / 720) % 1.0\n    c = colorsys.hsv_to_rgb(h, 0.9, 1)\n\n    t.pencolor(c)\n\n    r = 220 * math.sin(math.radians(6 * i))\n    x = r * math.cos(math.radians(i))\n    y = r * math.sin(math.radians(i))\n\n    t.penup()\n    t.goto(x, y)\n    t.pendown()\n    t.circle(2)\n\nturtle.done()\n"
   }
 ]
