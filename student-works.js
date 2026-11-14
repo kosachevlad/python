@@ -92,13 +92,17 @@
       card.className = 'student-work-card';
       const image = document.createElement('img');
       image.src = new URL(work.image, document.baseURI).href;
-      image.alt = 'Код і результат виконання роботи: ' + work.surname;
+      image.alt = 'Код і результат виконання роботи «' + (work.title || 'Робота учня') + '», автор: ' + work.surname;
       image.loading = 'lazy';
       image.decoding = 'async';
       const details = document.createElement('div');
       details.className = 'student-work-details';
-      const surname = document.createElement('strong');
-      surname.textContent = work.surname;
+      const title = document.createElement('h3');
+      title.className = 'student-work-title';
+      title.textContent = work.title || 'Робота учня';
+      const author = document.createElement('p');
+      author.className = 'student-work-author';
+      author.textContent = work.surname;
       const date = document.createElement('time');
       date.dateTime = work.date;
       date.textContent = formatDate(work.date);
@@ -121,7 +125,7 @@
       likeButton.onclick = () => { if (like(work.id)) updateLike(); };
       updateLike();
       actions.append(tryButton, likeButton);
-      details.append(surname, date, actions);
+      details.append(title, author, date, actions);
       card.append(image, details);
       gallery.append(card);
     }
