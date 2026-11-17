@@ -67,11 +67,14 @@
 
   if (!endpoint) status('loginStatus', 'Адмінсервер ще не підключено. Публікація стане доступною після налаштування.', 'error');
 
-  $('loginForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    if (busy) return;
+  $('loginForm').addEventListener('submit', event => event.preventDefault());
+  $('loginForm').addEventListener('keydown', event => {
+    if (event.key === 'Enter') { event.preventDefault(); $('loginButton').click(); }
+  });
+  $('loginButton').addEventListener('click', async () => {
+    if (busy || !$('loginForm').reportValidity()) return;
     busy = true;
-    const button = $('loginForm').querySelector('button');
+    const button = $('loginButton');
     button.disabled = true;
     status('loginStatus', 'Перевіряю доступ…');
     try {
@@ -111,9 +114,12 @@
     } catch (error) { status('publishStatus', error.message, 'error'); }
   });
 
-  $('workForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    if (busy || !session) return;
+  $('workForm').addEventListener('submit', event => event.preventDefault());
+  $('workForm').addEventListener('keydown', event => {
+    if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') event.preventDefault();
+  });
+  $('publishButton').addEventListener('click', async () => {
+    if (busy || !session || !$('workForm').reportValidity()) return;
     let work;
     try { work = preview(); } catch (error) { status('publishStatus', error.message, 'error'); return; }
     busy = true;
