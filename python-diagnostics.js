@@ -67,7 +67,7 @@ markers();
 }
 async function install(py){
 if(installed===py)return;
-if(!loading)loading=Promise.all(['python-diagnostics.py','pyflakes-bundle.json'].map(name=>fetch(new URL(name+'?v=1.31',document.baseURI)).then(r=>{if(!r.ok)throw Error('Не вдалося завантажити '+name);return name.endsWith('.json')?r.json():r.text()}))).catch(e=>{loading=null;throw e});
+if(!loading)loading=Promise.all(['python-diagnostics.py','pyflakes-bundle.json'].map(name=>fetch(new URL(name+'?v=input-loop-1',document.baseURI)).then(r=>{if(!r.ok)throw Error('Не вдалося завантажити '+name);return name.endsWith('.json')?r.json():r.text()}))).catch(e=>{loading=null;throw e});
 const [source,bundle]=await loading;const root='/home/pyodide/kodik_tools';py.FS.mkdirTree(root+'/pyflakes');
 py.FS.writeFile(root+'/python_diagnostics.py',source);for(const [name,text] of Object.entries(bundle.files))py.FS.writeFile(root+'/pyflakes/'+name,text);
 py.runPython("import sys, importlib.util\nif '/home/pyodide/kodik_tools' not in sys.path:\n    sys.path.insert(0, '/home/pyodide/kodik_tools')\n_kd_spec = importlib.util.spec_from_file_location('_kodik_diagnostics', '/home/pyodide/kodik_tools/python_diagnostics.py')\n_kd = importlib.util.module_from_spec(_kd_spec)\nsys.modules['_kodik_diagnostics'] = _kd\n_kd_spec.loader.exec_module(_kd)");installed=py;
@@ -90,8 +90,7 @@ $('editor').addEventListener('input',()=>{items=items.filter(i=>i.path!==path())
 for(const event of ['keyup','click','select','focus','scroll'])$('editor').addEventListener(event,()=>requestAnimationFrame(markers));
 $('uiLang').addEventListener('change',refresh);
 window.KodikDiagnostics={install,currentPath:path,get checking(){return checking},get hasRuntimeError(){return runtimeError},get items(){return items.map(i=>({...i}))},format,
-prepareRun(code,filename){dismissed=false;register(true);runtimeError=false;items=analyze(code,filename);render();const errors=items.filter(i=>i.severity==='error');if(errors.length){runtimeError=true;$('output').textContent=errors.map(format).join('\n\n');$('status').textContent=choose('Виправ помилку перед запуском','Fix the error before running');return false}return true},
-replaceInputs(code,values){let i=0;return code.replace(inputPattern,match=>'('+JSON.stringify(values[i++]??'')+'\n'.repeat((match.match(/\n/g)||[]).length)+')')}
+prepareRun(code,filename){dismissed=false;register(true);runtimeError=false;items=analyze(code,filename);render();const errors=items.filter(i=>i.severity==='error');if(errors.length){runtimeError=true;$('output').textContent=errors.map(format).join('\n\n');$('status').textContent=choose('Виправ помилку перед запуском','Fix the error before running');return false}return true}
 };
 refresh();
 })();

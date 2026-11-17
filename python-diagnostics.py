@@ -356,3 +356,42 @@ def execute_simple(code, path):
         except Exception as error:
             print(report_exception(error))
     return output.getvalue()
+
+
+class _InputNeeded(BaseException):
+    """Suspend the simple editor until the next terminal answer is available."""
+
+
+def execute_interactive(code, path, answers):
+    """Replay with supplied answers so input() follows real control flow."""
+    _executed[path] = code
+    output = io.StringIO()
+    position = 0
+    original_input = builtins.input
+
+    def read_input(prompt=''):
+        nonlocal position
+        prompt = str(prompt)
+        if position >= len(answers):
+            print(prompt, end='')
+            raise _InputNeeded()
+        answer = str(answers[position])
+        position += 1
+        print(prompt + answer)
+        return answer
+
+    waiting = False
+    with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
+        builtins.input = read_input
+        try:
+            exec(compile(code, path, 'exec'), {'__name__': '__main__', '__file__': path})
+        except _InputNeeded:
+            waiting = True
+        except SystemExit as error:
+            if error.code not in (None, 0):
+                print(report_exception(error))
+        except Exception as error:
+            print(report_exception(error))
+        finally:
+            builtins.input = original_input
+    return json.dumps({'output': output.getvalue(), 'waiting': waiting}, ensure_ascii=False)
