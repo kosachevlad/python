@@ -134,16 +134,28 @@
   let loaded = false;
   async function load() {
     status.textContent = 'Завантажуємо роботи…';
-    try {
-      const response = await fetch('./student-works.json', { cache: 'no-store' });
+    const urls = ['./student-works.json', 'https://kodik-student-works-admin.kosachevlad.chatgpt.site/api/works'];
+    const results = await Promise.allSettled(urls.map(async url => {
+      const response = await fetch(url, { cache: 'no-store' });
       if (!response.ok) throw new Error('HTTP ' + response.status);
       const items = await response.json();
       if (!Array.isArray(items)) throw new Error('Невірний формат списку');
-      render(items);
-      loaded = true;
-    } catch {
+      return items;
+    }));
+    const local = results[0].status === 'fulfilled' ? results[0].value : [];
+    const remote = results[1].status === 'fulfilled' ? results[1].value : [];
+    if (results.every(result => result.status === 'rejected')) {
       status.textContent = 'Не вдалося завантажити роботи. Перевір з’єднання й спробуй відкрити галерею знову.';
+      return;
     }
+    const seen = new Set();
+    render([...remote, ...local].filter(work => {
+      if (!work || typeof work.id !== 'string' || seen.has(work.id)) return false;
+      seen.add(work.id);
+      return true;
+    }));
+    if (results[1].status === 'rejected') status.textContent = 'Нові роботи тимчасово недоступні. Показуємо збережені на сайті.';
+    loaded = results.every(result => result.status === 'fulfilled');
   }
   button.onclick = () => {
     dialog.showModal();

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111f">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src https:; form-action 'none'; base-uri 'none'">
+<title>Додати роботу учня · Кодик</title>
+<link rel="stylesheet" href="admin.css?v=1">
+<script src="config.js?v=1" defer></script>
+<script src="admin.js?v=1" defer></script>
+</head>
+<body>
+<header class="top wrap"><a class="brand" href="../"><span class="logo" aria-hidden="true">&lt;/&gt;</span> Кодик</a><a href="../" class="back">До Кодика</a></header>
+<main class="wrap">
+  <div class="intro"><p class="eyebrow">КЕРУВАННЯ ГАЛЕРЕЄЮ</p><h1>Роботи учнів</h1><p>Додай код і зображення, перевір попередній перегляд та опублікуй роботу в галереї Кодика.</p></div>
+  <section class="panel" id="loginPanel" aria-labelledby="loginTitle">
+    <h2 id="loginTitle">Вхід для вчителя</h2>
+    <p>Увійди зі своїм обліковим записом учителя. Доступ перевіряється на сервері.</p>
+    <form id="loginForm">
+      <label for="username">Логін</label><input id="username" name="username" autocomplete="username" required>
+      <label for="password">Пароль</label><input id="password" name="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button type="submit">Увійти</button></div>
+    </form>
+    <p id="loginStatus" class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="panel" id="editorPanel" aria-labelledby="editorTitle" hidden>
+    <div class="panel-head"><div><p class="eyebrow">НОВА ПУБЛІКАЦІЯ</p><h2 id="editorTitle">Додати роботу</h2></div><button type="button" id="logout" class="secondary">Вийти</button></div>
+    <p id="account" class="account">Ви увійшли як учитель.</p>
+    <form id="workForm">
+      <div class="fields">
+        <div><label for="surname">Прізвище учня</label><input id="surname" name="surname" required maxlength="80" autocomplete="off"></div>
+        <div><label for="firstName">Ім’я учня</label><input id="firstName" name="firstName" required maxlength="80" autocomplete="off"></div>
+      </div>
+      <label for="title">Назва роботи</label><input id="title" name="title" required maxlength="120" autocomplete="off">
+      <label for="image">Картинка роботи</label><input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp" required><p class="hint">PNG, JPEG або WebP, до 2 МБ. Зображення й ім’я будуть публічними.</p>
+      <label for="code">Код Python</label><textarea id="code" name="code" required maxlength="100000" spellcheck="false" rows="15" placeholder="import turtle&#10;&#10;..."></textarea>
+      <div class="actions"><button type="button" id="previewButton" class="secondary">Переглянути</button><button type="submit" id="publishButton">Опублікувати</button></div>
+    </form>
+    <p id="publishStatus" class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="panel" id="previewPanel" aria-labelledby="previewTitle" hidden>
+    <p class="eyebrow">ПОПЕРЕДНІЙ ПЕРЕГЛЯД</p><h2 id="previewTitle">Так роботу побачать учні</h2>
+    <div class="preview"><img id="previewImage" alt=""><div><h3 id="previewWorkTitle"></h3><p id="previewAuthor"></p><p id="previewDate"></p></div></div>
+    <details><summary>Переглянути код</summary><pre><code id="previewCode"></code></pre></details>
+  </section>
+</main>
+<footer class="wrap"><a href="../">← Повернутися до Кодика</a></footer>
+</body>
+</html>
