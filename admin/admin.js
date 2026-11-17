@@ -95,6 +95,10 @@
     $('loginPanel').hidden = false;
     $('editorPanel').hidden = true;
     $('password').value = '';
+    $('workForm').reset();
+    $('previewPanel').hidden = true;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = '';
     status('publishStatus', '');
     $('username').focus();
   });
