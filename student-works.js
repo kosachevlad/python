@@ -32,22 +32,40 @@
   document.body.append(dialog);
 
   const likedKey = 'kodik-student-works-liked-v1';
+  const visitorKey = 'kodik-student-works-visitor-v1';
+  const likesApi = 'https://kodik-student-works-admin.kosachevlad.chatgpt.site/api';
+  function visitorId() {
+    let id = localStorage.getItem(visitorKey);
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem(visitorKey, id);
+    }
+    return id;
+  }
+  async function postLike(id) {
+    const response = await fetch(likesApi + '/works/' + encodeURIComponent(id) + '/likes', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ visitorId: visitorId() }), cache: 'no-store'
+    });
+    if (!response.ok) throw new Error('Не вдалося зберегти лайк. Спробуй ще раз.');
+  }
+  async function fetchCounts() {
+    const response = await fetch(likesApi + '/likes', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Не вдалося завантажити кількість лайків.');
+    return response.json();
+  }
   function likedIds() {
     try {
       const value = JSON.parse(localStorage.getItem(likedKey) || '[]');
       return Array.isArray(value) ? value.filter(x => typeof x === 'string') : [];
     } catch { return []; }
   }
-  function like(id) {
+  async function like(id) {
     const ids = likedIds();
     if (ids.includes(id)) return false;
-    try {
-      localStorage.setItem(likedKey, JSON.stringify([...ids, id]));
-      return true;
-    } catch {
-      status.textContent = 'Не вдалося зберегти лайк: браузер забороняє локальне сховище.';
-      return false;
-    }
+    await postLike(id);
+    localStorage.setItem(likedKey, JSON.stringify([...ids, id]));
+    return true;
   }
   function formatDate(value) {
     const date = new Date(value + 'T12:00:00');
@@ -77,7 +95,7 @@
     const output = document.getElementById('output');
     if (output) output.textContent = 'Роботу відкрито в новій вкладці. Натисни «Запустити», щоб спробувати.';
   }
-  function render(items) {
+  function render(items, counts = {}) {
     gallery.replaceChildren();
     status.textContent = '';
     if (!items.length) {
@@ -115,14 +133,29 @@
       const likeButton = document.createElement('button');
       likeButton.type = 'button';
       likeButton.className = 'student-work-like';
+      let count = Number(counts[work.id]) || 0;
       const updateLike = () => {
         const isLiked = likedIds().includes(work.id);
-        likeButton.textContent = isLiked ? '♥ Вподобано' : '♡ Лайк';
+        likeButton.textContent = (isLiked ? '♥ Вподобано' : '♡ Лайк') + ' · ' + count;
         likeButton.setAttribute('aria-pressed', String(isLiked));
         likeButton.disabled = isLiked;
         likeButton.title = isLiked ? 'Ви вже поставили лайк на цьому пристрої' : 'Поставити лайк';
       };
-      likeButton.onclick = () => { if (like(work.id)) updateLike(); };
+      likeButton.onclick = async () => {
+        likeButton.disabled = true;
+        try {
+          if (await like(work.id)) {
+            try {
+              const latest = await fetchCounts();
+              count = Number(latest[work.id]) || 0;
+            } catch { count += 1; }
+          }
+          updateLike();
+        } catch (error) {
+          status.textContent = error.message || 'Не вдалося зберегти лайк.';
+          likeButton.disabled = false;
+        }
+      };
       updateLike();
       actions.append(tryButton, likeButton);
       details.append(title, author, date, actions);
@@ -149,17 +182,28 @@
       return;
     }
     const seen = new Set();
-    render([...remote, ...local].filter(work => {
+    const works = [...remote, ...local].filter(work => {
       if (!work || typeof work.id !== 'string' || seen.has(work.id)) return false;
       seen.add(work.id);
       return true;
-    }));
+    });
+    try {
+      const previousLikes = new Set(likedIds());
+      const oldWorks = works.filter(work => previousLikes.has(work.id));
+      await Promise.all(oldWorks.map(work => postLike(work.id)));
+    } catch { /* Old local likes remain visible even if syncing fails. */ }
+    let counts = {};
+    let countsUnavailable = false;
+    try { counts = await fetchCounts(); }
+    catch { countsUnavailable = true; }
+    render(works, counts);
+    if (countsUnavailable) status.textContent = 'Кількість лайків тимчасово недоступна.';
     if (results[1].status === 'rejected') status.textContent = 'Нові роботи тимчасово недоступні. Показуємо збережені на сайті.';
     loaded = results.every(result => result.status === 'fulfilled');
   }
   button.onclick = () => {
     dialog.showModal();
-    if (!loaded) load();
+    load();
     close.focus();
   };
   close.onclick = () => dialog.close();
