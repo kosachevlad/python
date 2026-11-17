@@ -6,15 +6,15 @@
 <meta name="theme-color" content="#08111f">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src https:; form-action 'none'; base-uri 'none'">
-<title>Додати роботу учня · Кодик</title>
-<link rel="stylesheet" href="admin.css?v=1">
+<title>Керування роботами учнів · Кодик</title>
+<link rel="stylesheet" href="admin.css?v=2">
 <script src="config.js?v=1" defer></script>
-<script src="admin.js?v=4" defer></script>
+<script src="admin.js?v=5" defer></script>
 </head>
 <body>
 <header class="top wrap"><a class="brand" href="../"><span class="logo" aria-hidden="true">&lt;/&gt;</span> Кодик</a><a href="../" class="back">До Кодика</a></header>
 <main class="wrap">
-  <div class="intro"><p class="eyebrow">КЕРУВАННЯ ГАЛЕРЕЄЮ</p><h1>Роботи учнів</h1><p>Додай код і зображення, перевір попередній перегляд та опублікуй роботу в галереї Кодика.</p></div>
+  <div class="intro"><p class="eyebrow">КЕРУВАННЯ ГАЛЕРЕЄЮ</p><h1>Роботи учнів</h1><p>Додавай нові роботи й редагуй уже опубліковані. Перед збереженням перевір попередній перегляд.</p></div>
   <section class="panel" id="loginPanel" aria-labelledby="loginTitle">
     <h2 id="loginTitle">Вхід для вчителя</h2>
     <p>Увійди зі своїм обліковим записом учителя. Доступ перевіряється на сервері.</p>
@@ -26,8 +26,14 @@
     <p class="hint">Логін і пароль чутливі до великих і малих літер.</p>
     <p id="loginStatus" class="status" role="status" aria-live="polite"></p>
   </section>
+  <section class="panel" id="worksPanel" aria-labelledby="worksTitle" hidden>
+    <div class="panel-head"><div><p class="eyebrow">ГАЛЕРЕЯ</p><h2 id="worksTitle">Опубліковані роботи</h2></div><button type="button" id="newWorkButton" class="secondary">+ Нова робота</button></div>
+    <p>Натисни «Редагувати», щоб змінити ім’я, назву, код або картинку.</p>
+    <p id="worksStatus" class="status" role="status" aria-live="polite"></p>
+    <div id="worksList" class="works-list"></div>
+  </section>
   <section class="panel" id="editorPanel" aria-labelledby="editorTitle" hidden>
-    <div class="panel-head"><div><p class="eyebrow">НОВА ПУБЛІКАЦІЯ</p><h2 id="editorTitle">Додати роботу</h2></div><button type="button" id="logout" class="secondary">Вийти</button></div>
+    <div class="panel-head"><div><p class="eyebrow" id="editorEyebrow">НОВА ПУБЛІКАЦІЯ</p><h2 id="editorTitle">Додати роботу</h2></div><button type="button" id="logout" class="secondary">Вийти</button></div>
     <p id="account" class="account">Ви увійшли як учитель.</p>
     <form id="workForm">
       <div class="fields">
@@ -35,9 +41,9 @@
         <div><label for="firstName">Ім’я учня</label><input id="firstName" name="firstName" required maxlength="80" autocomplete="off"></div>
       </div>
       <label for="title">Назва роботи</label><input id="title" name="title" required maxlength="120" autocomplete="off">
-      <label for="image">Картинка роботи</label><input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp" required><p class="hint">PNG, JPEG або WebP, до 2 МБ. Зображення й ім’я будуть публічними.</p>
+      <label for="image">Картинка роботи</label><input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp"><p id="imageHint" class="hint">PNG, JPEG або WebP, до 2 МБ. Зображення й ім’я будуть публічними.</p>
       <label for="code">Код Python</label><textarea id="code" name="code" required maxlength="100000" spellcheck="false" rows="15" placeholder="import turtle&#10;&#10;..."></textarea>
-      <div class="actions"><button type="button" id="previewButton" class="secondary">Переглянути</button><button type="button" id="publishButton">Опублікувати</button></div>
+      <div class="actions"><button type="button" id="previewButton" class="secondary">Переглянути</button><button type="button" id="publishButton">Опублікувати</button><button type="button" id="cancelEditButton" class="secondary" hidden>Скасувати редагування</button></div>
     </form>
     <p id="publishStatus" class="status" role="status" aria-live="polite"></p>
   </section>
