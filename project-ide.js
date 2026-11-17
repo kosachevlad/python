@@ -247,14 +247,13 @@ try{
 await ensureRuntime();runtime.write(project);
 if(!window.KodikDiagnostics.prepareRun(file.content,runtime.root+'/'+file.path)){execution=null;waiting=false;setBusy(false);return}
 execution={path:file.path,code:file.content};
-pendingCode=file.content;pendingPrompts=[...pendingCode.matchAll(inputPattern)].map(m=>m[2]);collectedInputs=[];
-if(pendingPrompts.length){waiting=true;byId('output').textContent+='\n'+pendingPrompts[0];byId('prompt').value='';byId('prompt').focus();byId('status').textContent='Очікую введення…'}
-else await executeCode([]);
+pendingCode=file.content;collectedInputs=[];
+await executeCode([]);
 }catch(error){byId('output').textContent+='\n'+explainPythonError(error);byId('status').textContent='Помилка запуску';execution=null;waiting=false;setBusy(false)}
 };
 executeCode=async values=>{
 if(!execution){try{await original.executeCode(values)}finally{setBusy(false)}return}
-const code=window.KodikDiagnostics.replaceInputs(execution.code,values);
+const code=execution.code;
 try{
 const result=await runtime.execute(code,execution.path);
 window.KodikRobot.finish();await window.kodikTurtle.finish();capture(true);
