@@ -6,6 +6,7 @@
   let previewUrl = '';
   let busy = false;
   let editing = null;
+  const workImageUrl = image => new URL(image.startsWith('student-works/') ? '../' + image : image, document.baseURI).href;
 
   function status(id, message, kind = '') {
     const node = $(id);
@@ -56,7 +57,7 @@
     const work = fields();
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     previewUrl = work.image ? URL.createObjectURL(work.image) : '';
-    $('previewImage').src = previewUrl || new URL(editing.image, location.href).href;
+    $('previewImage').src = previewUrl || workImageUrl(editing.image);
     $('previewImage').alt = 'Зображення роботи «' + work.title + '»';
     $('previewWorkTitle').textContent = work.title;
     $('previewAuthor').textContent = work.lastName + ' ' + work.firstName;
@@ -104,7 +105,7 @@
       const row = document.createElement('article');
       row.className = 'work-row';
       const img = document.createElement('img');
-      img.src = new URL(work.image, document.baseURI).href;
+      img.src = workImageUrl(work.image);
       img.alt = '';
       const info = document.createElement('div');
       const title = document.createElement('strong');
@@ -217,7 +218,7 @@
     busy = true;
     $('publishButton').disabled = true;
     $('previewButton').disabled = true;
-    status('publishStatus', 'Публікую роботу…');
+    status('publishStatus', editing ? 'Зберігаю зміни…' : 'Публікую роботу…');
     try {
       const result = await request(editing ? '/works/' + encodeURIComponent(editing.id) : '/works', {
         ...(editing && !editing.id.startsWith('work-') ? { legacy: { id: editing.id, image: editing.image, date: editing.date } } : {}),
