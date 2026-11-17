@@ -9,7 +9,7 @@
 <title>Додати роботу учня · Кодик</title>
 <link rel="stylesheet" href="admin.css?v=1">
 <script src="config.js?v=1" defer></script>
-<script src="admin.js?v=3" defer></script>
+<script src="admin.js?v=4" defer></script>
 </head>
 <body>
 <header class="top wrap"><a class="brand" href="../"><span class="logo" aria-hidden="true">&lt;/&gt;</span> Кодик</a><a href="../" class="back">До Кодика</a></header>
@@ -21,8 +21,9 @@
     <form id="loginForm">
       <label for="username">Логін</label><input id="username" name="username" autocomplete="username" required>
       <label for="password">Пароль</label><input id="password" name="password" type="password" autocomplete="current-password" required>
-      <div class="actions"><button type="button" id="loginButton">Увійти</button></div>
+      <div class="actions"><button type="button" id="loginButton">Увійти</button><button type="button" id="togglePassword" class="secondary" aria-pressed="false">Показати пароль</button></div>
     </form>
+    <p class="hint">Логін і пароль чутливі до великих і малих літер.</p>
     <p id="loginStatus" class="status" role="status" aria-live="polite"></p>
   </section>
   <section class="panel" id="editorPanel" aria-labelledby="editorTitle" hidden>

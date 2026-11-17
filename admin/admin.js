@@ -67,6 +67,13 @@
 
   if (!endpoint) status('loginStatus', 'Адмінсервер ще не підключено. Публікація стане доступною після налаштування.', 'error');
 
+  $('togglePassword').addEventListener('click', () => {
+    const show = $('password').type === 'password';
+    $('password').type = show ? 'text' : 'password';
+    $('togglePassword').textContent = show ? 'Сховати пароль' : 'Показати пароль';
+    $('togglePassword').setAttribute('aria-pressed', String(show));
+    $('password').focus();
+  });
   $('loginForm').addEventListener('submit', event => event.preventDefault());
   $('loginForm').addEventListener('keydown', event => {
     if (event.key === 'Enter') { event.preventDefault(); $('loginButton').click(); }
@@ -78,18 +85,20 @@
     button.disabled = true;
     status('loginStatus', 'Перевіряю доступ…');
     try {
-      const response = await request('/session', { username: $('username').value.trim(), password: $('password').value });
+      const response = await request('/session', { username: $('username').value.trim(), password: $('password').value.trim() });
       session = response.token;
       if (!session) throw new Error('Сервер не повернув сесію.');
       $('password').value = '';
+      $('password').type = 'password';
+      $('togglePassword').textContent = 'Показати пароль';
+      $('togglePassword').setAttribute('aria-pressed', 'false');
       $('loginPanel').hidden = true;
       $('editorPanel').hidden = false;
       $('surname').focus();
       status('loginStatus', '');
     } catch (error) {
       session = '';
-      $('password').value = '';
-      status('loginStatus', error.message, 'error');
+      status('loginStatus', error.message === 'Неправильний логін або пароль.' ? 'Неправильний логін або пароль. Перевір регістр літер і символи через «Показати пароль».' : error.message, 'error');
     } finally { busy = false; button.disabled = false; }
   });
 
