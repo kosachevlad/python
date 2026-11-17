@@ -11,7 +11,8 @@ const keys=['(',')','[',']','{','}','"',"'",':','=','+','-','*','/','_','<','>',
 document.querySelectorAll('.key').forEach(b=>b.onclick=()=>insert(b.dataset.k));function insert(v){let e=$('editor'),a=e.selectionStart,b=e.selectionEnd;e.setRangeText(v,a,b,'end');e.dispatchEvent(new Event('input',{bubbles:true}));e.focus()}
 ['print("Привіт, світе!")','name = input("Імʼя: ")','for i in range(5):\n    print(i)','if x > 0:\n    print("Так")'].forEach((v,i)=>{let b=document.createElement('button');b.textContent=['print()','input()','for loop','if'][i];b.onclick=()=>insert(normalize(v));$('quick').appendChild(b)});
 (()=>{const b=document.createElement('button');b.textContent='🐢 Квадрат turtle';b.onclick=()=>insert("import turtle\n\npen = turtle.Turtle()\npen.color(\"blue\")\n\nfor i in range(4):\n    pen.forward(100)\n    pen.right(90)\n\nturtle.done()");$('quick').appendChild(b)})();
-let pendingCode='',collectedInputs=[];
+let pendingCode='',pendingPrompts=[],collectedInputs=[];
+const inputPattern=/input\s*\(\s*(['"])(.*?)\1\s*\)/g;
 function explainPythonError(error){return '❌ '+String(error?.message||error||'Помилка виконання')}
 async function executeCode(values){
 $('run').disabled=true;
@@ -24,7 +25,7 @@ else{window.KodikRobot.finish();await window.kodikTurtle.finish();$('status').te
 }catch(error){waiting=false;$('output').textContent+='\n'+explainPythonError(error);$('status').textContent='Сталася помилка'}
 finally{$('run').disabled=waiting}
 }
-async function run(){if(waiting||$('run').disabled)return;save();$('run').disabled=true;$('output').textContent='Запускаю Python…\n';$('status').textContent='Завантажую Python 3…';try{await window.ensureKodikPython();await window.installKodikTurtle(window.pyodide);await window.installKodikTkinter(window.pyodide);await window.installKodikRobot(window.pyodide);await window.KodikDiagnostics.install(window.pyodide);if(!window.KodikDiagnostics.prepareRun(tabs[active].code,window.KodikDiagnostics.currentPath()))return;pendingCode=tabs[active].code;collectedInputs=[];await executeCode([])}catch(e){$('output').textContent+='\nПомилка запуску: '+e.message;$('status').textContent='Сталася помилка'}finally{$('run').disabled=waiting}}
+async function run(){if(waiting)return;save();$('run').disabled=true;$('output').textContent='Запускаю Python…\n';$('status').textContent='Завантажую Python 3…';try{await window.ensureKodikPython();await window.installKodikTurtle(window.pyodide);await window.installKodikTkinter(window.pyodide);await window.installKodikRobot(window.pyodide);await window.KodikDiagnostics.install(window.pyodide);if(!window.KodikDiagnostics.prepareRun(tabs[active].code,window.KodikDiagnostics.currentPath()))return;pendingCode=tabs[active].code;collectedInputs=[];await executeCode([])}catch(e){$('output').textContent+='\nПомилка запуску: '+e.message;$('status').textContent='Сталася помилка'}finally{$('run').disabled=waiting}}
 $('run').onclick=run;$('editor').addEventListener('input',()=>{updateLines();save()});$('editor').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();insert('    ')}if(e.key==='"'||e.key==="'"){e.preventDefault();insert(e.key)}});$('send').onclick=async()=>{if(!waiting)return;waiting=false;collectedInputs.push($('prompt').value);$('prompt').value='';await executeCode(collectedInputs)};$('prompt').onkeydown=e=>{if(e.key==='Enter')$('send').click()};$('uiLang').onchange=e=>{lang=e.target.value;localStorage.setItem('kodik-lang',lang);$('run').textContent=examples[lang].run;$('prompt').placeholder=examples[lang].prompt;$('status').textContent=examples[lang].status;renderTabs()};renderAll();
 const terminal=document.querySelector('.terminal');const side=document.querySelector('.side');if(terminal&&side)side.prepend(terminal);
 

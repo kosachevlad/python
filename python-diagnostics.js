@@ -90,7 +90,8 @@ $('editor').addEventListener('input',()=>{items=items.filter(i=>i.path!==path())
 for(const event of ['keyup','click','select','focus','scroll'])$('editor').addEventListener(event,()=>requestAnimationFrame(markers));
 $('uiLang').addEventListener('change',refresh);
 window.KodikDiagnostics={install,currentPath:path,get checking(){return checking},get hasRuntimeError(){return runtimeError},get items(){return items.map(i=>({...i}))},format,
-prepareRun(code,filename){dismissed=false;register(true);runtimeError=false;items=analyze(code,filename);render();const errors=items.filter(i=>i.severity==='error');if(errors.length){runtimeError=true;$('output').textContent=errors.map(format).join('\n\n');$('status').textContent=choose('Виправ помилку перед запуском','Fix the error before running');return false}return true}
+prepareRun(code,filename){dismissed=false;register(true);runtimeError=false;items=analyze(code,filename);render();const errors=items.filter(i=>i.severity==='error');if(errors.length){runtimeError=true;$('output').textContent=errors.map(format).join('\n\n');$('status').textContent=choose('Виправ помилку перед запуском','Fix the error before running');return false}return true},
+replaceInputs(code,values){let i=0;return code.replace(inputPattern,match=>'('+JSON.stringify(values[i++]??'')+'\n'.repeat((match.match(/\n/g)||[]).length)+')')}
 };
 refresh();
 })();
