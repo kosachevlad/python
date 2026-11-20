@@ -75,7 +75,7 @@
   <section class="section task" aria-labelledby="game-title">
     <h2 id="game-title">Розібраний приклад. Бонус за спробу</h2>
     <p>Гравець зробив нову спробу. Після її додавання знайди найгіршу спробу й виправ її результат: гра забула нарахувати 10 бонусних балів. Потім покажи найкращий результат, рейтинг і кількість спроб із <strong>понад 40 балами</strong>.</p>
-    <pre><code>scores = [<span class="syntax-number">35</span>, <span class="syntax-number">48</span>, <span class="syntax-number">27</span>, <span class="syntax-number">48</span>, <span class="syntax-number">19</span>, <span class="syntax-number">42</span>]
+    <pre><code id="program-game">scores = [<span class="syntax-number">35</span>, <span class="syntax-number">48</span>, <span class="syntax-number">27</span>, <span class="syntax-number">48</span>, <span class="syntax-number">19</span>, <span class="syntax-number">42</span>]
 
 new_score = <span class="syntax-builtin">int</span>(<span class="syntax-builtin">input</span>(<span class="syntax-string">"Бали за нову спробу: "</span>))
 scores.<span class="syntax-builtin">append</span>(new_score)
@@ -100,7 +100,8 @@ count = <span class="syntax-number">0</span>
 Рейтинг: [48, 48, 42, 35, 30, 29]
 Спроб із понад 40 балами: 3</samp></pre>
     </details>
-    <p class="practice">Скопіюй код у <a href="./">редактор «Кодика»</a> і запусти з іншим результатом нової спроби. Якщо він виявиться найменшим, бонус отримає саме ця спроба.</p>
+    <a class="button" href="./?lesson5=game">Відкрити в Кодику <span aria-hidden="true">↗</span></a>
+    <p class="practice">Запусти код з іншим результатом нової спроби. Якщо він виявиться найменшим, бонус отримає саме ця спроба.</p>
   </section>
   <section class="section task" aria-labelledby="task-title">
     <h2 id="task-title">Самостійне завдання. Стрибки в довжину</h2>
