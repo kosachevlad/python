@@ -25,9 +25,9 @@
     <div class="example">
       <div>
         <h3>Код Python</h3>
-        <pre><code>scores = [35, 48, 27, 48, 19, 42]
-print(min(scores))
-print(max(scores))</code></pre>
+        <pre><code>scores = [<span class="syntax-number">35</span>, <span class="syntax-number">48</span>, <span class="syntax-number">27</span>, <span class="syntax-number">48</span>, <span class="syntax-number">19</span>, <span class="syntax-number">42</span>]
+<span class="syntax-builtin">print</span>(<span class="syntax-builtin">min</span>(scores))
+<span class="syntax-builtin">print</span>(<span class="syntax-builtin">max</span>(scores))</code></pre>
       </div>
       <div>
         <h3>Результат</h3>
@@ -43,9 +43,9 @@ print(max(scores))</code></pre>
     <div class="example">
       <div>
         <h3>Продовження прикладу</h3>
-        <pre><code>worst_index = scores.index(min(scores))
-print(worst_index)
-print("Номер спроби:", worst_index + 1)</code></pre>
+        <pre><code>worst_index = scores.<span class="syntax-builtin">index</span>(<span class="syntax-builtin">min</span>(scores))
+<span class="syntax-builtin">print</span>(worst_index)
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Номер спроби:"</span>, worst_index + <span class="syntax-number">1</span>)</code></pre>
       </div>
       <div>
         <h3>Результат</h3>
@@ -61,8 +61,8 @@ print("Номер спроби:", worst_index + 1)</code></pre>
     <div class="example">
       <div>
         <h3>Код Python</h3>
-        <pre><code>print(sorted(scores, reverse=True))
-print(scores)</code></pre>
+        <pre><code><span class="syntax-builtin">print</span>(<span class="syntax-builtin">sorted</span>(scores, reverse=<span class="syntax-keyword">True</span>))
+<span class="syntax-builtin">print</span>(scores)</code></pre>
       </div>
       <div>
         <h3>Результат</h3>
@@ -75,24 +75,24 @@ print(scores)</code></pre>
   <section class="section task" aria-labelledby="game-title">
     <h2 id="game-title">Розібраний приклад. Бонус за спробу</h2>
     <p>Гравець зробив нову спробу. Після її додавання знайди найгіршу спробу й виправ її результат: гра забула нарахувати 10 бонусних балів. Потім покажи найкращий результат, рейтинг і кількість спроб із <strong>понад 40 балами</strong>.</p>
-    <pre><code>scores = [35, 48, 27, 48, 19, 42]
+    <pre><code>scores = [<span class="syntax-number">35</span>, <span class="syntax-number">48</span>, <span class="syntax-number">27</span>, <span class="syntax-number">48</span>, <span class="syntax-number">19</span>, <span class="syntax-number">42</span>]
 
-new_score = int(input("Бали за нову спробу: "))
-scores.append(new_score)
+new_score = <span class="syntax-builtin">int</span>(<span class="syntax-builtin">input</span>(<span class="syntax-string">"Бали за нову спробу: "</span>))
+scores.<span class="syntax-builtin">append</span>(new_score)
 
-worst_index = scores.index(min(scores))
-print("Найгірша спроба №", worst_index + 1)
+worst_index = scores.<span class="syntax-builtin">index</span>(<span class="syntax-builtin">min</span>(scores))
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Найгірша спроба №"</span>, worst_index + <span class="syntax-number">1</span>)
 
-scores[worst_index] += 10
-print("Найбільший результат:", max(scores))
-print("Рейтинг:", sorted(scores, reverse=True))
+scores[worst_index] += <span class="syntax-number">10</span>
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Найбільший результат:"</span>, <span class="syntax-builtin">max</span>(scores))
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Рейтинг:"</span>, <span class="syntax-builtin">sorted</span>(scores, reverse=<span class="syntax-keyword">True</span>))
 
-count = 0
-for score in scores:
-    if score > 40:
-        count += 1
+count = <span class="syntax-number">0</span>
+<span class="syntax-keyword">for</span> score <span class="syntax-keyword">in</span> scores:
+    <span class="syntax-keyword">if</span> score &gt; <span class="syntax-number">40</span>:
+        count += <span class="syntax-number">1</span>
 
-print("Спроб із понад 40 балами:", count)</code></pre>
+<span class="syntax-builtin">print</span>(<span class="syntax-string">"Спроб із понад 40 балами:"</span>, count)</code></pre>
     <details>
       <summary>Перевірка для нової спроби з 30 балами</summary>
       <pre class="output"><samp>Найгірша спроба № 5
@@ -105,7 +105,7 @@ print("Спроб із понад 40 балами:", count)</code></pre>
   <section class="section task" aria-labelledby="task-title">
     <h2 id="task-title">Самостійне завдання. Стрибки в довжину</h2>
     <p>Спортсмен зробив шість стрибків. У списку записана довжина кожної спроби в сантиметрах:</p>
-    <pre><code>jumps = [145, 162, 138, 157, 162, 149]</code></pre>
+    <pre><code>jumps = [<span class="syntax-number">145</span>, <span class="syntax-number">162</span>, <span class="syntax-number">138</span>, <span class="syntax-number">157</span>, <span class="syntax-number">162</span>, <span class="syntax-number">149</span>]</code></pre>
     <ol>
       <li>Запитай результат сьомої спроби та додай його до списку.</li>
       <li>Виведи найкоротший і найдовший стрибки.</li>
