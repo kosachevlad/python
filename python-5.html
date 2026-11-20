@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111f">
+<title>Урок 5. Результати спроб у грі · Кодик</title>
+<link rel="stylesheet" href="lessons.css?v=1">
+</head>
+<body>
+<header class="top wrap">
+  <a class="brand" href="./"><span class="logo" aria-hidden="true">&lt;/&gt;</span> Кодик</a>
+  <a class="back" href="lessons.html">Усі уроки</a>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="tag">Урок 5 · 8 клас</p>
+    <h1>Результати спроб у грі</h1>
+    <p>Знайди найкращу й найгіршу спроби, виправ пропущений бонус і покажи рейтинг. Для цього знадобляться <code>min()</code>, <code>max()</code>, <code>index()</code> і <code>sorted()</code>.</p>
+    <a class="button" href="#extremes-title">Почати урок <span aria-hidden="true">↓</span></a>
+  </div>
+  <section class="section" aria-labelledby="extremes-title">
+    <h2 id="extremes-title">1. Найменше й найбільше значення</h2>
+    <p>У списку кожне число — це результат <strong>окремої спроби одного гравця</strong>. Функція <code>min(scores)</code> повертає найменшу кількість балів, а <code>max(scores)</code> — найбільшу.</p>
+    <div class="example">
+      <div>
+        <h3>Код Python</h3>
+        <pre><code>scores = [35, 48, 27, 48, 19, 42]
+print(min(scores))
+print(max(scores))</code></pre>
+      </div>
+      <div>
+        <h3>Результат</h3>
+        <pre class="output"><samp>19
+48</samp></pre>
+      </div>
+    </div>
+    <p class="practice">Зверни увагу: найбільший результат <code>48</code> трапився двічі. <code>max()</code> повертає значення, а не номер спроби.</p>
+  </section>
+  <section class="section" aria-labelledby="index-title">
+    <h2 id="index-title">2. Знаходимо номер спроби через <code>index()</code></h2>
+    <p>Метод <code>scores.index(19)</code> повертає <strong>індекс першого</strong> елемента зі значенням <code>19</code>. Індекси починаються з нуля: індекс <code>4</code> означає п’яту спробу. Щоб знайти найгіршу спробу, передай до <code>index()</code> значення, яке знайшла функція <code>min()</code>.</p>
+    <div class="example">
+      <div>
+        <h3>Продовження прикладу</h3>
+        <pre><code>worst_index = scores.index(min(scores))
+print(worst_index)
+print("Номер спроби:", worst_index + 1)</code></pre>
+      </div>
+      <div>
+        <h3>Результат</h3>
+        <pre class="output"><samp>4
+Номер спроби: 5</samp></pre>
+      </div>
+    </div>
+    <p class="practice">Якщо найменше число повторюється, <code>index()</code> знайде першу таку спробу. Якщо шуканого числа в списку немає, програма отримає помилку <code>ValueError</code>.</p>
+  </section>
+  <section class="section" aria-labelledby="sorted-title">
+    <h2 id="sorted-title">3. Показуємо рейтинг через <code>sorted()</code></h2>
+    <p><code>sorted(scores)</code> створює <strong>новий список</strong> від найменшого до найбільшого. Додай <code>reverse=True</code>, щоб отримати порядок від найбільшого до найменшого. Початковий порядок спроб у <code>scores</code> при цьому зберігається.</p>
+    <div class="example">
+      <div>
+        <h3>Код Python</h3>
+        <pre><code>print(sorted(scores, reverse=True))
+print(scores)</code></pre>
+      </div>
+      <div>
+        <h3>Результат</h3>
+        <pre class="output"><samp>[48, 48, 42, 35, 27, 19]
+[35, 48, 27, 48, 19, 42]</samp></pre>
+      </div>
+    </div>
+    <p class="practice">Чому номер спроби зручніше шукати в початковому списку, а не в рейтингу?</p>
+  </section>
+  <section class="section task" aria-labelledby="game-title">
+    <h2 id="game-title">Розібраний приклад. Бонус за спробу</h2>
+    <p>Гравець зробив нову спробу. Після її додавання знайди найгіршу спробу й виправ її результат: гра забула нарахувати 10 бонусних балів. Потім покажи найкращий результат, рейтинг і кількість спроб із <strong>понад 40 балами</strong>.</p>
+    <pre><code>scores = [35, 48, 27, 48, 19, 42]
+
+new_score = int(input("Бали за нову спробу: "))
+scores.append(new_score)
+
+worst_index = scores.index(min(scores))
+print("Найгірша спроба №", worst_index + 1)
+
+scores[worst_index] += 10
+print("Найбільший результат:", max(scores))
+print("Рейтинг:", sorted(scores, reverse=True))
+
+count = 0
+for score in scores:
+    if score > 40:
+        count += 1
+
+print("Спроб із понад 40 балами:", count)</code></pre>
+    <details>
+      <summary>Перевірка для нової спроби з 30 балами</summary>
+      <pre class="output"><samp>Найгірша спроба № 5
+Найбільший результат: 48
+Рейтинг: [48, 48, 42, 35, 30, 29]
+Спроб із понад 40 балами: 3</samp></pre>
+    </details>
+    <p class="practice">Скопіюй код у <a href="./">редактор «Кодика»</a> і запусти з іншим результатом нової спроби. Якщо він виявиться найменшим, бонус отримає саме ця спроба.</p>
+  </section>
+  <section class="section task" aria-labelledby="task-title">
+    <h2 id="task-title">Самостійне завдання. Стрибки в довжину</h2>
+    <p>Спортсмен зробив шість стрибків. У списку записана довжина кожної спроби в сантиметрах:</p>
+    <pre><code>jumps = [145, 162, 138, 157, 162, 149]</code></pre>
+    <ol>
+      <li>Запитай результат сьомої спроби та додай його до списку.</li>
+      <li>Виведи найкоротший і найдовший стрибки.</li>
+      <li>Знайди номер спроби з найкоротшим стрибком.</li>
+      <li>Суддя уточнив, що до цього результату треба додати 5 см. Виправ елемент списку.</li>
+      <li>Виведи оновлені результати від найбільшого до найменшого.</li>
+      <li>Порахуй, скільки стрибків <strong>довші за 150 см</strong>.</li>
+    </ol>
+    <details>
+      <summary>Підказка</summary>
+      <p>Для введення використай <code>int(input(...))</code> і <code>append()</code>. Індекс найкоротшої спроби знайдеш через <code>jumps.index(min(jumps))</code>. Для підрахунку переглянь список циклом <code>for</code> і перевір <code>jump &gt; 150</code>.</p>
+    </details>
+    <details>
+      <summary>Перевірка для сьомої спроби 155 см</summary>
+      <p>Найкоротший стрибок до виправлення — <strong>138 см</strong>, найдовший — <strong>162 см</strong>. Виправляємо <strong>спробу № 3</strong>: 138 + 5 = 143 см.</p>
+      <pre class="output"><samp>[162, 162, 157, 155, 149, 145, 143]
+Стрибків довших за 150 см: 4</samp></pre>
+    </details>
+  </section>
+  <section class="section task" aria-labelledby="review-title">
+    <h2 id="review-title">Перевір себе</h2>
+    <ul>
+      <li>Чим значення <code>min(scores)</code> відрізняється від <code>scores.index(min(scores))</code>?</li>
+      <li>Чому до індексу додають <code>1</code>, коли виводять номер спроби?</li>
+      <li>Чи змінює <code>sorted(scores, reverse=True)</code> початковий список?</li>
+      <li>Яку спробу поверне <code>index()</code>, якщо однаковий найменший результат трапився двічі?</li>
+    </ul>
+  </section>
+</main>
+<footer class="wrap"><a href="python-4.html">← Урок 4 · Списки в Python</a> · <a href="lessons.html">Усі уроки</a></footer>
+</body>
+</html>
